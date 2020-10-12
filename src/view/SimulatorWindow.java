@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SimulatorWindow extends JPanel{
-    
+
     /*Components for the top container for the buttons.*/
     private JPanel buttonsPanel = new JPanel();
     private JButton loaderButton = new JButton("Loader");
@@ -101,6 +101,7 @@ public class SimulatorWindow extends JPanel{
         memoryPanel.setPreferredSize(new Dimension(300,400));
         memoryPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         memoryArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        memoryArea.setEnabled(false);
         memoryPanel.add(memoryTextField, BorderLayout.NORTH);
         memoryPanel.add(memoryArea, BorderLayout.CENTER);
         return memoryPanel;
