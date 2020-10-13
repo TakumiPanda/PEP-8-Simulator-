@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is a computer class with data memory max 500 and instruction memory max 200
+ * This is a memory class with data memory max 500 and instruction memory max 200
  */
 public final class Memory {
 	/**
@@ -27,17 +27,10 @@ public final class Memory {
 	
 	/** Data memory. */
 	private long[] myDataMem;
-	
-	/** A label table to keep track of label address. 
-	 *  Key = a label
-	 *  Value = a memory location.
-	 */
-	private Map<String, Integer> myLabelTable;
+
 	
 	/** The current Program Counter value. */
 	private int myPC;
-	
-	private parse myParse;
 
 	
 	/**
@@ -47,10 +40,7 @@ public final class Memory {
 	public Memory() {
 		myInstructionMem = new Instruction[INSTRUCTION_MEMORY];
 		myDataMem = new long[DATA_MEMORY];
-		myLabelTable = new HashMap<>();
-		myParse = new parse();
 		mapRegisters();					// Map register with correct 'key'
-
 		for (int i = 0; i < DATA_MEMORY; i++) {
 			myDataMem[i] = 0;
 		}
@@ -74,25 +64,7 @@ public final class Memory {
 	public void setPC(final int thePC) {
 			myPC = thePC;
 	}
-	
-	/**
-	 * Get the label table.
-	 * 
-	 * @return myLabelTable
-	 */
-	public Map<String, Integer> getLabelTable() {
-		return myLabelTable;
-	}
-	
-	/**
-	 * Set label with address of label.
-	 * 
-	 * @param theLabel
-	 * @param theAddress
-	 */
-	public void setLabel(final String theLabel, final int theAddress) {
-		myLabelTable.put(theLabel,theAddress);
-	}
+
 	
 	/**
 	 * Get the current state of the data memory.
