@@ -1,14 +1,16 @@
 package view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class SimulatorWindow extends JPanel{
 
     /*Components for the top container for the buttons.*/
     private JPanel buttonsPanel = new JPanel();
-    private JButton loaderButton = new JButton("Loader");
-    private JButton executeButton = new JButton("Execute");
+    private JButton loaderButton = new JButton();
+    private JButton executeButton = new JButton();
 
     /*Window components for the source code window. */
     private JLabel sourceCodeText = new JLabel("Source Code");
@@ -35,9 +37,15 @@ public class SimulatorWindow extends JPanel{
     private JLabel memoryTextField = new JLabel("Memory Dump");
     private JPanel memoryPanel = new JPanel();
 
-    public SimulatorWindow() {
+    public SimulatorWindow() throws IOException {
         setLayout(new FlowLayout());
         setBackground(Color.BLACK);
+
+        Image img = ImageIO.read(getClass().getResource("./play_button.png"));
+        executeButton.setIcon(new ImageIcon(img));
+
+        Image img2 = ImageIO.read(getClass().getResource("./loader_resize.png"));
+        loaderButton.setIcon(new ImageIcon(img2));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildButtonPanel(), buildSourceCodePanel());
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitPane, buildObjectCodePanel());
@@ -108,7 +116,7 @@ public class SimulatorWindow extends JPanel{
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame();
         frame.setBackground(Color.BLACK);
         SimulatorWindow window = new SimulatorWindow();
