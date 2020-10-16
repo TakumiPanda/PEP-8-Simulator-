@@ -8,7 +8,7 @@ import utils.instructionType.*;
  * This class reads the input binary strings and assign them to correct instruction obj
 
  */
-public final class parse {
+public final class Decode {
 	
 	/**
 	 * Decode the binary string and create the appropriate Instruction object.
