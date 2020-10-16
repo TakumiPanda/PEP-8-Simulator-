@@ -1,4 +1,4 @@
-package utils.instructionType;
+package model.instructionType;
 
 
 /**
@@ -16,9 +16,5 @@ public interface Instruction {
      */
     String getOpcode();
 
-    /**
-     * execute instruction
-     *
-     */
-    //void execute();
+
 }
