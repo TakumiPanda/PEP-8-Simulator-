@@ -3,8 +3,8 @@ public class BinaryInstruction {
 	// the instruction
 	private String instruction;
 	
-	public BinaryInstruction(String decimal) {
-		instruction = toBinaryInstruction(decimal);
+	public BinaryInstruction(String hexadecimal) {
+		instruction = toBinaryInstruction(hexadecimal);
 	}
 	
 	// returns string representation of binaryInstruction
