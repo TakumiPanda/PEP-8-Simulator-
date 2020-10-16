@@ -1,4 +1,4 @@
-package utils.instructionType;
+package model.instructionType;
 /**
  * This class is the subtract instruction
  */

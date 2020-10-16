@@ -1,4 +1,4 @@
-package utils.instructionType;
+package model.instructionType;
 
 
 /**
