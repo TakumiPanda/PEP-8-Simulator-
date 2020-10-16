@@ -2,7 +2,7 @@
 
 package utils;
 
-import utils.instructionType.*;
+import model.instructionType.*;
 
 /**
  * This class reads the input binary strings and assign them to correct instruction obj
