@@ -9,14 +9,24 @@ public class TransformerTests {
     @Test
     void testBinaryToDecimalSuccess(){
         int binary = 10101010;
+<<<<<<< HEAD
         int decimalConversion = 170;
         Assert.assertEquals(decimalConversion, Transformer.transformBinaryToDecimal(binary));
+=======
+        int decimalConversion = -86;
+        Assertions.assertEquals(decimalConversion, transformer.transformBinaryToDecimal(binary));
+>>>>>>> 39a90a4d9c9a5aa6c4eae799455af2c869c251f3
     }
     @Test
     void testBinaryToDecimalFail() {
         int binary = 10101010;
+<<<<<<< HEAD
         int decimalConversion = 170;
         Assert.assertNotEquals(decimalConversion + 1, Transformer.transformBinaryToDecimal(binary));
+=======
+        int decimalConversion = -86;
+        Assertions.assertNotEquals(decimalConversion + 1, transformer.transformBinaryToDecimal(binary));
+>>>>>>> 39a90a4d9c9a5aa6c4eae799455af2c869c251f3
     }
     @Test
     void testDecimalToBinarySuccess(){
