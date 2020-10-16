@@ -1,14 +1,22 @@
 package view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Observable;
 
-public class SimulatorWindow extends JPanel{
+public class SimulatorWindow extends Observable {
+
+    /* Main component. */
+    private JPanel mainPanel = new JPanel();
 
     /*Components for the top container for the buttons.*/
     private JPanel buttonsPanel = new JPanel();
-    private JButton loaderButton = new JButton("Loader");
-    private JButton executeButton = new JButton("Execute");
+    private JButton loaderButton = new JButton();
+    private JButton executeButton = new JButton();
 
     /*Window components for the source code window. */
     private JLabel sourceCodeText = new JLabel("Source Code");
@@ -35,17 +43,34 @@ public class SimulatorWindow extends JPanel{
     private JLabel memoryTextField = new JLabel("Memory Dump");
     private JPanel memoryPanel = new JPanel();
 
-    public SimulatorWindow() {
-        setLayout(new FlowLayout());
-        setBackground(Color.BLACK);
+    public SimulatorWindow() throws IOException {
+        mainPanel.setLayout(new FlowLayout());
+        mainPanel.setBackground(Color.BLACK);
+
+        Image img = ImageIO.read(getClass().getResource("./play_button.png"));
+        executeButton.setIcon(new ImageIcon(img));
+
+        Image img2 = ImageIO.read(getClass().getResource("./loader_resize.png"));
+        loaderButton.setIcon(new ImageIcon(img2));
+
+        executeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setChanged();
+                notifyObservers();
+            }
+        });
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildButtonPanel(), buildSourceCodePanel());
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitPane, buildObjectCodePanel());
         JSplitPane splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildCpuWindow(), buildTerminalWindow());
         JSplitPane splitPane4 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane2, splitPane3);
         JSplitPane splitPane5 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane4, buildMemoryDumpWindow());
-        add(splitPane5);
+        mainPanel.add(splitPane5);
 
+    }
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 
     private JPanel buildButtonPanel() {
@@ -105,17 +130,5 @@ public class SimulatorWindow extends JPanel{
         memoryPanel.add(memoryTextField, BorderLayout.NORTH);
         memoryPanel.add(memoryArea, BorderLayout.CENTER);
         return memoryPanel;
-    }
-
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.setBackground(Color.BLACK);
-        SimulatorWindow window = new SimulatorWindow();
-        frame.add(window);
-        frame.setResizable(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.pack();
     }
 }
