@@ -25,6 +25,9 @@ public class MemoryDump{
 	public void updateMemory(String objCode) {
 		int objCodeIndex = 1;
 		int decodeIndex = 9;
+		if (objCode.length() < 1) {
+			return;
+		}
 		if (objCode.replace(" ",  "").length() % 2 != 0) {
 			System.err.println("Invlid hex string.");
 			return;	
@@ -46,8 +49,12 @@ public class MemoryDump{
 				dump[decodeIndex] = String.valueOf((char)(int)Integer.valueOf(hexCode[i],16));
 				decodeIndex += 9;
 			} else {
-				dump[decodeIndex] = String.valueOf((char)(int)Integer.valueOf(hexCode[i],16));
-				decodeIndex ++;
+				try {
+					dump[decodeIndex] = String.valueOf((char)(int)Integer.valueOf(hexCode[i],16));
+					decodeIndex ++;
+				} catch(IllegalArgumentException e){
+					System.out.println(e.getMessage());
+				}
 			}
 
 		}
@@ -57,15 +64,15 @@ public class MemoryDump{
 		StringBuilder output = new StringBuilder();
 		int lineNumber = 0;
 		for (int i = 0; i < SIZE - 1; i+=16){
-			output.append(String.format("%04X", lineNumber));
-			output.append(" | ");
+			output.append(String.format("%-" + 5 + "s", String.format("%04X", lineNumber)));
+			output.append("|");
 			
 			// objCode
 			for (int offset = 1; offset <= 8; offset++){
 				output.append(this.dump[i + offset] + " ");
 			}
 			
-			output.append(" | ");
+			output.append("| ");
 			
 			// decode
 			for (int offset = 1; offset <= 8; offset++){

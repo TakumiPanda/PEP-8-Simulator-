@@ -2,6 +2,9 @@ package view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import model.MemoryDump;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +15,7 @@ public class SimulatorWindow extends Observable {
 
     /* Main component. */
     private JPanel mainPanel = new JPanel();
+    private MemoryDump memoryDump = new MemoryDump();
 
     /*Components for the top container for the buttons.*/
     private JPanel buttonsPanel = new JPanel();
@@ -42,6 +46,7 @@ public class SimulatorWindow extends Observable {
     private JTextArea memoryArea = new JTextArea();
     private JLabel memoryTextField = new JLabel("Memory Dump");
     private JPanel memoryPanel = new JPanel();
+    private JScrollPane scroll = new JScrollPane(memoryArea);
 
     public SimulatorWindow() throws IOException {
         mainPanel.setLayout(new FlowLayout());
@@ -56,7 +61,12 @@ public class SimulatorWindow extends Observable {
         executeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setChanged();
+            	String objectCode = objectCodeArea.getText();
+            	memoryDump.updateMemory(objectCode);
+            	memoryArea.setText(memoryDump.toString());
+            	
+            	memoryArea.setCaretPosition(0);
+            	setChanged();
                 notifyObservers();
             }
         });
@@ -96,6 +106,7 @@ public class SimulatorWindow extends Observable {
         objectCodePanel.setPreferredSize(new Dimension(300,200));
         objectCodePanel.setBorder(BorderFactory.createLineBorder(Color.black));
         objectCodeText.setBorder(BorderFactory.createLineBorder(Color.black));
+        objectCodeArea.setLineWrap(true);
         objectCodePanel.add(objectCodeText, BorderLayout.NORTH);
         objectCodePanel.add(objectCodeArea, BorderLayout.CENTER);
         return objectCodePanel;
@@ -122,13 +133,22 @@ public class SimulatorWindow extends Observable {
     }
 
     private JPanel buildMemoryDumpWindow() {
+    	memoryArea.setText(memoryDump.toString());
+    	scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
         memoryPanel.setLayout(new BorderLayout());
         memoryPanel.setPreferredSize(new Dimension(300,400));
         memoryPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         memoryArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        memoryArea.setEnabled(false);
+        memoryArea.setEditable(false);
+
         memoryPanel.add(memoryTextField, BorderLayout.NORTH);
-        memoryPanel.add(memoryArea, BorderLayout.CENTER);
+        memoryPanel.add(scroll, BorderLayout.CENTER);
+        memoryPanel.setVisible(true);
         return memoryPanel;
+    }
+    
+    public static void main(String[] args) {
+    	
     }
 }
