@@ -10,7 +10,7 @@ public class Add implements Instruction {
 	private String myRd;
 
 	/** The operandSpecifier value. */
-	private String operandSpecifier;
+	private String operand;
 
 	/** The opcode of the instruction. */
 	private String myOpcode;
@@ -18,7 +18,7 @@ public class Add implements Instruction {
 
 	public Add(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
-		this.operandSpecifier = operandSpecifier;
+		this.operand = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
 
@@ -28,9 +28,16 @@ public class Add implements Instruction {
 		return myOpcode;
 	}
 
-//	@Override
-//	public void execute() {
-//		//need to be implemented
-//	}
+	public String getOprand() {
+		return myOpcode;
+	}
+
+	public String getRegister() {
+		return myRd;
+	}
+
+
+
+
 
 }

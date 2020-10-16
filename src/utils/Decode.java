@@ -18,21 +18,26 @@ public final class Decode {
 	public Instruction decodeInstruction(final String theString) throws IllegalArgumentException {
 
 		Instruction instruction;
-		
-		// Consider all white spaces as a delimiter
-		final String[] node = new String[3];
-		node[0] = theString.substring(0,4);//assign opcode to node 0
-		node[1] = theString.substring(5,7);// assign register to node 1
-		node[2] = theString.substring(8,23);// assign operand specifier to node 2
+		String[] node;
+
+		if(theString.substring(0,5)=="00000"){
+			//for stop case
+			node = new String[2];
+			node[0] = theString.substring(0,4);//assign opcode to node 0
+			node[1] = theString.substring(5,7);// assign register to node 1
+			instruction = new Stop(node[0], node[1]);
+			return instruction;
+		}else{
+			node = new String[3];
+			node[0] = theString.substring(0,4);//assign opcode to node 0
+			node[1] = theString.substring(5,7);// assign register to node 1
+			node[2] = theString.substring(8,23);// assign operand specifier to node 2
+		}
 
 		// Decode and create appropriate instruction
 		switch(node[0]) {
 			case "01110" ://instruction: add
 				instruction = new Add(node[0], node[1], node[2]);
-				break;
-
-			case "00000" ://instruction: stop
-				instruction = new Stop(node[0], node[1], node[2]);
 				break;
 
 			case "11000" ://instruction: load

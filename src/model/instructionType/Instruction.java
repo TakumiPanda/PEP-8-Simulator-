@@ -16,9 +16,5 @@ public interface Instruction {
      */
     String getOpcode();
 
-    /**
-     * execute instruction
-     *
-     */
-    //void execute();
+
 }
