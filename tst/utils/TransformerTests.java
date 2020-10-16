@@ -9,13 +9,13 @@ public class TransformerTests {
     @Test
     void testBinaryToDecimalSuccess(){
         int binary = 10101010;
-        int decimalConversion = 170;
+        int decimalConversion = -86;
         Assertions.assertEquals(decimalConversion, transformer.transformBinaryToDecimal(binary));
     }
     @Test
     void testBinaryToDecimalFail() {
         int binary = 10101010;
-        int decimalConversion = 170;
+        int decimalConversion = -86;
         Assertions.assertNotEquals(decimalConversion + 1, transformer.transformBinaryToDecimal(binary));
     }
     @Test
