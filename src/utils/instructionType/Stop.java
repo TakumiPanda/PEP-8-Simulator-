@@ -1,4 +1,4 @@
-package model.instructionType;
+package utils.instructionType;
 
 /**
  * This class is the stop  instruction

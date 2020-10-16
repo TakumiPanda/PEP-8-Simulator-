@@ -1,20 +1,27 @@
-package model.instructionType;
+package utils.instructionType;
+
 /**
- * This class is the subtract instruction
+ * This class is the Character output  instruction
  */
 
-public class Sub implements Instruction{
-    /** The destination register number. */
+public class CharOut implements Instruction {
+    /**
+     * The destination register number.
+     */
     private String myRd;
 
-    /** The operandSpecifier value. */
+    /**
+     * The operandSpecifier value.
+     */
     private String operandSpecifier;
 
-    /** The opcode of the instruction. */
+    /**
+     * The opcode of the instruction.
+     */
     private String myOpcode;
 
 
-    public Sub(String myOpcode, String myRd, String operandSpecifier) {
+    public CharOut(String myOpcode, String myRd, String operandSpecifier) {
         this.myRd = myRd;
         this.operandSpecifier = operandSpecifier;
         this.myOpcode = myOpcode;
@@ -31,3 +38,4 @@ public class Sub implements Instruction{
 //        //need to be implemented
 //    }
 }
+

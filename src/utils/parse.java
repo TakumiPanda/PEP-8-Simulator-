@@ -1,8 +1,8 @@
 
 
-package model;
+package utils;
 
-import model.instructionType.*;
+import utils.instructionType.*;
 
 /**
  * This class reads the input binary strings and assign them to correct instruction obj

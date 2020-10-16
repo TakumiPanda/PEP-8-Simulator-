@@ -1,27 +1,21 @@
-package model.instructionType;
+package utils.instructionType;
 
 /**
- * This class is the Character output  instruction
+ * This class is the Character input  instruction
  */
 
-public class CharOut implements Instruction {
-    /**
-     * The destination register number.
-     */
+public class CharIn implements Instruction {
+    /** The destination register number. */
     private String myRd;
 
-    /**
-     * The operandSpecifier value.
-     */
+    /** The operandSpecifier value. */
     private String operandSpecifier;
 
-    /**
-     * The opcode of the instruction.
-     */
+    /** The opcode of the instruction. */
     private String myOpcode;
 
 
-    public CharOut(String myOpcode, String myRd, String operandSpecifier) {
+    public CharIn(String myOpcode, String myRd, String operandSpecifier) {
         this.myRd = myRd;
         this.operandSpecifier = operandSpecifier;
         this.myOpcode = myOpcode;
@@ -37,5 +31,5 @@ public class CharOut implements Instruction {
 //    public void execute() {
 //        //need to be implemented
 //    }
-}
 
+}

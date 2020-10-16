@@ -1,10 +1,9 @@
-package model.instructionType;
-
+package utils.instructionType;
 /**
- * This class is the Character input  instruction
+ * This class is the subtract instruction
  */
 
-public class CharIn implements Instruction {
+public class Sub implements Instruction{
     /** The destination register number. */
     private String myRd;
 
@@ -15,7 +14,7 @@ public class CharIn implements Instruction {
     private String myOpcode;
 
 
-    public CharIn(String myOpcode, String myRd, String operandSpecifier) {
+    public Sub(String myOpcode, String myRd, String operandSpecifier) {
         this.myRd = myRd;
         this.operandSpecifier = operandSpecifier;
         this.myOpcode = myOpcode;
@@ -31,5 +30,4 @@ public class CharIn implements Instruction {
 //    public void execute() {
 //        //need to be implemented
 //    }
-
 }

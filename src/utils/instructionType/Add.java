@@ -1,13 +1,11 @@
-
-package model.instructionType;
+package utils.instructionType;
 
 
 /**
- * This class is the SW instruction
+ * This class is the add instruction
  */
 
-public class SW implements Instruction{
-
+public class Add implements Instruction {
 	/** The destination register number. */
 	private String myRd;
 
@@ -18,12 +16,14 @@ public class SW implements Instruction{
 	private String myOpcode;
 
 
-	public SW(String myOpcode, String myRd, String operandSpecifier) {
+	public Add(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
 		this.operandSpecifier = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
 
+
+	@Override
 	public String getOpcode() {
 		return myOpcode;
 	}
@@ -32,4 +32,5 @@ public class SW implements Instruction{
 //	public void execute() {
 //		//need to be implemented
 //	}
+
 }
