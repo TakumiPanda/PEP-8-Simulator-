@@ -8,8 +8,8 @@ import java.util.Observer;
 
 public class ControlUnit implements Observer {
 
-    private int PC = 0;
-    private int IR = 0;
+    private int PC = 0x000;
+    private int IR = 0x000;
 
     private Decode decode = new Decode();
 
