@@ -28,31 +28,31 @@ public class ControlUnit implements Observer {
 		switch (currentInstruction.getOpcode()) {
 
 		case ("01110")://add
-			executeAdd();
+			executeAdd(currentInstruction);
 			break;
 
 		case ("01001")://char in
-			executeCharIn();
+			executeCharIn(currentInstruction);
 			break;
 
 		case ("01010")://char out
-			executeCharOut();
+			executeCharOut(currentInstruction);
 			break;
 
 		case ("11000")://load
-			executeLW();
+			executeLW(currentInstruction);
 			break;
 
 		case ("00000")://stop
-			executeStop();
+			executeStop(currentInstruction);
 			break;
 
 		case ("10000")://sub
-			executeSub();
+			executeSub(currentInstruction);
 			break;
 
 		case ("11100")://sw
-			executeSW();
+			executeSW(currentInstruction);
 		}
 
 		// Get data if needed.
@@ -64,31 +64,31 @@ public class ControlUnit implements Observer {
 		startCycle();
 	}
 
-	private void executeAdd() {
-		Add addInstruction = (Add) currentInstruction;
-		this.AR += Integer.parseInt(Converter.binToHex(addInstruction.getOperand()), 16);
+	private void executeAdd(Instruction instruction) {
+		this.AR += Integer.parseInt(Converter.binToHex(instruction.getOperand()), 16);
 	}
 
-	private void executeCharIn() {
-
-	}
-
-	private void executeCharOut() {
+	private void executeCharIn(Instruction instruction) {
 
 	}
 
-	private void executeLW() {
+	private void executeCharOut(Instruction instruction) {
 
 	}
 
-	private void executeStop() {
-	}
+	private void executeLW(Instruction instruction) {
 
-	private void executeSub() {
 
 	}
 
-	private void executeSW() {
+	private void executeStop(Instruction instruction) {
+	}
+
+	private void executeSub(Instruction instruction) {
+
+	}
+
+	private void executeSW(Instruction instruction) {
 
 	}
 

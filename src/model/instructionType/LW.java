@@ -21,15 +21,15 @@ public class LW implements Instruction {
 		this.myOperand = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
-
+	@Override
 	public String getOpcode() {
 		return myOpcode;
 	}
-
+	@Override
 	public String getOperand() {
 		return myOperand;
 	}
-
+	@Override
 	public String getRegister() {
 		return myRd;
 	}
