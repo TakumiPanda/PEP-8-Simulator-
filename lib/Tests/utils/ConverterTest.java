@@ -33,10 +33,10 @@ class ConverterTest {
 
     @Test
     void testHexToBinary() {
-        String h = "A";
+        String h = "ab";
         Converter converter = new Converter();
         String b = converter.hexToBinary(h);
-        Assertions.assertEquals("1010",b);
+        Assertions.assertEquals("1010 1011 ",b);
     }
 
     @Test
@@ -46,4 +46,6 @@ class ConverterTest {
         String b = converter.decimalToBinary(d);
         Assertions.assertEquals("1010",b);
     }
+
+
 }

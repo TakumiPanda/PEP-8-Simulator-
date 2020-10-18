@@ -42,8 +42,20 @@ public class Converter {
 	 * @return binary
 	 */
 	public String hexToBinary(String hex) {
-		int num = (Integer.parseInt(hex, 16));
-		return Integer.toBinaryString(num);
+		StringBuilder binary = new StringBuilder();
+		if (hex.length() < 1) {
+			return binary.toString();
+		}
+		if (hex.replace(" ", "").length() % 2 != 0) {
+			return "Invalid hex string.";
+		}
+		String[] hexCode = hex.replace(" ", "").split("");
+		for (int i = 0; i < hexCode.length; i++) {
+			int binVal = hexToDecimal(hexCode[i]);
+			binary.append(String.format("%4s", Integer.toBinaryString(binVal)).replace(" ", "0"));
+			binary.append(" ");
+		}
+		return binary.toString();
 	}
 
 	/**
@@ -54,5 +66,7 @@ public class Converter {
 	public String decimalToBinary(int decimal){
 		return Integer.toBinaryString(decimal);
 	}
+
+
 
 }

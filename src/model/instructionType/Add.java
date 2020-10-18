@@ -20,6 +20,8 @@ public class Add implements Instruction {
 		this.myOpcode = myOpcode;
 	}
 
+//	public execute()
+
 	@Override
 	public String getOpcode() {
 		return myOpcode;
