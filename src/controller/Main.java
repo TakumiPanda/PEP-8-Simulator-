@@ -1,15 +1,13 @@
 package controller;
 
-import java.awt.Color;
+import model.ControlUnit;
+import view.SimulatorWindow;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-
-import model.ControlUnit;
-import view.SimulatorWindow;
 
 public class Main implements Observer {
 
@@ -23,7 +21,7 @@ public class Main implements Observer {
 		window.addObserver(this);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.pack();
 	}

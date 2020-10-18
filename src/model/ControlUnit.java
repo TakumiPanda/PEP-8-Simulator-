@@ -79,7 +79,7 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeLW() {
-
+		
 	}
 
 	private void executeStop() {
