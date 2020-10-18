@@ -1,9 +1,9 @@
 package view;
 
+import model.MemoryDump;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import model.ControlUnit;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +16,7 @@ public class SimulatorWindow extends Observable {
 
 	/* Main component. */
 	private JPanel mainPanel = new JPanel();
-	private ControlUnit controlUnit = new ControlUnit();
+	private MemoryDump memoryDump = new MemoryDump();
 
 	/* Components for the top container for the buttons. */
 	private JPanel buttonsPanel = new JPanel();
@@ -62,11 +62,6 @@ public class SimulatorWindow extends Observable {
 		executeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String objectCode = objectCodeArea.getText();
-				controlUnit.memoryDump.updateMemory(objectCode);
-				memoryArea.setText(controlUnit.memoryDump.toString());
-				memoryArea.setCaretPosition(0);
-				controlUnit.startCycle();
 				setChanged();
 				notifyObservers();
 			}
@@ -138,8 +133,20 @@ public class SimulatorWindow extends Observable {
 		return terminalPanel;
 	}
 
+	public JTextArea getObjectCodeArea() {
+		return objectCodeArea;
+	}
+
+	public JTextArea getSourceCodeArea() {
+		return sourceCodeArea;
+	}
+
+	public JTextArea getMemoryArea() {
+		return memoryArea;
+	}
+
 	private JPanel buildMemoryDumpWindow() {
-		memoryArea.setText(controlUnit.memoryDump.toString());
+		memoryArea.setText(memoryDump.toString());
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		memoryPanel.setLayout(new BorderLayout());
@@ -152,9 +159,5 @@ public class SimulatorWindow extends Observable {
 		memoryPanel.add(scroll, BorderLayout.CENTER);
 		memoryPanel.setVisible(true);
 		return memoryPanel;
-	}
-
-	public static void main(String[] args) {
-
 	}
 }
