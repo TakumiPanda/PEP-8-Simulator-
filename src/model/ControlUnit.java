@@ -3,7 +3,7 @@ package model;
 import java.util.Observable;
 import java.util.Observer;
 
-import model.instructionType.Add;
+import model.instructionType.*;
 import model.instructionType.Instruction;
 import model.MemoryDump;
 import utils.Converter;
@@ -48,7 +48,7 @@ public class ControlUnit implements Observer {
 			break;
 
 		case ("10000")://sub
-			executeSub();
+			executeSub(currentInstruction);
 			break;
 
 		case ("11100")://sw
@@ -84,8 +84,10 @@ public class ControlUnit implements Observer {
 	private void executeStop() {
 	}
 
-	private void executeSub() {
-
+	private void executeSub(Instruction instruction) {
+		//if (Converter.binToDecimal(instruction. == 1){
+			
+		//}
 	}
 
 	private void executeSW() {
