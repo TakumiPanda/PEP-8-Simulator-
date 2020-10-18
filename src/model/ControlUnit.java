@@ -25,26 +25,33 @@ public class ControlUnit implements Observer {
 		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
 
 		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
-		switch (currentInstruction.getClass().getName()) {
-		case ("model.instructionType.Add"):
+		switch (currentInstruction.getOpcode()) {
+
+		case ("01110")://add
 			executeAdd();
 			break;
-		case ("model.instructionType.CharIn"):
+
+		case ("01001")://char in
 			executeCharIn();
 			break;
-		case ("model.instructionType.CharOut"):
+
+		case ("01010")://char out
 			executeCharOut();
 			break;
-		case ("model.instructionType.LW"):
+
+		case ("11000")://load
 			executeLW();
 			break;
-		case ("model.instructionType.Stop"):
+
+		case ("00000")://stop
 			executeStop();
 			break;
-		case ("model.instructionType.Sub"):
+
+		case ("10000")://sub
 			executeSub();
 			break;
-		case ("model.instructionType.SW"):
+
+		case ("11100")://sw
 			executeSW();
 		}
 
