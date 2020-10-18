@@ -2,7 +2,6 @@
 package utils;
 
 import model.instructionType.*;
-import utils.BinHexConverter;
 
 /**
  * This class reads the input binary strings and assign them to correct
@@ -11,7 +10,7 @@ import utils.BinHexConverter;
  */
 public final class Decode {
 
-	private BinHexConverter conv = new BinHexConverter();
+	private Converter conv = new Converter();
 	/**
 	 * Decode the binary string and create the appropriate Instruction object.
 	 * 

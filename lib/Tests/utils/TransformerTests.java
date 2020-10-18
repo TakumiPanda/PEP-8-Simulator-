@@ -1,8 +1,9 @@
-package utils;
+package Tests.utils;
 
 //import org.graalvm.compiler.debug.Assertions;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import utils.Transformer;
 
 public class TransformerTests {
 	Transformer transformer = new Transformer();
