@@ -19,9 +19,13 @@ public class Stop implements Instruction {
 	public String getOpcode() {
 		return myOpcode;
 	}
-
+	@Override
 	public String getRegister() {
 		return myRd;
+	}
+	@Override
+	public String getOperand() {
+		return null;
 	}
 
 }
