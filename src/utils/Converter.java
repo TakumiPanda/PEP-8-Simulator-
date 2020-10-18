@@ -13,7 +13,7 @@ public class Converter {
 	 * @param binary
 	 * @return hexDecimal
 	 */
-	public String binToHex(String binary) {
+	public static String binToHex(String binary) {
 		StringBuilder hex = new StringBuilder();
 		int count = 1;
 		if (binary.length() < 1) {
@@ -38,7 +38,7 @@ public class Converter {
 	 * @param hex
 	 * @return Decimal
 	 */
-	public int hexToDecimal(String hex) {
+	public static int hexToDecimal(String hex) {
 		return Integer.parseInt(hex, 16);
 	}
 
@@ -47,7 +47,7 @@ public class Converter {
 	 * @param bin
 	 * @return Decimal
 	 */
-	public int binToDecimal(String bin){
+	public static int binToDecimal(String bin){
 		return Integer.parseInt(bin,2);
 	}
 
@@ -56,7 +56,7 @@ public class Converter {
 	 * @param hex
 	 * @return binary
 	 */
-	public String hexToBinary(String hex) {
+	public static String hexToBinary(String hex) {
 		StringBuilder binary = new StringBuilder();
 		if (hex.length() < 1) {
 			return binary.toString();
@@ -78,10 +78,7 @@ public class Converter {
 	 * @param decimal
 	 * @return binary
 	 */
-	public String decimalToBinary(int decimal){
+	public static String decimalToBinary(int decimal){
 		return Integer.toBinaryString(decimal);
 	}
-
-
-
 }

@@ -17,7 +17,7 @@ public class Main implements Observer {
 	public Main() throws IOException {
 		JFrame frame = new JFrame();
 		frame.setBackground(Color.BLACK);
-		window = new SimulatorWindow();
+		window = new SimulatorWindow(controlUnit.memoryDump);
 		window.addObserver(this);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
@@ -32,6 +32,10 @@ public class Main implements Observer {
 		window.getMemoryArea().setText(controlUnit.memoryDump.toString());
 		window.getMemoryArea().setCaretPosition(0);
 		controlUnit.startCycle();
+
+		//Update the GUI components when fetch-execute cycle is finished.
+		window.setMemoryDump(controlUnit.memoryDump);
+
 	}
 
 	public static void main(String[] args) throws IOException {

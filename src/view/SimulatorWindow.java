@@ -16,7 +16,7 @@ public class SimulatorWindow extends Observable {
 
 	/* Main component. */
 	private JPanel mainPanel = new JPanel();
-	private MemoryDump memoryDump = new MemoryDump();
+	private MemoryDump memoryDump;
 
 	/* Components for the top container for the buttons. */
 	private JPanel buttonsPanel = new JPanel();
@@ -49,7 +49,8 @@ public class SimulatorWindow extends Observable {
 	private JPanel memoryPanel = new JPanel();
 	private JScrollPane scroll = new JScrollPane(memoryArea);
 
-	public SimulatorWindow() throws IOException {
+	public SimulatorWindow(MemoryDump memory) throws IOException {
+		this.memoryDump = memory;
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.setBackground(Color.BLACK);
 
@@ -143,6 +144,10 @@ public class SimulatorWindow extends Observable {
 
 	public JTextArea getMemoryArea() {
 		return memoryArea;
+	}
+
+	public void setMemoryDump(MemoryDump updatedMemory) {
+		this.memoryDump = updatedMemory;
 	}
 
 	private JPanel buildMemoryDumpWindow() {
