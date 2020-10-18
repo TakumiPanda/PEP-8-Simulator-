@@ -13,8 +13,28 @@ public class Converter {
 	 * @return hexDecimal
 	 */
 	public String binToHex(String binary) {
+<<<<<<< HEAD
 		int decimal = Integer.parseInt(binary, 2);
 		return Integer.toString(decimal, 16).toUpperCase();
+=======
+		StringBuilder hex = new StringBuilder();
+		int count = 1;
+		if (binary.length() < 1) {
+			return hex.toString();
+		}
+		if (binary.replace(" ", "").length() % 2 != 0) {
+			return "Invalid binary string.";
+		}
+		for (int i = 0; i < binary.replace(" ", "").length(); i += 4) {
+			String binString = binary.replace(" ", "").substring(i, i + 4);
+			hex.append(Integer.toString(binToDecimal(binString), 16).toUpperCase());
+			if (count % 2 == 0) {
+				hex.append(" ");
+			}
+			count++;
+		}
+		return hex.toString();
+>>>>>>> 1053ec6aaaeea5b442744770f0f4de1eb0802625
 	}
 
 	/**

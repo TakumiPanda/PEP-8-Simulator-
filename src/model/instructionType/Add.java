@@ -9,26 +9,25 @@ public class Add implements Instruction {
 	private String myRd;
 
 	/** The operandSpecifier value. */
-	private String operand;
+	private String myOperand;
 
 	/** The opcode of the instruction. */
 	private String myOpcode;
 
 	public Add(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
-		this.operand = operandSpecifier;
+		this.myOperand = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
 
-//	public execute()
 
 	@Override
 	public String getOpcode() {
 		return myOpcode;
 	}
 
-	public String getOprand() {
-		return myOpcode;
+	public String getOperand() {
+		return myOperand;
 	}
 
 	public String getRegister() {
