@@ -1,16 +1,29 @@
 package view;
 
-import model.MemoryDump;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Observable;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
+import model.MemoryDump;
 
 public class SimulatorWindow extends Observable {
 
@@ -115,11 +128,11 @@ public class SimulatorWindow extends Observable {
 		cpuPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		cpuArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		cpuPanel.add(cpuTextField, BorderLayout.NORTH);
-		
+
 		cpuPanel.add(new JLabel("Program Counter: "), BorderLayout.CENTER);
 		cpuPanel.add(new JTextArea(), BorderLayout.CENTER);
-		//cpuPanel.add(cpuArea, BorderLayout.CENTER);
-		
+		// cpuPanel.add(cpuArea, BorderLayout.CENTER);
+
 		return cpuPanel;
 	}
 
@@ -147,7 +160,7 @@ public class SimulatorWindow extends Observable {
 
 	private JPanel buildMemoryDumpWindow() {
 		memoryArea.setText(memoryDump.toString());
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		memoryPanel.setLayout(new BorderLayout());
 		memoryPanel.setPreferredSize(new Dimension(300, 400));

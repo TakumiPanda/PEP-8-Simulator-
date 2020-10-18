@@ -22,6 +22,7 @@ public class LW implements Instruction {
 		this.myOpcode = myOpcode;
 	}
 
+	@Override
 	public String getOpcode() {
 		return myOpcode;
 	}

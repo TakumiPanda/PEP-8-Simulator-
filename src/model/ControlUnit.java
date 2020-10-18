@@ -4,7 +4,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import model.instructionType.Instruction;
-import model.MemoryDump;
 import utils.Decode;
 
 public class ControlUnit implements Observer {
@@ -13,29 +12,29 @@ public class ControlUnit implements Observer {
 	private int AR = 0x000;
 	private int IR = 0x000000;
 	private static final int PC_COUNTER = 0x0001;
-	
+
 	private Decode decode = new Decode();
-	private ArithmeticLogicUnit ALU = new ArithmeticLogicUnit();
+	//private ArithmeticLogicUnit ALU = new ArithmeticLogicUnit();
 	public MemoryDump memoryDump = new MemoryDump();
-	
+
 	public void startCycle() {
 		// Fetch the next instruction. This is the address of place in memory
-		//int nextInstructionAddress = ALU.getPC();
+		// int nextInstructionAddress = ALU.getPC();
 
 		// Control Unit will go into memory and get the PC instruction
-		//this.PC = memory[nextInstructionAddress];
+		// this.PC = memory[nextInstructionAddress];
 
 		// Control Unit will load IR with the PC instruction
-		
-		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
+
+		this.IR = Integer.parseInt(memoryDump.fetch(this.PC), 16);
 
 //		System.out.println(memoryDump.fetch(this.PC));
 //		System.out.println(this.IR);
 //		System.out.println(String.format("%06X", this.IR));
-		
+
 // 		Decode the instruction from IR.
 		Instruction decodedInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
-		
+
 		switch (decodedInstruction.getClass().getName()) {
 		case ("Add"):
 			executeAdd();
@@ -68,7 +67,7 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeAdd() {
-		
+
 	}
 
 	private void executeCharIn() {
