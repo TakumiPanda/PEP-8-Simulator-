@@ -33,7 +33,7 @@ public class ControlUnit implements Observer {
 //		System.out.println(this.IR);
 //		System.out.println(String.format("%06X", this.IR));
 		
-		// Decode the instruction from IR.
+// 		Decode the instruction from IR.
 		Instruction decodedInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
 		
 		switch (decodedInstruction.getClass().getName()) {
@@ -64,7 +64,7 @@ public class ControlUnit implements Observer {
 		// Execute the instruction.
 
 		// PC must be updated to hold the address of the next instruction to be executed
-		ALU.getRegisters()[0]++;
+		// ALU.getRegisters()[0]++;
 	}
 
 	private void executeAdd() {
