@@ -1,6 +1,5 @@
 package model.instructionType;
 
-
 /**
  * This class is the add instruction
  */
@@ -15,13 +14,11 @@ public class Add implements Instruction {
 	/** The opcode of the instruction. */
 	private String myOpcode;
 
-
 	public Add(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
 		this.operand = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
-
 
 	@Override
 	public String getOpcode() {
@@ -35,9 +32,5 @@ public class Add implements Instruction {
 	public String getRegister() {
 		return myRd;
 	}
-
-
-
-
 
 }

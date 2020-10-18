@@ -1,7 +1,6 @@
 
 package model.instructionType;
 
-
 /**
  * This class is the LW instruction
  */
@@ -16,7 +15,6 @@ public class LW implements Instruction {
 
 	/** The opcode of the instruction. */
 	private String myOpcode;
-
 
 	public LW(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;

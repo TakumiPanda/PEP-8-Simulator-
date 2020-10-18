@@ -1,6 +1,5 @@
 package model.instructionType;
 
-
 /**
  * This class is the interface of all instructions
  *
@@ -9,12 +8,11 @@ package model.instructionType;
  */
 
 public interface Instruction {
-    /**
-     * Get the opcode.
-     *
-     * @return the opcode.
-     */
-    String getOpcode();
-
+	/**
+	 * Get the opcode.
+	 *
+	 * @return the opcode.
+	 */
+	String getOpcode();
 
 }

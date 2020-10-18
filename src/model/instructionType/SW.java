@@ -1,12 +1,11 @@
 
 package model.instructionType;
 
-
 /**
  * This class is the SW instruction
  */
 
-public class SW implements Instruction{
+public class SW implements Instruction {
 
 	/** The destination register number. */
 	private String myRd;
@@ -15,7 +14,6 @@ public class SW implements Instruction{
 	private String operand;
 	/** The opcode of the instruction. */
 	private String myOpcode;
-
 
 	public SW(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
