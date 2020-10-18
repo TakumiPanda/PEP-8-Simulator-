@@ -3,7 +3,10 @@ package model;
 import java.util.Observable;
 import java.util.Observer;
 
+import model.instructionType.Add;
 import model.instructionType.Instruction;
+import model.MemoryDump;
+import utils.Converter;
 import utils.Decode;
 
 public class ControlUnit implements Observer {
@@ -12,61 +15,58 @@ public class ControlUnit implements Observer {
 	private int AR = 0x000;
 	private int IR = 0x000000;
 	private static final int PC_COUNTER = 0x0001;
-
+	
 	private Decode decode = new Decode();
-	//private ArithmeticLogicUnit ALU = new ArithmeticLogicUnit();
+	private ArithmeticLogicUnit ALU = new ArithmeticLogicUnit();
 	public MemoryDump memoryDump = new MemoryDump();
-
+	private Instruction currentInstruction;
+	
 	public void startCycle() {
-		// Fetch the next instruction. This is the address of place in memory
-		// int nextInstructionAddress = ALU.getPC();
+		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
 
-		// Control Unit will go into memory and get the PC instruction
-		// this.PC = memory[nextInstructionAddress];
+		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
+		switch (currentInstruction.getOpcode()) {
 
-		// Control Unit will load IR with the PC instruction
-
-		this.IR = Integer.parseInt(memoryDump.fetch(this.PC), 16);
-
-//		System.out.println(memoryDump.fetch(this.PC));
-//		System.out.println(this.IR);
-//		System.out.println(String.format("%06X", this.IR));
-// 		Decode the instruction from IR.
-		Instruction decodedInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
-
-		switch (decodedInstruction.getClass().getName()) {
-		case ("Add"):
+		case ("01110")://add
 			executeAdd();
 			break;
-		case ("CharIn"):
+
+		case ("01001")://char in
 			executeCharIn();
 			break;
-		case ("CharOut"):
+
+		case ("01010")://char out
 			executeCharOut();
 			break;
-		case ("LW"):
+
+		case ("11000")://load
 			executeLW();
 			break;
-		case ("Stop"):
+
+		case ("00000")://stop
 			executeStop();
 			break;
-		case ("Sub"):
+
+		case ("10000")://sub
 			executeSub();
 			break;
-		case ("SW"):
+
+		case ("11100")://sw
 			executeSW();
-			break;
 		}
+
 		// Get data if needed.
 
 		// Execute the instruction.
 
 		// PC must be updated to hold the address of the next instruction to be executed
-		// ALU.getRegisters()[0]++;
+		PC++;
+		startCycle();
 	}
 
 	private void executeAdd() {
-
+		Add addInstruction = (Add) currentInstruction;
+		this.AR += Integer.parseInt(Converter.binToHex(addInstruction.getOperand()), 16);
 	}
 
 	private void executeCharIn() {
@@ -78,11 +78,10 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeLW() {
-		
+
 	}
 
 	private void executeStop() {
-
 	}
 
 	private void executeSub() {

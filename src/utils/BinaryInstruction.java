@@ -1,18 +1,20 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 // this class represents the BinaryInstruction Object
 // takes a Hexadecimal instruction input and turns it into
 // binary instruction
 public class BinaryInstruction {
 	// the instruction
 	private String instruction;
-
+	
 	public BinaryInstruction(String decimal) {
 		instruction = toBinaryInstruction(decimal);
 	}
-
+	
 	// returns string representation of binaryInstruction
-	@Override
 	public String toString() {
 		return instruction;
 	}
@@ -21,7 +23,7 @@ public class BinaryInstruction {
 	// parameter can have spaces or no spaces.
 	public static String toBinaryInstruction(String hexadecimal) {
 		String result = "";
-		hexadecimal = hexadecimal.replaceAll("\\s", "");
+		hexadecimal = hexadecimal.replaceAll("\\s","");
 		char[] digits = hexadecimal.toCharArray();
 		for (char digit : digits) {
 			if (isLetter(digit)) {
@@ -33,7 +35,7 @@ public class BinaryInstruction {
 		}
 		return result;
 	}
-
+	
 	// returns a 4 bit version of any binary that has less than 4 bits
 	// ex: 11 --> 0011
 	public static String completeToFourBits(String binary) {
@@ -45,7 +47,7 @@ public class BinaryInstruction {
 		}
 		return result;
 	}
-
+	
 	// returns binary string of a given decimal (0-9)
 	public static String toBinary(int decimal) {
 		String result = "";
@@ -63,7 +65,7 @@ public class BinaryInstruction {
 		}
 		return result;
 	}
-
+	
 	// reference table for A,B,C,D,E,F.
 	public static String referToTable(char c) {
 		if (c == 'A') {
@@ -81,7 +83,7 @@ public class BinaryInstruction {
 		}
 		return "";
 	}
-
+	
 	// return true if a given char is a letter in hexadecimal
 	public static boolean isLetter(char c) {
 		return (c >= 65 && c <= 70);

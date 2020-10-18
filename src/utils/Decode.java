@@ -1,25 +1,16 @@
 
 package utils;
 
-import model.instructionType.Add;
-import model.instructionType.CharIn;
-import model.instructionType.CharOut;
-import model.instructionType.Instruction;
-import model.instructionType.LW;
-import model.instructionType.SW;
-import model.instructionType.Stop;
-import model.instructionType.Sub;
+import model.instructionType.*;
 
 /**
  * This class reads the input binary strings and assign them to correct
  * instruction obj
  * 
  */
-
 public final class Decode {
 
 	private Converter conv = new Converter();
-
 	/**
 	 * Decode the binary string and create the appropriate Instruction object.
 	 * 
@@ -28,12 +19,12 @@ public final class Decode {
 	public Instruction decodeInstruction(final String hex) throws IllegalArgumentException {
 		Instruction instruction;
 		String[] node;
-		String theString = conv.hexToBinary(hex).replace(" ", "");
+		String theString = conv.hexToBinary(hex).replace(" " , "");
 		System.out.println(conv.hexToBinary(hex));
 		node = new String[3];
 		node[0] = theString.substring(0, 5);// assign opcode to node 0
 		node[1] = theString.substring(6, 8);// assign register to node 1
-
+		
 		// Decode and create appropriate instruction
 		switch (node[0]) {
 		case "01110":// instruction: add
@@ -60,10 +51,10 @@ public final class Decode {
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
 			instruction = new CharOut(node[0], node[1], node[2]);
 			break;
-		case "00000":// instruction: stop
+		case "00000"://	instruction: stop
 			instruction = new Stop(node[0], node[1]);
 			break;
-
+		
 		default:
 			throw new IllegalArgumentException("Instruction " + node[0] + " not supported.");
 		}

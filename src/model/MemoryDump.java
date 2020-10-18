@@ -6,7 +6,7 @@ public class MemoryDump {
 
 	public MemoryDump() {
 		this.dump = new String[SIZE];
-		for (int i = 0; i < SIZE - 1; i += 16) {
+		for (int i = 0; i < SIZE-1; i += 16) {
 			// objCode
 			for (int offset = 0; offset <= 7; offset++) {
 				// FILL OBJECT CODE HERE
@@ -36,7 +36,7 @@ public class MemoryDump {
 		// [17 18 19 20 21 22 23 24] [25 26 27 28 29 30 31 32]
 		for (int i = 0; i < objCode.replace(" ", "").length(); i += 2) {
 			String hexCode = objCode.replace(" ", "").substring(i, i + 2);
-			if (objCodeIndex % 7 - lineNumber == 0 && objCodeIndex != 0) {
+			if (objCodeIndex % 7 - lineNumber == 0 && objCodeIndex !=0) {
 				dump[objCodeIndex] = hexCode;
 				objCodeIndex += 9;
 			} else {
@@ -47,7 +47,7 @@ public class MemoryDump {
 			if (decodeIndex % 15 - lineNumber == 0 && decodeIndex != 0) {
 				dump[decodeIndex] = String.valueOf((char) (int) Integer.valueOf(hexCode, 16));
 				decodeIndex += 9;
-				lineNumber++;
+				lineNumber ++;
 			} else {
 				try {
 					dump[decodeIndex] = String.valueOf((char) (int) Integer.valueOf(hexCode, 16));
@@ -59,23 +59,22 @@ public class MemoryDump {
 
 		}
 	}
-
+	
 	public String fetch(int address) {
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
 		}
-		return dump[address * 2 - address % 8] + dump[(address + 1) * 2 - (address + 1) % 8]
-				+ dump[(address + 2) * 2 - (address + 2) % 8];
+		return dump[address * 2 - address % 8] + dump[(address + 1) * 2 - (address + 1) % 8] + dump[(address + 2) * 2 - (address + 2) % 8];		
 	}
 
+	
 	public String getMemory(int address) {
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
 		}
-		return dump[address * 2 - address % 8];
+		return dump[address * 2 - address % 8];		
 	}
 
-	@Override
 	public String toString() {
 		StringBuilder output = new StringBuilder();
 		int lineNumber = 0;
