@@ -31,7 +31,6 @@ public class ControlUnit implements Observer {
 //		System.out.println(memoryDump.fetch(this.PC));
 //		System.out.println(this.IR);
 //		System.out.println(String.format("%06X", this.IR));
-
 // 		Decode the instruction from IR.
 		Instruction decodedInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
 
@@ -56,8 +55,8 @@ public class ControlUnit implements Observer {
 			break;
 		case ("SW"):
 			executeSW();
+			break;
 		}
-
 		// Get data if needed.
 
 		// Execute the instruction.
