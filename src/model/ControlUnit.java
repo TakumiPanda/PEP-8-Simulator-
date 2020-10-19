@@ -3,7 +3,7 @@ package model;
 import java.util.Observable;
 import java.util.Observer;
 
-import model.instructionType.Add;
+import model.instructionType.*;
 import model.instructionType.Instruction;
 import model.MemoryDump;
 import utils.Converter;
@@ -25,6 +25,7 @@ public class ControlUnit implements Observer {
 		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
 
 		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
+
 		switch (currentInstruction.getOpcode()) {
 
 		case ("01110")://add
@@ -85,11 +86,17 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeSub(Instruction instruction) {
-
+		if (instruction.getRegister().contentEquals("000")){ //immediate
+			AR -= Integer.parseInt(Converter.binToHex(instruction.getOperand()),16);
+		} else if (instruction.getRegister().contentEquals("001")) { //direct
+			int hexVal = Integer.parseInt(Converter.binToHex(instruction.getOperand()),16);
+			AR -= Converter.hexToDecimal(memoryDump.getMemory(hexVal));
+		}
 	}
 
 	private void executeSW(Instruction instruction) {
-
+		String hexAddress = Converter.binToHex(instruction.getOperand());
+		memoryDump.setMemory(hexAddress,this.AR);
 	}
 
 	@Override
