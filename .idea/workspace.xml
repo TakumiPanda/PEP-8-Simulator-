@@ -21,6 +21,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ece2555e-42e2-4028-a00c-6b2886aad44b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/ControlUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ControlUnit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Add.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Add.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/CharIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/CharIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/CharOut.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/CharOut.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Instruction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Instruction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/LW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/LW.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/SW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/SW.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Stop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Stop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Sub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Sub.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

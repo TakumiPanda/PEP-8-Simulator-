@@ -14,5 +14,6 @@ public interface Instruction {
 	 * @return the opcode.
 	 */
 	String getOpcode();
-
+	String getOperand();
+	String getRegister();
 }
