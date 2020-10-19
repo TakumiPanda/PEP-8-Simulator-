@@ -1,5 +1,7 @@
 package model;
 
+import utils.Converter;
+
 public class MemoryDump {
 	public String[] dump;
 	private static final int SIZE = 131073;
@@ -75,6 +77,13 @@ public class MemoryDump {
 		return dump[address * 2 - address % 8];		
 	}
 
+	public void setMemory(String hexAddress, int value) {
+		int hexA = Converter.hexToDecimal(hexAddress);
+		String hexVal = Integer.toHexString(value);
+		
+		dump[hexA * 2 - hexA % 8] = hexVal;
+	}
+	
 	public String toString() {
 		StringBuilder output = new StringBuilder();
 		int lineNumber = 0;
