@@ -25,6 +25,8 @@ public class ControlUnit implements Observer {
 		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
 
 		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
+
+		Converter converter = new Converter();
 		switch (currentInstruction.getOpcode()) {
 
 		case ("01110")://add
@@ -52,7 +54,7 @@ public class ControlUnit implements Observer {
 			break;
 
 		case ("11100")://sw
-			executeSW(currentInstruction);
+			executeSW(currentInstruction,converter);
 		}
 
 		// Get data if needed.
@@ -88,8 +90,9 @@ public class ControlUnit implements Observer {
 
 	}
 
-	private void executeSW(Instruction instruction) {
-
+	private void executeSW(Instruction instruction,Converter converter) {
+		String hexAddress = converter.binToHex(instruction.getOperand());
+		memoryDump.setMemory(hexAddress,this.AR);
 	}
 
 	@Override
