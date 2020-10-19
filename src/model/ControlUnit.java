@@ -78,7 +78,8 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeLW(Instruction instruction) {
-
+		int address = Converter.binToDecimal(instruction.getOperand());
+		this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
 
 	}
 
