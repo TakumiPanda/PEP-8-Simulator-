@@ -2,7 +2,7 @@
 Implement a simplified application that closely models the virtual machine software, PEP8.
 
 ## Getting Started
-The purpose of this project is to learn about Software Development in a professional environment. Given that the client requests for an application that implements a simulator application for the PEP8 virtual machine. It should have similar graphical user interfaces and should support the described subset of the computer functionality.
+The purpose of this project is to learn about Software Development in a professional environment. Given that the client requests for an application that implements a simulator application for the PEP8 virtual machine, it should have similar graphical user interfaces and should support the described subset of the computer functionality.
 
 ## Prequisites
   * Python
