@@ -25,8 +25,11 @@ Download and unzip this repository.
   
 ## Authors
 th3linja
+
 garret123h
+
 GH-H 
+
 HermieBaylon
 
 ## Acknowledgments
