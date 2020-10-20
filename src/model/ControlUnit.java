@@ -14,7 +14,6 @@ public class ControlUnit implements Observer {
 	private int PC = 0x000;
 	private int AR = 0x000;
 	private int IR = 0x000000;
-	private static final int PC_COUNTER = 0x0001;
 	
 	private Decode decode = new Decode();
 	private ArithmeticLogicUnit ALU = new ArithmeticLogicUnit();

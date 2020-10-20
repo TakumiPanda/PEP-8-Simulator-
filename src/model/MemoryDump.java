@@ -7,6 +7,7 @@ public class MemoryDump {
 	public String[] charDump;
 	private static final int SIZE = 65536;
 
+	// create a memory dump obj. init. w/ a size restraint
 	public MemoryDump() {
 		this.hexDump = new String[SIZE];
 		this.charDump = new String[SIZE];
@@ -26,7 +27,8 @@ public class MemoryDump {
 			}
 		}
 	}
-
+	
+	// update memory object after user types in object code (hex)
 	public void updateMemory(String objCode) {
 		int objCodeIndex = 0;
 		int decodeIndex = 0;
@@ -52,6 +54,7 @@ public class MemoryDump {
 		}
 	}
 	
+	//fetches 24bits from the starting memory address
 	public String fetch(int address) {
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
@@ -60,7 +63,7 @@ public class MemoryDump {
 		return hexDump[address] + hexDump[address+1] + hexDump[address+2];
 	}
 
-	
+	//gets 8 bits from the starting memory address
 	public String getMemory(int address) {
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
@@ -69,6 +72,7 @@ public class MemoryDump {
 		return hexDump[address];
 	}
 
+	//sets 8 bits to the given memory address
 	public void setMemory(String hexAddress, int value) {
 		int hexA = Converter.hexToDecimal(hexAddress);
 		String hexVal = Integer.toHexString(value);
@@ -78,6 +82,7 @@ public class MemoryDump {
 		charDump[hexA] = String.valueOf((char) (int) Integer.valueOf(hexVal, 16));
 	}
 	
+	//modify print statement to replicate PEP8 visuals
 	public String toString() {
 		StringBuilder output = new StringBuilder();
 		int lineNumber = 0;
@@ -104,6 +109,7 @@ public class MemoryDump {
 		return output.toString();
 	}
 
+	// tests
 	public static void main(String[] args) {
 		MemoryDump m = new MemoryDump();
 
