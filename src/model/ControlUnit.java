@@ -9,10 +9,9 @@ import view.SimulatorWindow;
 
 public class ControlUnit implements Observer {
 
-	private int PC = 0x000;
-	private int AR = 0x000;
+	private int PC = 0x0000;
+	private int AR = 0x0000;
 	private int IR = 0x000000;
-	private static final int PC_COUNTER = 0x0001;
 	private char charIn = '/';
 	private myRunnable runnable = new myRunnable();
 	private Thread waitThread = new Thread(runnable);
@@ -29,7 +28,7 @@ public class ControlUnit implements Observer {
 
 	public void startCycle() throws InterruptedException {
 		this.IR = Integer.parseInt(memoryDump.fetch(this.PC), 16);
-
+		this.PC += 0x0003;
 		boolean stop = false;
 
 		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
@@ -69,7 +68,7 @@ public class ControlUnit implements Observer {
 		// Execute the instruction.
 
 		// PC must be updated to hold the address of the next instruction to be executed
-		PC++;
+
 		if (!stop) {
 			startCycle();
 		}
@@ -77,7 +76,6 @@ public class ControlUnit implements Observer {
 
 	private void executeAdd(Instruction instruction) {
 		this.AR += Integer.parseInt(Converter.binToHex(instruction.getOperand()), 16);
-		PC += 2;
 	}
 
 	private void executeCharIn(Instruction instruction) throws InterruptedException {
@@ -86,17 +84,24 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeCharOut(Instruction instruction) {
-
-		String operand = instruction.getOperand();
-		char character = (char) Converter.binToDecimal(operand);
-		window.setTerminalArea(window.getTerminalArea() + "" + character);
-		PC += 2;
+		if (instruction.getRegister().contentEquals("00")) { // immediate
+			String operand = instruction.getOperand();
+			char character = (char) Converter.binToDecimal(operand);
+			window.setTerminalArea(window.getTerminalArea() + "" + character);
+		} else if (instruction.getRegister().contentEquals("01")) { // direct
+			int operand = Converter.binToDecimal(instruction.getOperand());
+			char character = (char) Converter.hexToDecimal(memoryDump.getMemory(operand));
+			window.setTerminalArea(window.getTerminalArea() + "" + character);
+		}
 	}
 
 	private void executeLW(Instruction instruction) {
-		int address = Converter.binToDecimal(instruction.getOperand());
-		this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
-
+		if (instruction.getRegister().contentEquals("00")) { // immediate
+			this.AR =  Converter.binToDecimal(instruction.getOperand());
+		} else if (instruction.getRegister().contentEquals("01")) { // direct
+			int address = Converter.binToDecimal(instruction.getOperand());
+			this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
+		}
 	}
 
 	private void executeSub(Instruction instruction) {

@@ -1,6 +1,7 @@
 package controller;
 
 import model.ControlUnit;
+import utils.Converter;
 import view.SimulatorWindow;
 
 import javax.swing.*;
@@ -30,16 +31,32 @@ public class Main implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-
 		String objectCode = window.getObjectCodeArea().getText();
-		controlUnit.memoryDump.updateMemory(objectCode);
-		window.getMemoryArea().setText(controlUnit.memoryDump.toString());
-		window.getMemoryArea().setCaretPosition(0);
-		try {
-			controlUnit.startCycle();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		String binaryCode = window.getBinCodeArea().getText();
+		if(binaryCode.equals("") || binaryCode == null) {
+			binaryCode = Converter.hexToBinary(objectCode);
+			window.setBinCodeArea(binaryCode);
+			controlUnit.memoryDump.updateMemory(objectCode);
+			window.getMemoryArea().setText(controlUnit.memoryDump.toString());
+			window.getMemoryArea().setCaretPosition(0);
+			try {
+				controlUnit.startCycle();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} else {
+			objectCode = Converter.binToHex(binaryCode);
+			window.setObjectCodeArea(objectCode);
+			controlUnit.memoryDump.updateMemory(objectCode);
+			window.getMemoryArea().setText(controlUnit.memoryDump.toString());
+			window.getMemoryArea().setCaretPosition(0);
+			try {
+				controlUnit.startCycle();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		
 
 		// Update the GUI components when fetch-execute cycle is finished.
 		window.setMemoryDump(controlUnit.memoryDump);

@@ -23,9 +23,9 @@ public class SimulatorWindow extends Observable {
 	private JButton executeButton = new JButton();
 
 	/* Window components for the source code window. */
-	private JLabel sourceCodeText = new JLabel("Source Code");
-	private JTextArea sourceCodeArea = new JTextArea();
-	private JPanel sourceCodePanel = new JPanel();
+	private JLabel binCodeText = new JLabel("Binary Code");
+	private JTextArea binCodeArea = new JTextArea();
+	private JPanel binCodePanel = new JPanel();
 
 	/* Window components for the object code window. */
 	private JLabel objectCodeText = new JLabel("Object Code");
@@ -99,13 +99,13 @@ public class SimulatorWindow extends Observable {
 	}
 
 	private JPanel buildSourceCodePanel() {
-		sourceCodePanel.setLayout(new BorderLayout());
-		sourceCodePanel.setPreferredSize(new Dimension(300, 200));
-		sourceCodePanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		sourceCodeText.setBorder(BorderFactory.createLineBorder(Color.black));
-		sourceCodePanel.add(sourceCodeText, BorderLayout.NORTH);
-		sourceCodePanel.add(sourceCodeArea, BorderLayout.CENTER);
-		return sourceCodePanel;
+		binCodePanel.setLayout(new BorderLayout());
+		binCodePanel.setPreferredSize(new Dimension(300, 200));
+		binCodePanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		binCodeText.setBorder(BorderFactory.createLineBorder(Color.black));
+		binCodePanel.add(binCodeText, BorderLayout.NORTH);
+		binCodePanel.add(binCodeArea, BorderLayout.CENTER);
+		return binCodePanel;
 	}
 
 	private JPanel buildObjectCodePanel() {
@@ -146,9 +146,17 @@ public class SimulatorWindow extends Observable {
 	public JTextArea getObjectCodeArea() {
 		return objectCodeArea;
 	}
+	
+	public void setObjectCodeArea(String objCode) {
+		this.objectCodeArea.setText(objCode);
+	}
 
-	public JTextArea getSourceCodeArea() {
-		return sourceCodeArea;
+	public JTextArea getBinCodeArea() {
+		return binCodeArea;
+	}
+	
+	public void setBinCodeArea(String binCode) {
+		this.binCodeArea.setText(binCode);
 	}
 
 	public JTextArea getMemoryArea() {
