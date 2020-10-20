@@ -1,13 +1,11 @@
 package model;
-
-import model.instructionType.CharIn;
 import model.instructionType.Instruction;
+import java.util.Observable;
+import java.util.Observer;
 import utils.Converter;
 import utils.Decode;
 import view.SimulatorWindow;
 
-import java.util.Observable;
-import java.util.Observer;
 
 public class ControlUnit implements Observer {
 
