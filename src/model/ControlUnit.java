@@ -1,21 +1,16 @@
 package model;
 import model.instructionType.Instruction;
-import java.util.Observable;
-import java.util.Observer;
 import utils.Converter;
 import utils.Decode;
 import view.SimulatorWindow;
 
 
-public class ControlUnit implements Observer {
+public class ControlUnit {
 
-	private int PC = 0x000;
-	private int AR = 0x000;
-	private int IR = 0x000000;
+	private int PC;
+	private int AR;
+	private int IR;
 	private static final int PC_COUNTER = 0x0001;
-	private char charIn = '/';
-	private myRunnable runnable = new myRunnable();
-	private Thread waitThread = new Thread(runnable);
 	SimulatorWindow window;
 
 
@@ -25,6 +20,9 @@ public class ControlUnit implements Observer {
 	private Instruction currentInstruction;
 
 	public ControlUnit(SimulatorWindow window) {
+		PC = 0x000;
+		AR = 0x000;
+		IR = 0x000000;
 		this.window = window;
 	}
 	public void startCycle() throws InterruptedException {
@@ -45,6 +43,7 @@ public class ControlUnit implements Observer {
 			break;
 
 		case ("01010")://char out
+			System.out.println("printing");
 			executeCharOut(currentInstruction);
 			break;
 
@@ -64,10 +63,6 @@ public class ControlUnit implements Observer {
 			executeSW(currentInstruction);
 		}
 
-		// Get data if needed.
-
-		// Execute the instruction.
-
 		// PC must be updated to hold the address of the next instruction to be executed
 		PC++;
 		if (!stop) {
@@ -82,7 +77,6 @@ public class ControlUnit implements Observer {
 
 	private void executeCharIn(Instruction instruction) throws InterruptedException {
 		//Wait for a character to be pressed in the terminal window
-		waitThread.start();
 	}
 
 	private void executeCharOut(Instruction instruction) {
@@ -91,11 +85,11 @@ public class ControlUnit implements Observer {
 		window.setTerminalArea(window.getTerminalArea() + "" + character);
 		PC += 2;
 	}
+	//500048 500065 50006C 50006C 50006F 00
 
 	private void executeLW(Instruction instruction) {
 		int address = Converter.binToDecimal(instruction.getOperand());
 		this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
-
 	}
 
 	private void executeSub(Instruction instruction) {
@@ -110,27 +104,5 @@ public class ControlUnit implements Observer {
 	private void executeSW(Instruction instruction) {
 		String hexAddress = Converter.binToHex(instruction.getOperand());
 		memoryDump.setMemory(hexAddress,this.AR);
-	}
-
-
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg != null) {
-			charIn = ((String) arg).charAt(0);
-			waitThread.notify();
-		}
-	}
-}
-
-
-class myRunnable implements Runnable {
-	@Override
-	public void run() {
-		synchronized(this) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 	}
 }

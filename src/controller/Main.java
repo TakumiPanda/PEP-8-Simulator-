@@ -20,7 +20,6 @@ public class Main implements Observer {
 		window = new SimulatorWindow(new ControlUnit(window).memoryDump);
 		controlUnit = new ControlUnit(window);
 		window.addObserver(this);
-		window.addObserver(controlUnit);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,12 +28,12 @@ public class Main implements Observer {
 	}
 	@Override
 	public void update(Observable o, Object arg) {
-
 		String objectCode = window.getObjectCodeArea().getText();
 		controlUnit.memoryDump.updateMemory(objectCode);
 		window.getMemoryArea().setText(controlUnit.memoryDump.toString());
 		window.getMemoryArea().setCaretPosition(0);
 		try {
+			window.reset();
 			controlUnit.startCycle();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

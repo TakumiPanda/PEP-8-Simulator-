@@ -59,12 +59,9 @@ public class SimulatorWindow extends Observable {
 		Image img2 = ImageIO.read(new FileInputStream("resources/loader_resize.png"));
 		loaderButton.setIcon(new ImageIcon(img2));
 
-		executeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setChanged();
-				notifyObservers();
-			}
+		executeButton.addActionListener(e -> {
+			setChanged();
+			notifyObservers();
 		});
 
 		terminalArea.addKeyListener(new KeyAdapter() {
@@ -179,5 +176,10 @@ public class SimulatorWindow extends Observable {
 		memoryPanel.add(scroll, BorderLayout.CENTER);
 		memoryPanel.setVisible(true);
 		return memoryPanel;
+	}
+
+	public void reset() {
+		objectCodeArea.setText("");
+		terminalArea.setText("");
 	}
 }
