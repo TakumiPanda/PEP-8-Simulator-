@@ -1,4 +1,5 @@
 package model;
+
 import model.instructionType.Instruction;
 import java.util.Observable;
 import java.util.Observer;
@@ -6,13 +7,12 @@ import utils.Converter;
 import utils.Decode;
 import view.SimulatorWindow;
 
-
 public class ControlUnit implements Observer {
 
 	private int PC = 0x000;
 	private int AR = 0x000;
 	private int IR = 0x000000;
-
+	private static final int PC_COUNTER = 0x0001;
 	private char charIn = '/';
 	private myRunnable runnable = new myRunnable();
 	private Thread waitThread = new Thread(runnable);
@@ -26,42 +26,41 @@ public class ControlUnit implements Observer {
 	public ControlUnit(SimulatorWindow window) {
 		this.window = window;
 	}
+
 	public void startCycle() throws InterruptedException {
-		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
-		this.PC+=3;
-		
+		this.IR = Integer.parseInt(memoryDump.fetch(this.PC), 16);
+
 		boolean stop = false;
 
 		currentInstruction = decode.decodeInstruction(String.format("%06X", this.IR));
-		
+
 		switch (currentInstruction.getOpcode()) {
 
-		case ("01110")://add
+		case ("01110"):// add
 			executeAdd(currentInstruction);
 			break;
 
-		case ("01001")://char in
+		case ("01001"):// char in
 			executeCharIn(currentInstruction);
 			break;
 
-		case ("01010")://char out
-			System.out.println("Char out");
+		case ("01010"):// char out
 			executeCharOut(currentInstruction);
 			break;
 
-		case ("11000")://load
+		case ("11000"):// load
 			executeLW(currentInstruction);
 			break;
 
-		case ("00000")://stop
+		case ("00000"):// stop
 			stop = true;
 			break;
 
-		case ("10000")://sub
+		case ("10000"):// sub
 			executeSub(currentInstruction);
 			break;
 
-		case ("11100")://sw
+		case ("11100"):// sw
 			executeSW(currentInstruction);
 		}
 
@@ -70,7 +69,7 @@ public class ControlUnit implements Observer {
 		// Execute the instruction.
 
 		// PC must be updated to hold the address of the next instruction to be executed
-
+		PC++;
 		if (!stop) {
 			startCycle();
 		}
@@ -78,51 +77,41 @@ public class ControlUnit implements Observer {
 
 	private void executeAdd(Instruction instruction) {
 		this.AR += Integer.parseInt(Converter.binToHex(instruction.getOperand()), 16);
+		PC += 2;
 	}
 
 	private void executeCharIn(Instruction instruction) throws InterruptedException {
-		//Wait for a character to be pressed in the terminal window
+		// Wait for a character to be pressed in the terminal window
 		waitThread.start();
 	}
 
 	private void executeCharOut(Instruction instruction) {
-		System.out.println(instruction.getRegister().contentEquals("000"));
-		if (instruction.getRegister().contentEquals("000")){ // immediate
-			System.out.println("True");
-			String operand = instruction.getOperand();
-			char character = (char)Converter.binToDecimal(operand);
-			window.setTerminalArea(window.getTerminalArea() + "" + character);
-			
-		} else if (instruction.getRegister().contentEquals("001")) { //direct
-			int operand = Converter.binToDecimal(instruction.getOperand());
-			char character = (char)Converter.hexToDecimal(memoryDump.getMemory(operand));
-			window.setTerminalArea(window.getTerminalArea() + "" + character);
-		}
+
+		String operand = instruction.getOperand();
+		char character = (char) Converter.binToDecimal(operand);
+		window.setTerminalArea(window.getTerminalArea() + "" + character);
+		PC += 2;
 	}
 
 	private void executeLW(Instruction instruction) {
-		if (instruction.getRegister().contentEquals("000")){ //immediate
-			this.AR = Converter.binToDecimal(instruction.getOperand());
-		} else if (instruction.getRegister().contentEquals("001")) { //direct
-			int address = Converter.binToDecimal(instruction.getOperand());
-			this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
-		}
+		int address = Converter.binToDecimal(instruction.getOperand());
+		this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
+
 	}
 
 	private void executeSub(Instruction instruction) {
-		if (instruction.getRegister().contentEquals("000")){ //immediate
-			AR -= Integer.parseInt(Converter.binToHex(instruction.getOperand()),16);
-		} else if (instruction.getRegister().contentEquals("001")) { //direct
-			int hexVal = Integer.parseInt(Converter.binToHex(instruction.getOperand()),16);
+		if (instruction.getRegister().contentEquals("00")) { // immediate
+			AR -= Integer.parseInt(Converter.binToHex(instruction.getOperand()), 16);
+		} else if (instruction.getRegister().contentEquals("01")) { // direct
+			int hexVal = Integer.parseInt(Converter.binToHex(instruction.getOperand()), 16);
 			AR -= Converter.hexToDecimal(memoryDump.getMemory(hexVal));
 		}
 	}
 
 	private void executeSW(Instruction instruction) {
 		String hexAddress = Converter.binToHex(instruction.getOperand());
-		memoryDump.setMemory(hexAddress,this.AR);
+		memoryDump.setMemory(hexAddress, this.AR);
 	}
-
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -133,11 +122,10 @@ public class ControlUnit implements Observer {
 	}
 }
 
-
 class myRunnable implements Runnable {
 	@Override
 	public void run() {
-		synchronized(this) {
+		synchronized (this) {
 			try {
 				wait();
 			} catch (InterruptedException e) {

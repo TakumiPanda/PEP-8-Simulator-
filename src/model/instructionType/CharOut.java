@@ -20,7 +20,7 @@ public class CharOut implements Instruction {
 
 	public CharOut(String myOpcode, String myRd, String operandSpecifier) {
 		this.myRd = myRd;
-		this.myOperand= operandSpecifier;
+		this.myOperand = operandSpecifier;
 		this.myOpcode = myOpcode;
 	}
 
@@ -28,10 +28,12 @@ public class CharOut implements Instruction {
 	public String getOpcode() {
 		return myOpcode;
 	}
+
 	@Override
 	public String getOperand() {
 		return myOperand;
 	}
+
 	@Override
 	public String getRegister() {
 		return myRd;

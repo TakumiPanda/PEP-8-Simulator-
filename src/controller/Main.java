@@ -27,6 +27,7 @@ public class Main implements Observer {
 		frame.setVisible(true);
 		frame.pack();
 	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 
@@ -40,7 +41,7 @@ public class Main implements Observer {
 			e.printStackTrace();
 		}
 
-		//Update the GUI components when fetch-execute cycle is finished.
+		// Update the GUI components when fetch-execute cycle is finished.
 		window.setMemoryDump(controlUnit.memoryDump);
 
 	}

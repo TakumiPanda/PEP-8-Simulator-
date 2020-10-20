@@ -125,11 +125,11 @@ public class SimulatorWindow extends Observable {
 		cpuPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		cpuArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		cpuPanel.add(cpuTextField, BorderLayout.NORTH);
-		
+
 		cpuPanel.add(new JLabel("Program Counter: "), BorderLayout.CENTER);
 		cpuPanel.add(new JTextArea(), BorderLayout.CENTER);
-		//cpuPanel.add(cpuArea, BorderLayout.CENTER);
-		
+		// cpuPanel.add(cpuArea, BorderLayout.CENTER);
+
 		return cpuPanel;
 	}
 
@@ -158,9 +158,11 @@ public class SimulatorWindow extends Observable {
 	public void setMemoryDump(MemoryDump updatedMemory) {
 		this.memoryDump = updatedMemory;
 	}
+
 	public void setTerminalArea(String output) {
 		terminalArea.setText(output);
 	}
+
 	public String getTerminalArea() {
 		return terminalArea.getText();
 	}

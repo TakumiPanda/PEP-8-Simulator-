@@ -1,15 +1,14 @@
 package utils;
 
 /**
- * this class contains methods convert between
- * hex <---> binary
- * binary <---> decimal
- * hex ---> decimal
+ * this class contains methods convert between hex <---> binary binary <--->
+ * decimal hex ---> decimal
  */
 public class Converter {
 
 	/**
 	 * binary---> hexDecimal
+	 * 
 	 * @param binary
 	 * @return hexDecimal
 	 */
@@ -35,6 +34,7 @@ public class Converter {
 
 	/**
 	 * hexDecimal ---> decimal
+	 * 
 	 * @param hex
 	 * @return Decimal
 	 */
@@ -44,15 +44,17 @@ public class Converter {
 
 	/**
 	 * binary---> Decimal
+	 * 
 	 * @param bin
 	 * @return Decimal
 	 */
-	public static int binToDecimal(String bin){
-		return Integer.parseInt(bin,2);
+	public static int binToDecimal(String bin) {
+		return Integer.parseInt(bin, 2);
 	}
 
 	/**
 	 * hexDecimal ---> Binary
+	 * 
 	 * @param hex
 	 * @return binary
 	 */
@@ -75,10 +77,11 @@ public class Converter {
 
 	/**
 	 * decimal ---> binary
+	 * 
 	 * @param decimal
 	 * @return binary
 	 */
-	public static String decimalToBinary(int decimal){
+	public static String decimalToBinary(int decimal) {
 		return Integer.toBinaryString(decimal);
 	}
 }
