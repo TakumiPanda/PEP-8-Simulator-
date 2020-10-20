@@ -4,6 +4,7 @@ import model.MemoryDump;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -38,9 +39,12 @@ public class SimulatorWindow extends Observable {
 	private JLabel cpuTextField = new JLabel("CPU");
 
 	/* Terminal window components. */
-	private JTextArea terminalArea = new JTextArea();
-	private JLabel terminalTextField = new JLabel("Input/Output");
-	private JPanel terminalPanel = new JPanel();
+	private JTextArea outArea = new JTextArea();
+	private JLabel outTextField = new JLabel("Output");
+	private JPanel outPanel = new JPanel();
+	private JTextArea inArea = new JTextArea();
+	private JLabel inTextField = new JLabel("Input");
+	private JPanel inPanel = new JPanel();
 
 	/* Memory Dump window components. */
 	private JTextArea memoryArea = new JTextArea();
@@ -67,22 +71,23 @@ public class SimulatorWindow extends Observable {
 			}
 		});
 
-		terminalArea.addKeyListener(new KeyAdapter() {
+		inArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER && terminalArea.getText().length() == 1) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER && inArea.getText().length() == 1) {
 					setChanged();
-					notifyObservers(terminalArea.getText());
+					notifyObservers(inArea.getText());
 				}
 			}
 		});
 
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildButtonPanel(), buildSourceCodePanel());
 		JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitPane, buildObjectCodePanel());
-		JSplitPane splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildCpuWindow(), buildTerminalWindow());
-		JSplitPane splitPane4 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane2, splitPane3);
-		JSplitPane splitPane5 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane4, buildMemoryDumpWindow());
-		mainPanel.add(splitPane5);
+		JSplitPane splitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildInWindow(), buildOutWindow());
+		JSplitPane splitPane4 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buildCpuWindow(), splitPane3);
+		JSplitPane splitPane5 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane2, splitPane4);
+		JSplitPane splitPane6 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane5, buildMemoryDumpWindow());
+		mainPanel.add(splitPane6);
 
 	}
 
@@ -124,23 +129,82 @@ public class SimulatorWindow extends Observable {
 		cpuPanel.setPreferredSize(new Dimension(300, 200));
 		cpuPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		cpuArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		cpuTextField.setBorder(blackline);
 		cpuPanel.add(cpuTextField, BorderLayout.NORTH);
+		
+		JPanel cpuInfoPanel = new JPanel();
+		cpuInfoPanel.setLayout(new GridLayout(5,2));
+		
+		JLabel pc = new JLabel("Program Counter (PC): ");
+		pc.setBackground(Color.WHITE);
+		pc.setOpaque(true);
+		pc.setHorizontalAlignment(SwingConstants.RIGHT);
+		JLabel ar = new JLabel("Accumulator (AR): ");
+		ar.setBackground(Color.WHITE);
+		ar.setOpaque(true);
+		ar.setHorizontalAlignment(SwingConstants.RIGHT);
+		JLabel ir = new JLabel("Immediate Register (IR): ");
+		ir.setBackground(Color.WHITE);
+		ir.setOpaque(true);
+		ir.setHorizontalAlignment(SwingConstants.RIGHT);
+		JLabel is = new JLabel("Instruction Specifier: ");
+		is.setBackground(Color.WHITE);
+		is.setOpaque(true);
+		is.setHorizontalAlignment(SwingConstants.RIGHT);
+		JLabel os = new JLabel("Operand Specifier: ");
+		os.setBackground(Color.WHITE);
+		os.setOpaque(true);
+		os.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		JTextField pcText = new JTextField();
+		pcText.setText("123\n123\n123\n123");
+		pcText.setSize(1,1);
+		pcText.setEditable(false);
+		JTextField arText = new JTextField();
+		arText.setText("123");
+		arText.setEditable(false);
+		JTextField irText = new JTextField();
+		irText.setEditable(false);
+		JTextField isText = new JTextField();
+		isText.setEditable(false);
+		JTextField osText = new JTextField();
+		osText.setEditable(false);
+		
+		cpuInfoPanel.add(pc);
+		cpuInfoPanel.add(pcText);
+		cpuInfoPanel.add(ar);
+		cpuInfoPanel.add(arText);
+		cpuInfoPanel.add(ir);
+		cpuInfoPanel.add(irText);
+		cpuInfoPanel.add(is);
+		cpuInfoPanel.add(isText);
+		cpuInfoPanel.add(os);
+		cpuInfoPanel.add(osText);
 
-		cpuPanel.add(new JLabel("Program Counter: "), BorderLayout.CENTER);
-		cpuPanel.add(new JTextArea(), BorderLayout.CENTER);
-		// cpuPanel.add(cpuArea, BorderLayout.CENTER);
-
+		cpuPanel.add(cpuInfoPanel, BorderLayout.CENTER);
+		
 		return cpuPanel;
 	}
 
-	private JPanel buildTerminalWindow() {
-		terminalPanel.setLayout(new BorderLayout());
-		terminalPanel.setPreferredSize(new Dimension(300, 200));
-		terminalPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		terminalArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		terminalPanel.add(terminalTextField, BorderLayout.NORTH);
-		terminalPanel.add(terminalArea, BorderLayout.CENTER);
-		return terminalPanel;
+	private JPanel buildInWindow() {
+		inPanel.setLayout(new BorderLayout());
+		inPanel.setPreferredSize(new Dimension(300, 100));
+		inPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		inArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		inPanel.add(inTextField, BorderLayout.NORTH);
+		inPanel.add(inArea, BorderLayout.CENTER);
+		return inPanel;
+	}
+	
+	private JPanel buildOutWindow() {
+		outPanel.setLayout(new BorderLayout());
+		outPanel.setPreferredSize(new Dimension(300, 100));
+		outPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		outArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		outPanel.add(outTextField, BorderLayout.NORTH);
+		outPanel.add(outArea, BorderLayout.CENTER);
+		return outPanel;
 	}
 
 	public JTextArea getObjectCodeArea() {
@@ -168,11 +232,11 @@ public class SimulatorWindow extends Observable {
 	}
 
 	public void setTerminalArea(String output) {
-		terminalArea.setText(output);
+		outArea.setText(output);
 	}
 
 	public String getTerminalArea() {
-		return terminalArea.getText();
+		return inArea.getText();
 	}
 
 	private JPanel buildMemoryDumpWindow() {
