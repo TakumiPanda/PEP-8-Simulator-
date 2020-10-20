@@ -7,19 +7,6 @@ import utils.Transformer;
  * Program Counter
  */
 public class ArithmeticLogicUnit {
-	private int[] registers;
-
-	public ArithmeticLogicUnit() {
-		registers = new int[6];
-	}
-
-	public int[] getRegisters() {
-		return registers;
-	}
-
-	public int getPC() {
-		return registers[0];
-	}
 
 	public int performAddition(int num1, int num2) {
 		int sum = Transformer.transformBinaryToDecimal(num1) + Transformer.transformBinaryToDecimal(num2);

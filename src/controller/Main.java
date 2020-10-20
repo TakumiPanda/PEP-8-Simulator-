@@ -11,14 +11,16 @@ import java.util.Observer;
 
 public class Main implements Observer {
 
-	private ControlUnit controlUnit = new ControlUnit();
+	private ControlUnit controlUnit;
 	private SimulatorWindow window;
 
 	public Main() throws IOException {
 		JFrame frame = new JFrame();
 		frame.setBackground(Color.BLACK);
-		window = new SimulatorWindow(controlUnit.memoryDump);
+		window = new SimulatorWindow(new ControlUnit(window).memoryDump);
+		controlUnit = new ControlUnit(window);
 		window.addObserver(this);
+		window.addObserver(controlUnit);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,11 +29,16 @@ public class Main implements Observer {
 	}
 	@Override
 	public void update(Observable o, Object arg) {
+
 		String objectCode = window.getObjectCodeArea().getText();
 		controlUnit.memoryDump.updateMemory(objectCode);
 		window.getMemoryArea().setText(controlUnit.memoryDump.toString());
 		window.getMemoryArea().setCaretPosition(0);
-		controlUnit.startCycle();
+		try {
+			controlUnit.startCycle();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		//Update the GUI components when fetch-execute cycle is finished.
 		window.setMemoryDump(controlUnit.memoryDump);
