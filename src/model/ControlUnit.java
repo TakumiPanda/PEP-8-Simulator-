@@ -75,12 +75,16 @@ public class ControlUnit implements Observer {
 	}
 
 	private void executeLW(Instruction instruction) {
-		int address = Converter.binToDecimal(instruction.getOperand());
-		this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
-
+		if (instruction.getRegister().contentEquals("000")){ //immediate
+			this.AR = Converter.binToDecimal(instruction.getOperand());
+		} else if (instruction.getRegister().contentEquals("001")) { //direct
+			int address = Converter.binToDecimal(instruction.getOperand());
+			this.AR = Converter.hexToDecimal(memoryDump.getMemory(address));
+		}
 	}
 
 	private void executeStop(Instruction instruction) {
+		
 	}
 
 	private void executeSub(Instruction instruction) {
