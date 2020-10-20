@@ -4,8 +4,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import model.instructionType.*;
-import model.instructionType.Instruction;
-import model.MemoryDump;
 import utils.Converter;
 import utils.Decode;
 
