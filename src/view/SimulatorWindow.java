@@ -1,6 +1,6 @@
 package view;
 
-import model.MemoryDump;
+import model.MemoryDumpImpl;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,7 +15,7 @@ public class SimulatorWindow extends Observable {
 
 	/* Main component. */
 	private JPanel mainPanel = new JPanel();
-	private MemoryDump memoryDump;
+	private MemoryDumpImpl memoryDump;
 
 	/* Components for the top container for the buttons. */
 	private JPanel buttonsPanel = new JPanel();
@@ -48,7 +48,7 @@ public class SimulatorWindow extends Observable {
 	private JPanel memoryPanel = new JPanel();
 	private JScrollPane scroll = new JScrollPane(memoryArea);
 
-	public SimulatorWindow(MemoryDump memory) throws IOException {
+	public SimulatorWindow(MemoryDumpImpl memory) throws IOException {
 		this.memoryDump = memory;
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.setBackground(Color.BLACK);
@@ -152,7 +152,7 @@ public class SimulatorWindow extends Observable {
 		return memoryArea;
 	}
 
-	public void setMemoryDump(MemoryDump updatedMemory) {
+	public void setMemoryDump(MemoryDumpImpl updatedMemory) {
 		this.memoryDump = updatedMemory;
 	}
 	public void setTerminalArea(String output) {
