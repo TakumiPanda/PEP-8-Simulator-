@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
+import static java.util.Map.entry;
 import java.util.Observable;
 
 public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
@@ -113,8 +115,53 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 	}
 
 	@Override
+	public void reset() {
+		objectCodeArea.setText("");
+		terminalArea.setText("");
+	}
+	@Override
 	public JPanel getMainPanel() {
 		return mainPanel;
+	}
+	@Override
+	public JTextArea getObjectCodeArea() {
+		return objectCodeArea;
+	}
+	@Override
+	public JTextArea getSourceCodeArea() {
+		return sourceCodeArea;
+	}
+	@Override
+	public JTextArea getMemoryArea() {
+		return memoryArea;
+	}
+	@Override
+	public void setMemoryDump(MemoryDumpImpl updatedMemory) {
+		this.memoryDump = updatedMemory;
+	}
+	@Override
+	public void setTerminalArea(String output) {
+		terminalArea.setText(output);
+	}
+	@Override
+	public String getTerminalArea() {
+		return terminalArea.getText();
+	}
+	@Override 
+	public Map<String, JTextField> getCPUComponents() {
+		return Map.ofEntries(
+			entry("N", nField),
+			entry("Z", zField),
+			entry("V", vField),
+			entry("C", cField),
+			entry("Accumulator", accumalatorField),
+			entry("Index Register", indexRegisterField),
+			entry("Stack Pointer", stackPointerField),
+			entry("Program Counter", programCounterField),
+			entry("Instruction Specifier", instructionSpecifierField),
+			entry("Operand Specifier", operandSpecifierField),
+			entry("Operand", operandField)
+		);
 	}
 
 	private JPanel buildButtonPanel() {
@@ -256,31 +303,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		terminalPanel.add(terminalArea, BorderLayout.CENTER);
 		return terminalPanel;
 	}
-	@Override
-	public JTextArea getObjectCodeArea() {
-		return objectCodeArea;
-	}
-	@Override
-	public JTextArea getSourceCodeArea() {
-		return sourceCodeArea;
-	}
-	@Override
-	public JTextArea getMemoryArea() {
-		return memoryArea;
-	}
-	@Override
-	public void setMemoryDump(MemoryDumpImpl updatedMemory) {
-		this.memoryDump = updatedMemory;
-	}
-	@Override
-	public void setTerminalArea(String output) {
-		terminalArea.setText(output);
-	}
-	@Override
-	public String getTerminalArea() {
-		return terminalArea.getText();
-	}
-
 	private JPanel buildMemoryDumpWindow() {
 		memoryArea.setText(memoryDump.toString());
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -295,11 +317,5 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		memoryPanel.add(scroll, BorderLayout.CENTER);
 		memoryPanel.setVisible(true);
 		return memoryPanel;
-	}
-
-	@Override
-	public void reset() {
-		objectCodeArea.setText("");
-		terminalArea.setText("");
 	}
 }
