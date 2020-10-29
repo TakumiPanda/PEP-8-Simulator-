@@ -3,6 +3,7 @@ package controller;
 import model.ControlUnitImpl;
 import model.MemoryDumpImpl;
 import view.SimulatorWindow;
+import view.SimulatorWindowImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,12 +17,12 @@ import java.util.Observer;
 public class Simulator implements Observer {
 
 	private ControlUnitImpl controlUnit;
-	private SimulatorWindow window;
+	private SimulatorWindowImpl window;
 
 	public Simulator() throws IOException {
 		JFrame frame = new JFrame();
 		frame.setBackground(Color.BLACK);
-		window = new SimulatorWindow((MemoryDumpImpl)new ControlUnitImpl(window).getMemoryDump());
+		window = new SimulatorWindowImpl((MemoryDumpImpl)new ControlUnitImpl(window).getMemoryDump());
 		controlUnit = new ControlUnitImpl(window);
 		window.addObserver(this);
 		frame.add(window.getMainPanel());
