@@ -2,7 +2,6 @@ package controller;
 
 import model.ControlUnitImpl;
 import model.MemoryDumpImpl;
-import view.SimulatorWindow;
 import view.SimulatorWindowImpl;
 
 import javax.swing.*;
@@ -25,14 +24,22 @@ public class Simulator implements Observer {
 		window = new SimulatorWindowImpl((MemoryDumpImpl)new ControlUnitImpl(window).getMemoryDump());
 		controlUnit = new ControlUnitImpl(window);
 		window.addObserver(this);
+		controlUnit.getALU().addObserver(this);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(3);
 		frame.setVisible(true);
 		frame.pack();
 	}
+
+
 	@Override
 	public void update(Observable o, Object arg) {
+		if (arg instanceof int[]) {
+			
+
+			return;
+		}
 		String objectCode = window.getObjectCodeArea().getText();
 		controlUnit.getMemoryDump().updateMemory(objectCode);
 		window.getMemoryArea().setText(controlUnit.getMemoryDump().toString());
