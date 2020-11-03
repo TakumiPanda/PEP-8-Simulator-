@@ -10,14 +10,15 @@ public class ControlUnitImpl implements ControlUnit {
 	private int AR;
 	private int IR;
 
+	private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
 	private SimulatorWindow window;
 	private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
 	private Instruction currentInstruction;
 
 	public ControlUnitImpl(SimulatorWindow window) {
-		PC = 0x000;
-		AR = 0x000;
-		IR = 0x000000;
+		PC = ALU.getPC();
+		AR = ALU.getAR();
+		IR = ALU.getIR();
 		this.window = window;
 	}
 	
@@ -63,9 +64,21 @@ public class ControlUnitImpl implements ControlUnit {
 
 		// PC must be updated to hold the address of the next instruction to be executed
 		PC++;
+
+		//Registers must be updated in the GUI Window.
+		int[] updatedRegisters = ALU.getRegisters();
+		updatedRegisters[0] = PC;
+		updatedRegisters[1] = IR;
+		updatedRegisters[2] = AR;
+		ALU.updateState(updatedRegisters);
+
 		if (!stop) {
 			startCycle();
 		}
+	}
+
+	public ArithmeticLogicUnitImpl getALU(){
+		return ALU;
 	}
 
 	public MemoryDump getMemoryDump() {
