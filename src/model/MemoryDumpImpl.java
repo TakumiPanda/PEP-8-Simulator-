@@ -5,6 +5,7 @@ import utils.Transformer;
 public class MemoryDumpImpl implements MemoryDump{
 	public String[] hexDump;
 	public String[] charDump;
+	private Hexadecimal hex;
 	private static final int SIZE = 65536;
 
 	public MemoryDumpImpl() {
@@ -49,16 +50,16 @@ public class MemoryDumpImpl implements MemoryDump{
 				decodeIndex++;
 			} catch (IllegalArgumentException e) {
 				System.out.println(e.getMessage());
-			}	
+			}
 		}
 	}
-	
+
 	@Override
 	public String fetch(int address) {
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
 		}
-		//return dump[address * 2 - address % 8] + dump[(address + 1) * 2 - (address + 1) % 8] + dump[(address + 2) * 2 - (address + 2) % 8];		
+		//return dump[address * 2 - address % 8] + dump[(address + 1) * 2 - (address + 1) % 8] + dump[(address + 2) * 2 - (address + 2) % 8];
 		return hexDump[address] + hexDump[address+1] + hexDump[address+2];
 	}
 
@@ -67,20 +68,20 @@ public class MemoryDumpImpl implements MemoryDump{
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
 		}
-		//return dump[address * 2 - address % 8];		
+		//return dump[address * 2 - address % 8];
 		return hexDump[address];
 	}
 
 	@Override
 	public void setMemory(String hexAddress, int value) {
-		int hexA = Transformer.hexToDecimal(hexAddress);
+		int hexA = Integer.parseInt(hex.get(hexAddress,0));
 		String hexVal = Integer.toHexString(value);
-		
+
 		//dump[hexA * 2 - hexA % 8] = hexVal;
 		hexDump[hexA] = hexVal;
 		charDump[hexA] = String.valueOf((char) (int) Integer.valueOf(hexVal, 16));
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder output = new StringBuilder();
