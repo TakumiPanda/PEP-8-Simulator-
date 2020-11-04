@@ -4,13 +4,6 @@ public class BinaryCalculator extends Calculator {
 	private int decimal2;
 	private int result;
 
-	public static void main(String[] args) {
-		BinaryCalculator c = new BinaryCalculator();
-		HexCalculator h = new HexCalculator();
-		String result = h.divide("190", "190");
-		System.out.println(result);
-	}
-
 	private void initializeDecimals(String a, String b) {
 		decimal1 = Integer.parseInt(a, 2);
 		decimal2 = Integer.parseInt(b, 2);
