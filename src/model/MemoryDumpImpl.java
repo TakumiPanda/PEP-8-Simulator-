@@ -1,7 +1,5 @@
 package model;
 
-import utils.Transformer;
-
 public class MemoryDumpImpl implements MemoryDump{
 	public String[] hexDump;
 	public String[] charDump;
