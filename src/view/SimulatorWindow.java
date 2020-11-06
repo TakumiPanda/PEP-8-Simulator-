@@ -28,6 +28,8 @@ public interface SimulatorWindow {
      */
     public Map<String, JTextField> getCPUComponents();
 
+    public void setCPUComponents(Map<String, JTextField> cpuComponents);
+
     /**
      * Resets the Object Code text box and Terminal text box.
      */
