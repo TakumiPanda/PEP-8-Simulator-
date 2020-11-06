@@ -1,3 +1,4 @@
+package model;
 
 public class BinaryCalculator extends Calculator {
 	private int decimal1;

@@ -1,3 +1,4 @@
+package model;
 
 public class HexCalculator extends Calculator {
 	private int decimal1;
@@ -36,7 +37,4 @@ public class HexCalculator extends Calculator {
 		result = decimal1 / decimal2;
 		return Integer.toHexString(result);
 	}
-
-
-
 }

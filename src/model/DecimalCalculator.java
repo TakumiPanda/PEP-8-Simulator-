@@ -1,3 +1,4 @@
+package model;
 
 public class DecimalCalculator extends Calculator {
 	private int decimal1;
