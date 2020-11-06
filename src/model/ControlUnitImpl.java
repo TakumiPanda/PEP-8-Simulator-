@@ -3,123 +3,125 @@ package model;
 import utils.Transformer;
 import view.SimulatorWindow;
 
-
 public class ControlUnitImpl implements ControlUnit {
 
-	private int PC;
-	private int AR;
-	private int IR;
+	private int PC = 0x000;
+	private int AR = 0x000;
+	private int IR = 0x000000;
+
+	private boolean stopProgram = false;
 
 	private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
 	private SimulatorWindow window;
-	private Binary bin;
-	private Decimal dec;
-	private Hexadecimal hex;
 	private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
-	private Instruction currentInstruction;
 
 	public ControlUnitImpl(SimulatorWindow window) {
-		PC = ALU.getPC();
-		AR = ALU.getAR();
-		IR = ALU.getIR();
 		this.window = window;
 	}
 
 	@Override
+	public void executeSingleInstruction(String instr) {
+		System.out.println("Executing single instruction");
+		Instruction instruction = Transformer.decodeInstruction(instr);
+		executeInstruction(instruction);
+	}
+
+	@Override
 	public void startCycle() throws InterruptedException {
-		this.IR = Integer.parseInt(memoryDump.fetch(this.PC),16);
+		this.IR = Integer.parseInt(memoryDump.fetch(this.PC), 16);
 
-		boolean stop = false;
+		Instruction currentInstruction = Transformer.decodeInstruction(memoryDump.fetch(this.PC));
 
-		currentInstruction = Transformer.decodeInstruction(String.format("%06X", this.IR));
+		executeInstruction(currentInstruction);
 
-		switch (currentInstruction.getOpcode()) {
-
-		case ("01110")://add
-			executeAdd(currentInstruction);
-			break;
-
-		case ("01001")://char in
-			executeCharIn(currentInstruction);
-			break;
-
-		case ("01010")://char out
-			executeCharOut(currentInstruction);
-			break;
-
-		case ("11000")://load
-			executeLW(currentInstruction);
-			break;
-
-		case ("00000")://stop
-			stop = true;
-			break;
-
-		case ("10000")://sub
-			executeSub(currentInstruction);
-			break;
-
-		case ("11100")://sw
-			executeSW(currentInstruction);
-			break;
-		default:
+		if (stopProgram == false) {
+			startCycle();
 		}
+	}
 
+	@Override
+	public Instruction getCurrentInstructionOperand() {
+		return Transformer.decodeInstruction(String.format("%06X", this.IR));
+	}
+
+	@Override
+	public ArithmeticLogicUnitImpl getALU() {
+		return ALU;
+	}
+
+	@Override
+	public MemoryDump getMemoryDump() {
+		return memoryDump;
+	}
+
+	private void executeInstruction(Instruction instruction) {
+		switch (instruction.getOpcode()) {
+			case ("01110"):// add
+				executeAdd(instruction);
+				break;
+			case ("01001"):// char in
+				executeCharIn(instruction);
+				break;
+			case ("01010"):// char out
+				executeCharOut(instruction);
+				break;
+			case ("11000"):// load
+				executeLW(instruction);
+				break;
+			case ("00000"):// stop
+				stopProgram = true;
+				break;
+			case ("10000"):// sub
+				executeSub(instruction);
+				break;
+			case ("11100"):// sw
+				executeSW(instruction);
+				break;
+			default:
+		}
 		// PC must be updated to hold the address of the next instruction to be executed
 		PC++;
 
-		//Registers must be updated in the GUI Window.
+		// Registers must be updated in the GUI Window.
 		int[] updatedRegisters = ALU.getRegisters();
 		updatedRegisters[0] = PC;
 		updatedRegisters[1] = IR;
 		updatedRegisters[2] = AR;
 		ALU.updateState(updatedRegisters);
-
-		if (!stop) {
-			startCycle();
-		}
 	}
 
-	public ArithmeticLogicUnitImpl getALU(){
-		return ALU;
+	private void executeAdd(Instruction instr) {
+		this.AR += Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+		PC += 2;
 	}
 
-	public MemoryDump getMemoryDump() {
-		return memoryDump;
+	private void executeCharIn(Instruction instr) {
+		// Wait for a character to be pressed in the terminal window
 	}
 
-	private void executeAdd(Instruction instruction) {
-		this.AR += Integer.parseInt(bin.get(instruction.getOperand(),0), 16);
-		PC+=2;
-	}
-
-	private void executeCharIn(Instruction instruction) throws InterruptedException {
-		//Wait for a character to be pressed in the terminal window
-	}
-
-	private void executeCharOut(Instruction instruction) {
-		String operand = instruction.getOperand();
-		char character = (char)Integer.parseInt(dec.get(operand,1));
+	private void executeCharOut(Instruction instr) {
+		String operand = instr.getOperand();
+		char character = (char) Transformer.binToDecimal(operand);
 		window.setTerminalArea(window.getTerminalArea() + "" + character);
 		PC += 2;
 	}
 
-	private void executeLW(Instruction instruction) {
-		int address = Integer.parseInt(dec.get(instruction.getOperand(),1));
-		this.AR = Integer.parseInt(hex.get(memoryDump.getMemory(address),0));
+	private void executeLW(Instruction instr) {
+		int address = Transformer.binToDecimal(instr.getOperand());
+		this.AR = Transformer.hexToDecimal(memoryDump.getMemory(address));
 	}
 
-	private void executeSub(Instruction instruction) {
-		if (instruction.getRegister().contentEquals("000")){ //immediate
-			AR -= Integer.parseInt(bin.get(instruction.getOperand(),0),16);
-		} else if (instruction.getRegister().contentEquals("001")) { //direct
-			int hexVal = Integer.parseInt(bin.get(instruction.getOperand(),0),16);
-			AR -= Integer.parseInt(hex.get(memoryDump.getMemory(hexVal),0));
+	private void executeSub(Instruction instr) {
+		if (instr.getRegister().contentEquals("000")) { // immediate
+			AR -= Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+		} else if (instr.getRegister().contentEquals("001")) { // direct
+			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+			AR -= Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
 		}
 	}
 
-	private void executeSW(Instruction instruction) {
-		String hexAddress = bin.get(instruction.getOperand(),0);
-		memoryDump.setMemory(hexAddress,this.AR);
+	private void executeSW(Instruction instr) {
+		String hexAddress = Transformer.binToHex(instr.getOperand());
+		memoryDump.setMemory(hexAddress, this.AR);
 	}
 }
