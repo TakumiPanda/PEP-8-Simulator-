@@ -13,10 +13,13 @@ import java.util.Map;
 import static java.util.Map.entry;
 import java.util.Observable;
 
-public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
+public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 
 	private static int PANEL_WIDTH = 400;
 	private static int PANEL_HEIGHT = 200;
+
+	/** Current instruction index used for single step operation */
+	private int currentInstructionIndex = 0;
 
 	/* Main component. */
 	private JPanel mainPanel = new JPanel();
@@ -50,7 +53,7 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 	private JLabel cLabel = new JLabel("C");
 	private JTextField cField = new JTextField();
 	private JLabel accumalatorLabel = new JLabel("Accumulator");
-	private JTextField accumalatorField = new JTextField(); 
+	private JTextField accumalatorField = new JTextField();
 	private JLabel indexRegisterLabel = new JLabel("Index Register");
 	private JTextField indexRegisterField = new JTextField();
 	private JLabel stackPointerLabel = new JLabel("Stack Pointer");
@@ -77,8 +80,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 	private JPanel memoryPanel = new JPanel();
 	private JScrollPane scroll = new JScrollPane(memoryArea);
 
-
-
 	public SimulatorWindowImpl(MemoryDumpImpl memory) throws IOException {
 		this.memoryDump = memory;
 		mainPanel.setLayout(new FlowLayout());
@@ -93,6 +94,16 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		executeButton.addActionListener(e -> {
 			setChanged();
 			notifyObservers();
+		});
+
+		singleStepButton.addActionListener(e -> {
+			String[] instructions = objectCodeArea.getText().split("\\s+");
+
+			if (currentInstructionIndex < instructions.length) {
+				String currentInstruction = instructions[currentInstructionIndex++];
+				setChanged();
+				notifyObservers(currentInstruction);
+			}
 		});
 
 		terminalArea.addKeyListener(new KeyAdapter() {
@@ -119,49 +130,90 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		objectCodeArea.setText("");
 		terminalArea.setText("");
 	}
+
 	@Override
 	public JPanel getMainPanel() {
 		return mainPanel;
 	}
+
 	@Override
 	public JTextArea getObjectCodeArea() {
 		return objectCodeArea;
 	}
+
 	@Override
 	public JTextArea getSourceCodeArea() {
 		return sourceCodeArea;
 	}
+
 	@Override
 	public JTextArea getMemoryArea() {
 		return memoryArea;
 	}
+
 	@Override
 	public void setMemoryDump(MemoryDumpImpl updatedMemory) {
 		this.memoryDump = updatedMemory;
 	}
+
 	@Override
 	public void setTerminalArea(String output) {
 		terminalArea.setText(output);
 	}
+
 	@Override
 	public String getTerminalArea() {
 		return terminalArea.getText();
 	}
-	@Override 
+
+	@Override
 	public Map<String, JTextField> getCPUComponents() {
-		return Map.ofEntries(
-			entry("N", nField),
-			entry("Z", zField),
-			entry("V", vField),
-			entry("C", cField),
-			entry("Accumulator", accumalatorField),
-			entry("Index Register", indexRegisterField),
-			entry("Stack Pointer", stackPointerField),
-			entry("Program Counter", programCounterField),
-			entry("Instruction Specifier", instructionSpecifierField),
-			entry("Operand Specifier", operandSpecifierField),
-			entry("Operand", operandField)
-		);
+		return Map.ofEntries(entry("N", nField), entry("Z", zField), entry("V", vField), entry("C", cField),
+				entry("Accumulator", accumalatorField), entry("Index Register", indexRegisterField),
+				entry("Stack Pointer", stackPointerField), entry("Program Counter", programCounterField),
+				entry("Instruction Specifier", instructionSpecifierField),
+				entry("Operand Specifier", operandSpecifierField), entry("Operand", operandField));
+	}
+
+	@Override
+	public void setCPUComponents(Map<String, JTextField> cpuComponents) {
+		for (Map.Entry<String, JTextField> entry : cpuComponents.entrySet()) {
+			switch (entry.getKey()) {
+				case "N":
+					nField = entry.getValue();
+					break;
+				case "Z":
+					zField = entry.getValue();
+					break;
+				case "V":
+					vField = entry.getValue();
+					break;
+				case "C":
+					cField = entry.getValue();
+					break;
+				case "Accumulator":
+					accumalatorField = entry.getValue();
+					break;
+				case "Index Register":
+					indexRegisterField = entry.getValue();
+					break;
+				case "Stack Pointer":
+					stackPointerField = entry.getValue();
+					break;
+				case "Program Counter":
+					programCounterField = entry.getValue();
+					break;
+				case "Instruction Specifier":
+					instructionSpecifierField = entry.getValue();
+					break;
+				case "Operand Specifier":
+					operandSpecifierField = entry.getValue();
+					break;
+				case "Operand":
+					operandField = entry.getValue();
+					break;
+			}
+		}
 	}
 
 	private JPanel buildButtonPanel() {
@@ -200,22 +252,34 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		cpuPanel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		cpuPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		cpuArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		nField.setPreferredSize(new Dimension(PANEL_WIDTH/8, PANEL_HEIGHT/10)); nField.setEditable(false);
-		zField.setPreferredSize(new Dimension(PANEL_WIDTH/8, PANEL_HEIGHT/10)); zField.setEditable(false);
-		vField.setPreferredSize(new Dimension(PANEL_WIDTH/8, PANEL_HEIGHT/10)); vField.setEditable(false);
-		cField.setPreferredSize(new Dimension(PANEL_WIDTH/8, PANEL_HEIGHT/10)); cField.setEditable(false);
-		accumalatorField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); accumalatorField.setEditable(false);
-		indexRegisterField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); indexRegisterField.setEditable(false);
-		stackPointerField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); stackPointerField.setEditable(false);
-		programCounterField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); programCounterField.setEditable(false);
-		instructionSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); instructionSpecifierField.setEditable(false);
-		operandSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); operandField.setEditable(false);
-		operandField.setPreferredSize(new Dimension(PANEL_WIDTH/2, PANEL_HEIGHT/10)); operandSpecifierField.setEditable(false);
-		singleStepButton.setPreferredSize(new Dimension(PANEL_WIDTH/4, PANEL_HEIGHT/10)); 
-		resumeButton.setPreferredSize(new Dimension(PANEL_WIDTH/4, PANEL_HEIGHT/10)); 
+		nField.setPreferredSize(new Dimension(PANEL_WIDTH / 8, PANEL_HEIGHT / 10));
+		nField.setEditable(false);
+		zField.setPreferredSize(new Dimension(PANEL_WIDTH / 8, PANEL_HEIGHT / 10));
+		zField.setEditable(false);
+		vField.setPreferredSize(new Dimension(PANEL_WIDTH / 8, PANEL_HEIGHT / 10));
+		vField.setEditable(false);
+		cField.setPreferredSize(new Dimension(PANEL_WIDTH / 8, PANEL_HEIGHT / 10));
+		cField.setEditable(false);
+		accumalatorField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		accumalatorField.setEditable(false);
+		indexRegisterField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		indexRegisterField.setEditable(false);
+		stackPointerField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		stackPointerField.setEditable(false);
+		programCounterField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		programCounterField.setEditable(false);
+		instructionSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		instructionSpecifierField.setEditable(false);
+		operandSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		operandField.setEditable(false);
+		operandField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
+		operandSpecifierField.setEditable(false);
+		singleStepButton.setPreferredSize(new Dimension(PANEL_WIDTH / 4, PANEL_HEIGHT / 10));
+		resumeButton.setPreferredSize(new Dimension(PANEL_WIDTH / 4, PANEL_HEIGHT / 10));
 		singleStepButton.setFont(new Font("Arial", Font.PLAIN, 9));
 		resumeButton.setFont(new Font("Arial", Font.PLAIN, 9));
-		constraints.gridx = 2; constraints.gridy = 0;
+		constraints.gridx = 2;
+		constraints.gridy = 0;
 		cpuPanel.add(cpuTextField, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 1;
@@ -235,62 +299,68 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		cpuPanel.add(cLabel, constraints);
 		constraints.gridx = 7;
 		cpuPanel.add(cField, constraints);
-		constraints.gridx = 0; constraints.gridy = 2;
+		constraints.gridx = 0;
+		constraints.gridy = 2;
 		constraints.gridwidth = 1;
 		cpuPanel.add(accumalatorLabel, constraints);
 		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(accumalatorField, constraints);
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(indexRegisterLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(indexRegisterField, constraints);
 
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(stackPointerLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(stackPointerField, constraints);
 
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(programCounterLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(programCounterField, constraints);
 
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(instructionSpecifierLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(instructionSpecifierField, constraints);
 
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(operandSpecifierLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(operandSpecifierField, constraints);
 
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		cpuPanel.add(operandLabel, constraints);
-		constraints.gridx++; 
+		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(operandField, constraints);
 
-		
-		constraints.gridy++; constraints.gridx = 0;
+		constraints.gridy++;
+		constraints.gridx = 0;
 		constraints.gridwidth = 4;
 		cpuPanel.add(singleStepButton, constraints);
 		constraints.gridx++;
-		cpuPanel.add(resumeButton, constraints); 
-	
-	
+		cpuPanel.add(resumeButton, constraints);
+
 		return cpuPanel;
 	}
 
@@ -303,6 +373,7 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow{
 		terminalPanel.add(terminalArea, BorderLayout.CENTER);
 		return terminalPanel;
 	}
+
 	private JPanel buildMemoryDumpWindow() {
 		memoryArea.setText(memoryDump.toString());
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
