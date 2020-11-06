@@ -24,11 +24,16 @@ public class Instruction {
 		this.myOpcode = myOpcode;
 	}
 
+	@Override
+	public String toString() {
+		return myOpcode + myOperand;
+	}
+
 	public String getOpcode() {
-		return myOpcode;
+		return (myOpcode == null)? "": myOpcode;
 	}
 	public String getOperand() {
-		return myOperand;
+		return (myOperand == null)? "": myOperand;
 	}
 	public String getRegister() {
 		return myRd;
