@@ -1,6 +1,7 @@
 package utils;
 
 import model.Instruction;
+import model.Hexadecimal;
 
 public class Transformer {
 
