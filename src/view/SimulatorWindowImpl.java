@@ -64,8 +64,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 	private JTextField instructionSpecifierField = new JTextField();
 	private JLabel operandSpecifierLabel = new JLabel("Operand Specifier");
 	private JTextField operandSpecifierField = new JTextField();
-	private JLabel operandLabel = new JLabel("(Operand)");
-	private JTextField operandField = new JTextField();
 	private JButton singleStepButton = new JButton("Single Step");
 	private JButton resumeButton = new JButton("Resume");
 
@@ -172,7 +170,7 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 				entry("Accumulator", accumalatorField), entry("Index Register", indexRegisterField),
 				entry("Stack Pointer", stackPointerField), entry("Program Counter", programCounterField),
 				entry("Instruction Specifier", instructionSpecifierField),
-				entry("Operand Specifier", operandSpecifierField), entry("Operand", operandField));
+				entry("Operand Specifier", operandSpecifierField));
 	}
 
 	@Override
@@ -208,9 +206,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 					break;
 				case "Operand Specifier":
 					operandSpecifierField = entry.getValue();
-					break;
-				case "Operand":
-					operandField = entry.getValue();
 					break;
 			}
 		}
@@ -271,8 +266,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 		instructionSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
 		instructionSpecifierField.setEditable(false);
 		operandSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
-		operandField.setEditable(false);
-		operandField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
 		operandSpecifierField.setEditable(false);
 		singleStepButton.setPreferredSize(new Dimension(PANEL_WIDTH / 4, PANEL_HEIGHT / 10));
 		resumeButton.setPreferredSize(new Dimension(PANEL_WIDTH / 4, PANEL_HEIGHT / 10));
@@ -345,14 +338,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(operandSpecifierField, constraints);
-
-		constraints.gridy++;
-		constraints.gridx = 0;
-		constraints.gridwidth = 1;
-		cpuPanel.add(operandLabel, constraints);
-		constraints.gridx++;
-		constraints.gridwidth = 7;
-		cpuPanel.add(operandField, constraints);
 
 		constraints.gridy++;
 		constraints.gridx = 0;
