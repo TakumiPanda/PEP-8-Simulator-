@@ -4,9 +4,6 @@ import model.Instruction;
 
 public class Transformer {
 
-	// double check this!
-	private static Hexadecimal hexa;
-
 	/**
 	 * Decode the binary string and create the appropriate Instruction object.
 	 *
@@ -16,8 +13,7 @@ public class Transformer {
 		String formatedHex = String.format("%06X", Integer.parseInt(hex,16));
 		Instruction instruction;
 		String[] node;
-		hexa = new Hexadecimal(formatedHex);
-		String theString = (hexa.get(formatedHex, 1)).replace(" ", "");
+		String theString = hexToBinary(formatedHex).replace(" ", "");
 		node = new String[3];
 		node[0] = theString.substring(0, 5);// assign opcode to node 0
 		node[1] = theString.substring(6, 8);// assign register to node 1
