@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 public interface ControlUnit {
 
     /**
@@ -34,4 +36,10 @@ public interface ControlUnit {
      * @return
      */
     MemoryDump getMemoryDump();
+
+    /**
+     * The controller needs access to the condition code register bits for the
+     * internal state machine to be displayed after each execution of instruction
+     */
+    Map<String, Binary> getConditionRegisterBits();
 }
