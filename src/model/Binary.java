@@ -1,14 +1,11 @@
 package model;
 
-import java.util.Objects;
+public class Binary extends Number{
 
-public class Binary extends Numbers{
+	private String number;
 
-	private String in;
-
-	public Binary(String in)
-	{
-		this.in = in;
+	public Binary(String num) {
+		super(num);
 	}
 
     /**
@@ -55,41 +52,5 @@ public class Binary extends Numbers{
 			int temp = binToDecimal(in);
 			return String.valueOf(temp);
 		}
-	}
-
-	@Override
-	public int compare(String in, String compare) {
-		int compare1 = Integer.parseInt(in);
-		int compare2 = Integer.parseInt(compare);
-		if (compare1 == compare2)
-		{
-			return 0;
-		}
-		else if (compare1 < compare2)
-		{
-			return -1;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-
-	@Override
-	public boolean equality(Object o) {
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null)
-		{
-			return false;
-		}
-		if (getClass() != o.getClass())
-		{
-			return false;
-		}
-		Binary bin = (Binary) o;
-		return Objects.equals(in, bin.in);
 	}
 }

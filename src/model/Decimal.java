@@ -1,14 +1,12 @@
 package model;
 
-import java.util.Objects;
+public class Decimal extends Number{
 
-public class Decimal extends Numbers{
+	private String number;
 
-	private String in;
-
-	public Decimal(String in)
+	public Decimal(String num)
 	{
-		this.in = in;
+		super(num);
 	}
 
 	/**
@@ -32,42 +30,5 @@ public class Decimal extends Numbers{
 			//placeholder for decToHex if wanted to add here
 			return null;
 		}
-	}
-	//Should we add decToHex?
-
-	@Override
-	public int compare(String in, String compare) {
-		int compare1 = Integer.parseInt(in);
-		int compare2 = Integer.parseInt(compare);
-		if (compare1 == compare2)
-		{
-			return 0;
-		}
-		else if (compare1 < compare2)
-		{
-			return -1;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-
-	@Override
-	public boolean equality(Object o) {
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null)
-		{
-			return false;
-		}
-		if (getClass() != o.getClass())
-		{
-			return false;
-		}
-		Decimal dec = (Decimal) o;
-		return Objects.equals(in, dec.in);
 	}
 }
