@@ -1,6 +1,8 @@
 package controller;
 
+import model.Binary;
 import model.ControlUnitImpl;
+import model.Decimal;
 import model.MemoryDumpImpl;
 import view.SimulatorWindowImpl;
 
@@ -38,13 +40,14 @@ public class Simulator implements Observer {
 	private void updateCPUComponents(Map<String, JTextField> cpuComponents, int[] register) {
 		cpuComponents.get("Accumulator").setText(register[2] + "");
 		cpuComponents.get("Index Register").setText(register[1] + "");
-		cpuComponents.get("Stack Pointer").setText(register[0] + "");
+		cpuComponents.get("Program Counter").setText(register[0] + "");
 		cpuComponents.get("Instruction Specifier").setText(register[1] + "");
 		cpuComponents.get("Operand Specifier").setText(controlUnit.getCurrentInstructionOperand().toString());
-		cpuComponents.get("N").setText("");
-		cpuComponents.get("Z").setText("");
-		cpuComponents.get("V").setText("");
-		cpuComponents.get("C").setText("");
+		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
+		cpuComponents.get("N").setText(conditionRegisterBits.get("N").toString());
+		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").toString());
+		cpuComponents.get("V").setText(conditionRegisterBits.get("V").toString());
+		cpuComponents.get("C").setText(conditionRegisterBits.get("C").toString());
 	}
 
 	@Override
