@@ -150,26 +150,60 @@ public class ControlUnitImpl implements ControlUnit {
 	
 	private void executeAnd(Instruction instr) {
 		if (instr.get5thBit().contentEquals("0")){ //AC
-			if (instr.getRegister().contentEquals("000")) { //immediate
-			
-			}else if(instr.getRegister().contentEquals("001")) { //memory
-
+			if (instr.getRegister().contentEquals("000")) { //AR & immediate
+				int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				this.AR = (AR & value);
+			}else if(instr.getRegister().contentEquals("001")) { //AR & memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = (AR & value);
 			}
 		}else if(instr.get5thBit()){ //Reg
-			if (instr.getRegister().contentEquals("000")) { //immediate
+			if (instr.getRegister().contentEquals("000")) { //Reg & immediate
 				
-			}else if(instr.getRegister().contentEquals("001")) { //memory
+			}else if(instr.getRegister().contentEquals("001")) { //Reg & memory
 				
 			}
 		}
 	}
 	
 	private void executeOr(Instruction instr) {
-
+		if (instr.get5thBit().contentEquals("0")){ //AC
+			if (instr.getRegister().contentEquals("000")) { //AR | immediate
+				int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				this.AR = (AR | value);
+			}else if(instr.getRegister().contentEquals("001")) { //AR | memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = (AR | value);
+			}
+		}else if(instr.get5thBit()){ //Reg
+			if (instr.getRegister().contentEquals("000")) { //Reg | immediate
+				
+			}else if(instr.getRegister().contentEquals("001")) { //Reg | memory
+				
+			}
+		}
 	}
 	
 	private void executeCompare(Instruction instr) {
-		
+		Decimal dec;
+		if (instr.get5thBit().contentEquals("0")){ //AC
+			if (instr.getRegister().contentEquals("000")) { //AR Compare immediate
+				int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				this.AR = dec.compare(Integer.toString(value),Integer.toString(AR));
+			}else if(instr.getRegister().contentEquals("001")) { //AR Compare memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
+			}
+		}else if(instr.get5thBit()){ //Reg
+			if (instr.getRegister().contentEquals("000")) { //Reg Compare immediate
+				
+			}else if(instr.getRegister().contentEquals("001")) { //Reg Compare memory
+				
+			}
+		}
 	}
 	
 	private void executeRotateOpTrap(Instruction instr) {
@@ -247,5 +281,4 @@ public class ControlUnitImpl implements ControlUnit {
 			}
 		}
 	}
-
 }
