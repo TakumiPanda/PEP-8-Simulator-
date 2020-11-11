@@ -1,6 +1,8 @@
 package model;
 
-public class MemoryDumpImpl implements MemoryDump{
+import utils.Transformer;
+
+public class MemoryDumpImpl implements MemoryDump {
 	public String[] hexDump;
 	public String[] charDump;
 	private Hexadecimal hex;
@@ -57,8 +59,9 @@ public class MemoryDumpImpl implements MemoryDump{
 		if (address < 0x0000 || address > 0xFFFF) {
 			throw new IllegalArgumentException("Invalid address");
 		}
-		//return dump[address * 2 - address % 8] + dump[(address + 1) * 2 - (address + 1) % 8] + dump[(address + 2) * 2 - (address + 2) % 8];
-		return hexDump[address] + hexDump[address+1] + hexDump[address+2];
+		String hex = hexDump[address] + hexDump[address+1] + hexDump[address+2];
+		String formatedHex = String.format("%06X", Integer.parseInt(hex,16));
+		return Transformer.hexToBinary(formatedHex).replace(" ", "");
 	}
 
 	@Override
