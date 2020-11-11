@@ -1,10 +1,10 @@
 package model;
 
-public abstract class Calculator {
+public abstract class Calculator<T> {
 	
-	public abstract String add(String a, String b);
-	public abstract String subtract(String a, String b);
-	public abstract String multiply(String a, String b);
-	public abstract String divide(String a, String b);
+	public abstract T add(T a, T b);
+	public abstract T subtract(T a, T b);
+	public abstract T multiply(T a, T b);
+	public abstract T divide(T a, T b);
 	
 }
