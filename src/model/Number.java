@@ -46,6 +46,10 @@ public abstract class Number {
 		return Objects.equals(number, bin.getNumber());
 	}
 
+	public void setNumber(String newNum){
+		this.number = newNum;
+	}
+
 	public String getNumber() {
 		return number;
 	}
