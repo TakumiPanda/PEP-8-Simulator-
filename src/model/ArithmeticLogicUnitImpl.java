@@ -10,33 +10,32 @@ import java.util.Observable;
  */
 public class ArithmeticLogicUnitImpl extends Observable implements ArithmeticLogicUnit{
 
-    private int[] registers;
+    private Binary[] registers;
 
     public ArithmeticLogicUnitImpl() {
-        registers = new int[7];
+        registers = new Binary[7];
     }
 
     @Override
-    public void updateState(int[] reg) {
+    public void updateState(Binary[] reg) {
         registers = reg;
         setChanged();
         notifyObservers(registers);
     }
 
-    public int[] getRegisters() {
+    public Binary[] getRegisters() {
         return registers;
     }
-    public void setRegisters(int[] reg) {
+    public void setRegisters(Binary[] reg) {
         this.registers = reg;
     }
-    public int getPC() {
+    public Binary getPC() {
         return registers[0];
     }
-    public int getIR() {
+    public Binary getIR() {
         return registers[1];
     }
-    public int getAR() {
+    public Binary getAR() {
         return registers[2];
     }
-
 }
