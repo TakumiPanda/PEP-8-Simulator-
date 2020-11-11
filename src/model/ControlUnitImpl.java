@@ -199,32 +199,27 @@ public class ControlUnitImpl implements ControlUnit {
 		if (instr.get5thBit().contentEquals("0")){ //AC
 		if (instr.getRegisterSpecifier().contentEquals("000")) { //AR | immediate
 			int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
-			this.AR = (AR | value);
+			int ARvalue = Integer.parseInt(AR.getNumber(),2);
+			int resultInt = (value | ARvalue);
+			String resultStr = Integer.toBinaryString(resultInt);
+			this.AR = new Binary(resultStr);
 		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR | memory
 			int address = Transformer.binToDecimal(instr.getOperand());
 			int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-			this.AR = (AR | value);
-		}
-	}else if(instr.get5thBit().contentEquals("1")){ //Reg
-		if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg | immediate
-			
-		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg | memory
-			
+			int ARvalue = Integer.parseInt(AR.getNumber(),2);
+			int resultInt = (value | ARvalue);
+			String resultStr = Integer.toBinaryString(resultInt);
+			this.AR = new Binary(resultStr);
 		}
 	}
-	if (instr.get5thBit().contentEquals("0")) { // AC
-		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
-
-		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
-
-		}
-	} else if (instr.get5thBit().equals("0")) { // Reg
-		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
-
-		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
-
-		}
-	}
+	//work on later	
+//	}else if(instr.get5thBit().contentEquals("1")){ //Reg
+//		if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg | immediate
+//			
+//		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg | memory
+//			
+//		}
+//	}
 	}
 
 	private void executeCompare(Instruction instr) {
@@ -238,26 +233,28 @@ public class ControlUnitImpl implements ControlUnit {
 				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
 				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
 			}
-		}else if(instr.get5thBit().contentEquals("1")){ //Reg
-			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
-				
-			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg Compare memory
-				
-			}
 		}
+		//work on later
+//		}else if(instr.get5thBit().contentEquals("1")){ //Reg
+//			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
+//				
+//			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg Compare memory
+//				
+//			}
+//		}
 	}
 
 	private void executeRotateOpTrap(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
 			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // rotate left
-				String ARString = Integer.toBinaryString(AR);
+				String ARString = AR.getNumber();
 				String rotatedARString = ARString.substring(1, ARString.length()) + ARString.substring(0);
-				this.AR = Transformer.binToDecimal(rotatedARString);
+				this.AR = new Binary(rotatedARString);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // rotate right
-				String ARString = Integer.toBinaryString(AR);
+				String ARString = AR.getNumber();
 				String rotatedARString = ARString.substring(ARString.length() - 1)
 						+ ARString.substring(0, ARString.length() - 1);
-				this.AR = Transformer.binToDecimal(rotatedARString);
+				this.AR = new Binary(rotatedARString);
 			} else if ((instr.getRegisterSpecifier().substring(0)).contentEquals("1")) { // Unary no OP trap
 
 			}
@@ -276,7 +273,7 @@ public class ControlUnitImpl implements ControlUnit {
 			int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
 			window.setTerminalArea(window.getTerminalArea() + "" + dec);
 		}
-		PC += 2;
+		incrementPC();
 	}
 
 	private void executeStopBranch(Instruction instr) {
@@ -284,8 +281,7 @@ public class ControlUnitImpl implements ControlUnit {
 			if (instr.getRegisterSpecifier().contentEquals("000")) { // Stop
 				stopProgram = true;
 				return;
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch specified
-																					// address/unconditional
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch specified address/unconditional
 
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if less-than-or-equal
 
@@ -314,13 +310,25 @@ public class ControlUnitImpl implements ControlUnit {
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
 			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // bitwise invert
-				this.AR = ~AR & 0xff;
+				int ARInt = Integer.parseInt(AR.getNumber(), 2);
+				int invertARInt = (~ARInt & 0xff);
+				String invertARStr = Integer.toBinaryString(invertARInt);
+				this.AR = new Binary(invertARStr);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // negate
-
+				int ARInt = Integer.parseInt(AR.getNumber(), 2);
+				int negateARInt = (ARInt); //FIX, need formula to negate
+				String negateARStr = Integer.toBinaryString(negateARInt);
+				this.AR = new Binary(negateARStr);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // shift left
-				this.AR = (AR << 1);
+				int ARInt = Integer.parseInt(AR.getNumber(), 2);
+				int shiftedARInt = (ARInt << 1);
+				String shiftedARStr = Integer.toBinaryString(shiftedARInt);
+				this.AR = new Binary(shiftedARStr);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // shift right
-				this.AR = (AR >> 1);
+				int ARInt = Integer.parseInt(AR.getNumber(), 2);
+				int shiftedARInt = (ARInt >> 1);
+				String shiftedARStr = Integer.toBinaryString(shiftedARInt);
+				this.AR = new Binary(shiftedARStr);
 			}
 		}
 	}
@@ -328,7 +336,7 @@ public class ControlUnitImpl implements ControlUnit {
 	private void incrementPC() {
 		String twoStr = "10";
 		Binary twoBin = new Binary(twoStr);
-		this.PC = binCal.add(twoBin, PC);
+		this.PC = binCalculator.add(twoBin, PC);
 	}
 
 	private void setFlags(Number operand) {
