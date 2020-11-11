@@ -19,7 +19,7 @@ public interface ControlUnit {
      * Gets the current Operand that is needed when displaying the internal state of
      * the machine in the View window.
      */
-    Instruction getCurrentInstructionOperand();
+    Instruction getCurrentInstruction();
 
     /**
      * Controller needs access to the ALU for the internal State of the machine. In
