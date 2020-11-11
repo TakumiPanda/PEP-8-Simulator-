@@ -8,20 +8,36 @@ public class Instruction {
 	/**
 	 * The destination register number.
 	 */
-	private String myRd;
+	private String myRegisterSpecifier;
 
 	/** The operandSpecifier value. */
 	private String myOperand;
+
+	private String myAddressingMode;
 
 	/**
 	 * The opcode of the instruction.
 	 */
 	private String myOpcode;
 
-	public Instruction(String myOpcode, String myRd, String operandSpecifier) {
-		this.myRd = myRd;
-		this.myOperand= operandSpecifier;
-		this.myOpcode = myOpcode;
+	public Instruction(){}
+
+	public Instruction(String opCode, String operand) {
+		this.myOpcode = opCode;
+		this.myOperand = operand;
+	}
+
+	public Instruction(String opCode, String registerSpec, String operand) {
+		this.myOpcode = opCode;
+		this.myRegisterSpecifier = registerSpec;
+		this.myOperand = operand;
+	}
+
+	public Instruction(String opCode, String registerSpec, String addressingMode, String operand) {
+		this.myOpcode = opCode;
+		this.myRegisterSpecifier = registerSpec;
+		this.myOperand = operand;
+		this.myAddressingMode = addressingMode;
 	}
 
 	@Override
@@ -35,7 +51,11 @@ public class Instruction {
 	public String getOperand() {
 		return (myOperand == null)? "": myOperand;
 	}
-	public String getRegister() {
-		return myRd;
-	};
+	public String getRegisterSpecifier() {
+		return (myRegisterSpecifier == null)? "": myRegisterSpecifier;
+	}	
+
+	public String get5thBit() {
+		return null;
+	}
 }
