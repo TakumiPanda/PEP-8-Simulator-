@@ -1,42 +1,54 @@
 package model;
 
-public class BinaryCalculator extends Calculator {
-	private int decimal1;
-	private int decimal2;
-	private int result;
-
-	private void initializeDecimals(String a, String b) {
-		decimal1 = Integer.parseInt(a, 2);
-		decimal2 = Integer.parseInt(b, 2);
-	}
+public class BinaryCalculator extends Calculator<Binary> {
 
 	@Override
-	public String add(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 + decimal2;
-		return Integer.toBinaryString(result);
+	public Binary add(Binary a, Binary b) {
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		Binary resultBin = new Binary(resultStr);
+		return resultBin;
 	}
 
 
 	@Override
-	public String subtract(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 - decimal2;
-		return Integer.toBinaryString(result);
+	public Binary subtract(Binary a, Binary b) {
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt - bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		Binary resultBin = new Binary(resultStr);
+		return resultBin;
 	}
 
 	@Override
-	public String multiply(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 * decimal2;
-		return Integer.toBinaryString(result);
+	public Binary multiply(Binary a, Binary b) {
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt * bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		Binary resultBin = new Binary(resultStr);
+		return resultBin;
 	}
 
 	// should i include actual decimals in divisions?
 	@Override
-	public String divide(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 / decimal2;
-		return Integer.toBinaryString(result);
+	public Binary divide(Binary a, Binary b) {
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		Binary resultBin = new Binary(resultStr);
+		return resultBin;
 	}
 }

@@ -7,7 +7,7 @@ public class Binary extends Number{
 	public Binary(String num) {
 		super(num);
 	}
-
+	
     /**
 	 * binary---> hexDecimal
 	 * @param binary
