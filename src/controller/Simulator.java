@@ -29,7 +29,7 @@ public class Simulator implements Observer {
 		controlUnit = new ControlUnitImpl(window);
 		window.addObserver(this);
 		controlUnit.getALU().addObserver(this);
-		updateCPUComponents(window.getCPUComponents(), new int[7]);
+		updateCPUComponents(window.getCPUComponents(), new Binary[7]);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(3);
@@ -37,11 +37,11 @@ public class Simulator implements Observer {
 		frame.pack();
 	}
 
-	private void updateCPUComponents(Map<String, JTextField> cpuComponents, int[] register) {
+	private void updateCPUComponents(Map<String, JTextField> cpuComponents, Binary[] register) {
 		cpuComponents.get("Accumulator").setText(register[2] + "");
 		cpuComponents.get("Program Counter").setText(register[0] + "");
 		cpuComponents.get("Instruction Specifier").setText(register[1] + "");
-		cpuComponents.get("Operand Specifier").setText(controlUnit.getCurrentInstruction().toString());
+		cpuComponents.get("Operand Specifier").setText(controlUnit.getCurrentInstruction());
 		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
 		cpuComponents.get("N").setText(conditionRegisterBits.get("N").toString());
 		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").toString());
