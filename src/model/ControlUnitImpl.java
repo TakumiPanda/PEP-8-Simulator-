@@ -7,9 +7,9 @@ import view.SimulatorWindow;
 
 public class ControlUnitImpl implements ControlUnit {
 
-	private Binary PC = new Binary(""+0x000);
-	private Binary AR = new Binary(""+0x000);
-	private Binary IR = new Binary(""+0x000000);
+	private Binary PC = new Binary("0000000000000000");
+	private Binary AR = new Binary("0000000000000000");
+	private Binary IR = new Binary("0000000000000000");
 
 	private boolean stopProgram = false;
 
@@ -22,6 +22,7 @@ public class ControlUnitImpl implements ControlUnit {
 	/** Z bit is set if result of operation is zero (All bits = 0 */
 	private Binary Z = new Binary("" + 0);
 
+	private BinaryCalculator binCalculator = new BinaryCalculator();
 	private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
 	private SimulatorWindow window;
 	private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
@@ -51,8 +52,8 @@ public class ControlUnitImpl implements ControlUnit {
 	}
 
 	@Override
-	public Instruction getCurrentInstruction() {
-		return Transformer.decodeInstruction(memoryDump.fetch(Integer.parseInt(this.IR.getNumber())));
+	public String getCurrentInstruction() {
+		return this.IR.getNumber();	
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class ControlUnitImpl implements ControlUnit {
 			default:
 		}
 		// PC must be updated to hold the address of the next instruction to be executed
-		this.PC.setNumber((Integer.parseInt(this.PC.getNumber()+1)+""));
+		this.PC.setNumber(binCalculator.add(this.PC.getNumber(), "1"));
 
 		// Registers must be updated in the GUI Window.
 		Binary[] updatedRegisters = ALU.getRegisters();
