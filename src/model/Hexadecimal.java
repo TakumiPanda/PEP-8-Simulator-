@@ -1,14 +1,12 @@
 package model;
 
-import java.util.Objects;
+public class Hexadecimal extends Number{
 
-public class Hexadecimal extends Numbers{
-
-	private String in;
+	private String number;
 
 	public Hexadecimal(String in)
 	{
-		this.in = in;
+		super(in);
 	}
 
 	/**
@@ -53,41 +51,4 @@ public class Hexadecimal extends Numbers{
 			return hexToBinary(in);
 		}
 	}
-
-	@Override
-	public int compare(String in, String compare) {
-		int compare1 = Integer.parseInt(in);
-		int compare2 = Integer.parseInt(compare);
-		if (compare1 == compare2)
-		{
-			return 0;
-		}
-		else if (compare1 < compare2)
-		{
-			return -1;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-
-	@Override
-	public boolean equality(Object o) {
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null)
-		{
-			return false;
-		}
-		if (getClass() != o.getClass())
-		{
-			return false;
-		}
-		Hexadecimal hex = (Hexadecimal) o;
-		return Objects.equals(in, hex.in);
-	}
-
 }
