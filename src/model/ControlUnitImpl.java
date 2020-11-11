@@ -122,14 +122,15 @@ public class ControlUnitImpl implements ControlUnit {
 
 	private void executeAdd(Instruction instr) {
 		setFlagsForArithmetic(new Binary("" + this.AR), new Binary(instr.getOperand()), "Addition");
-
-		if (instr.getRegister().contentEquals("000")) { // immediate
-			this.AR += Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-		} else if (instr.getRegister().contentEquals("001")) { // direct
+		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
+			Binary operandValue = new Binary(instr.getOperand());
+			this.AR = binCalculator.add(operandValue,AR);
+		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
 			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-			AR += Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
+			Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+			this.AR = binCalculator.add(memVal, AR);
 		}
-		PC += 2;
+		incrementPC();
 	}
 
 	private void executeCharIn(Instruction instr) {
@@ -140,66 +141,124 @@ public class ControlUnitImpl implements ControlUnit {
 		String operand = instr.getOperand();
 		char character = (char) Transformer.binToDecimal(operand);
 		window.setTerminalArea(window.getTerminalArea() + "" + character);
-		PC += 2;
+		incrementPC();
 	}
 
 	private void executeLW(Instruction instr) {
 		int address = Transformer.binToDecimal(instr.getOperand());
-		this.AR = Transformer.hexToDecimal(memoryDump.getMemory(address));
+		Binary memBin = new Binary(Integer.toBinaryString(
+				Transformer.hexToDecimal(memoryDump.getMemory(address))));
+		this.AR = memBin;
 	}
 
 	private void executeSub(Instruction instr) {
 
 		setFlagsForArithmetic(new Binary("" + this.AR), new Binary(instr.getOperand()), "Subtraction");
-
-		if (instr.getRegister().contentEquals("000")) { // immediate
-			AR -= Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-		} else if (instr.getRegister().contentEquals("001")) { // direct
+		
+		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
+			Binary operandVal = new Binary (instr.getOperand());
+			this.AR = binCalculator.subtract(AR, operandVal);
+		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
 			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-			AR -= Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
+			Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+			this.AR = binCalculator.subtract(AR, memVal);
 		}
 	}
 
 	private void executeSW(Instruction instr) {
 		String hexAddress = Transformer.binToHex(instr.getOperand());
-		memoryDump.setMemory(hexAddress, this.AR);
+		memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(),2)); //double check if radix is 2 or 16
 	}
 
 	private void executeAnd(Instruction instr) {
-		if (instr.get5thBit().contentEquals("0")) { // AC
-			if (instr.getRegister().contentEquals("000")) { // immediate
-
-			} else if (instr.getRegister().contentEquals("001")) { // memory
-
+		if (instr.get5thBit().contentEquals("0")){ //AC
+			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR & immediate
+				int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				int ARint = Integer.parseInt(AR.getNumber(),2);
+				int andInt = (ARint & valueInt);
+				String andStr = Integer.toBinaryString(andInt);
+				Binary andBin = new Binary(andStr);
+				this.AR = andBin;
+			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR & memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = (AR & value);
 			}
-		} else if (instr.get5thBit().equals("0")) { // Reg
-			if (instr.getRegister().contentEquals("000")) { // immediate
+		}
+//		currently implementing later: Reason (Don't know index register and how it works)
+//		}else if(instr.get5thBit().contentEquals("1")){ //Reg
+//			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg & immediate
+//				
+//			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg & memory
+//				
+//			}
+//		}
+	}
 
-			} else if (instr.getRegister().contentEquals("001")) { // memory
+	private void executeOr(Instruction instr) {
+		if (instr.get5thBit().contentEquals("0")){ //AC
+		if (instr.getRegisterSpecifier().contentEquals("000")) { //AR | immediate
+			int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+			this.AR = (AR | value);
+		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR | memory
+			int address = Transformer.binToDecimal(instr.getOperand());
+			int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+			this.AR = (AR | value);
+		}
+	}else if(instr.get5thBit().contentEquals("1")){ //Reg
+		if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg | immediate
+			
+		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg | memory
+			
+		}
+	}
+	if (instr.get5thBit().contentEquals("0")) { // AC
+		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
 
+		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
+
+		}
+	} else if (instr.get5thBit().equals("0")) { // Reg
+		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
+
+		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
+
+		}
+	}
+	}
+
+	private void executeCompare(Instruction instr) {
+		Decimal dec;
+		if (instr.get5thBit().contentEquals("0")){ //AC
+			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
+				int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				this.AR = dec.compare(Integer.toString(value),Integer.toString(AR));
+			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
+			}
+		}else if(instr.get5thBit().contentEquals("1")){ //Reg
+			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
+				
+			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Reg Compare memory
+				
 			}
 		}
 	}
 
-	private void executeOr(Instruction instr) {
-		
-	}
-
-	private void executeCompare(Instruction instr) {
-	}
-
 	private void executeRotateOpTrap(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
-			if ((instr.getRegister().substring(0, 1)).contentEquals("00")) { // rotate left
+			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // rotate left
 				String ARString = Integer.toBinaryString(AR);
 				String rotatedARString = ARString.substring(1, ARString.length()) + ARString.substring(0);
 				this.AR = Transformer.binToDecimal(rotatedARString);
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("01")) { // rotate right
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // rotate right
 				String ARString = Integer.toBinaryString(AR);
 				String rotatedARString = ARString.substring(ARString.length() - 1)
 						+ ARString.substring(0, ARString.length() - 1);
 				this.AR = Transformer.binToDecimal(rotatedARString);
-			} else if ((instr.getRegister().substring(0)).contentEquals("1")) { // Unary no OP trap
+			} else if ((instr.getRegisterSpecifier().substring(0)).contentEquals("1")) { // Unary no OP trap
 
 			}
 		} else if (instr.get5thBit().equals("1")) { // Nonunary no OP trap
@@ -208,11 +267,11 @@ public class ControlUnitImpl implements ControlUnit {
 	}
 
 	private void executeDecOut(Instruction instr) {
-		if (instr.getRegister().contentEquals("000")) { // immediate
+		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
 			String operand = instr.getOperand();
 			int dec = Transformer.binToDecimal(operand);
 			window.setTerminalArea(window.getTerminalArea() + "" + dec);
-		} else if (instr.getRegister().contentEquals("001")) { // memory
+		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
 			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
 			int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
 			window.setTerminalArea(window.getTerminalArea() + "" + dec);
@@ -222,23 +281,23 @@ public class ControlUnitImpl implements ControlUnit {
 
 	private void executeStopBranch(Instruction instr) {
 		if (instr.getRegisterSpecifier().equals("0")) {
-			if (instr.getRegister().contentEquals("000")) { // Stop
+			if (instr.getRegisterSpecifier().contentEquals("000")) { // Stop
 				stopProgram = true;
 				return;
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("10")) { // branch specified
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch specified
 																					// address/unconditional
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("11")) { // branch if less-than-or-equal
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if less-than-or-equal
 
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
-			if ((instr.getRegister().substring(0, 1)).contentEquals("00")) { // branch if less than
+			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // branch if less than
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("01")) { // branch if equal
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // branch if equal
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("10")) { // branch if not equal
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if not equal
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("11")) { // branch if greater or equal
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if greater or equal
 
 			}
 		}
@@ -246,24 +305,30 @@ public class ControlUnitImpl implements ControlUnit {
 
 	private void executeShiftNegateInvertBranch(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
-			if (instr.getRegister().contentEquals("00")) { // branch greater
+			if (instr.getRegisterSpecifier().contentEquals("00")) { // branch greater
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("10")) { // branch if V (overflow)
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if V (overflow)
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("11")) { // branch if C (carry)
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if C (carry)
 
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
-			if ((instr.getRegister().substring(0, 1)).contentEquals("00")) { // bitwise invert
+			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // bitwise invert
 				this.AR = ~AR & 0xff;
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("01")) { // negate
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // negate
 
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("10")) { // shift left
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // shift left
 				this.AR = (AR << 1);
-			} else if ((instr.getRegister().substring(0, 1)).contentEquals("11")) { // shift right
+			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // shift right
 				this.AR = (AR >> 1);
 			}
 		}
+	}
+	
+	private void incrementPC() {
+		String twoStr = "10";
+		Binary twoBin = new Binary(twoStr);
+		this.PC = binCal.add(twoBin, PC);
 	}
 
 	private void setFlags(Number operand) {
