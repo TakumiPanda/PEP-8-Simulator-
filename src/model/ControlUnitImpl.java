@@ -110,7 +110,7 @@ public class ControlUnitImpl implements ControlUnit {
 			default:
 		}
 		// PC must be updated to hold the address of the next instruction to be executed
-		this.PC.setNumber(binCalculator.add(this.PC.getNumber(), "1"));
+		this.PC.setNumber(binCalculator.add(new Binary(this.PC.getNumber()), new Binary("1")).getNumber()); //double check work
 
 		// Registers must be updated in the GUI Window.
 		Binary[] updatedRegisters = ALU.getRegisters();
@@ -181,8 +181,12 @@ public class ControlUnitImpl implements ControlUnit {
 				this.AR = andBin;
 			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR & memory
 				int address = Transformer.binToDecimal(instr.getOperand());
-				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-				this.AR = (AR & value);
+				int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				int valueAR = Integer.parseInt(AR.getNumber(),2);
+				int andInt = (valueAR & memValue);
+				String andStr = Integer.toBinaryString(andInt);
+				Binary andBin = new Binary(andStr);
+				this.AR = andBin;
 			}
 		}
 //		currently implementing later: Reason (Don't know index register and how it works)
@@ -222,19 +226,19 @@ public class ControlUnitImpl implements ControlUnit {
 //	}
 	}
 
-	private void executeCompare(Instruction instr) {
-		Decimal dec;
-		if (instr.get5thBit().contentEquals("0")){ //AC
-			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
-				int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
-				this.AR = dec.compare(Integer.toString(value),Integer.toString(AR));
-			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
-				int address = Transformer.binToDecimal(instr.getOperand());
-				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
-			}
-		}
-		//work on later
+	//work on later
+	private void executeCompare(Instruction instr) {}
+////		Decimal dec;
+//		if (instr.get5thBit().contentEquals("0")){ //AC
+//			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
+//				Binary operandBin = new Binary(instr.getOperand());
+//				Binary resultBin = new Binary(Integer.toBinaryString(Number.compare(operandBin.getNumber(),AR.getNumber())));
+//			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
+//				int address = Transformer.binToDecimal(instr.getOperand());
+//				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+//				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
+//			}
+//		}
 //		}else if(instr.get5thBit().contentEquals("1")){ //Reg
 //			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
 //				
@@ -242,7 +246,6 @@ public class ControlUnitImpl implements ControlUnit {
 //				
 //			}
 //		}
-	}
 
 	private void executeRotateOpTrap(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
@@ -310,14 +313,13 @@ public class ControlUnitImpl implements ControlUnit {
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
 			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // bitwise invert
-				int ARInt = Integer.parseInt(AR.getNumber(), 2);
-				int invertARInt = (~ARInt & 0xff);
-				String invertARStr = Integer.toBinaryString(invertARInt);
-				this.AR = new Binary(invertARStr);
+				String onesCompStr = AR.getNumber();
+				String replacedStr = onesCompStr.replace('0', '2').replace('1', '0').replace('2', '1'); //1s comp
+				this.AR = new Binary(replacedStr);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // negate
-				int ARInt = Integer.parseInt(AR.getNumber(), 2);
-				int negateARInt = (ARInt); //FIX, need formula to negate
-				String negateARStr = Integer.toBinaryString(negateARInt);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				ARInt *= -1; //2s comp
+				String negateARStr = Integer.toBinaryString(ARInt);
 				this.AR = new Binary(negateARStr);
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // shift left
 				int ARInt = Integer.parseInt(AR.getNumber(), 2);
