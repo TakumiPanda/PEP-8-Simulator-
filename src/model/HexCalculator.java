@@ -1,40 +1,64 @@
 package model;
 
-public class HexCalculator extends Calculator {
-	private int decimal1;
-	private int decimal2;
-	private int result;
+public class HexCalculator extends Calculator<Hexadecimal> {
 	
-	private void initializeDecimals(String a, String b) {
-		decimal1 = Integer.parseInt(a, 16);
-		decimal2 = Integer.parseInt(b, 16);
+	@Override
+	public Hexadecimal add(Hexadecimal a, Hexadecimal b) {
+		String aStr = a.getNumber(); //Hex str
+		String bStr = b.getNumber(); //Hex str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toHexString(result); //Hex str
+		Hexadecimal resultHex = new Hexadecimal(resultStr);
+		return resultHex;
 	}
 
 	@Override
-	public String add(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 + decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal subtract(Hexadecimal a, Hexadecimal b) {
+		String aStr = a.getNumber(); //Hex str
+		String bStr = b.getNumber(); //Hex str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt - bInt; // int
+		String resultStr = Integer.toHexString(result); //Hex str
+		Hexadecimal resultHex = new Hexadecimal(resultStr);
+		return resultHex;
 	}
 
 	@Override
-	public String subtract(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 - decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal multiply(Hexadecimal a, Hexadecimal b) {
+		String aStr = a.getNumber(); //Hex str
+		String bStr = b.getNumber(); //Hex str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt * bInt; // int
+		String resultStr = Integer.toHexString(result); //Hex str
+		Hexadecimal resultHex = new Hexadecimal(resultStr);
+		return resultHex;
 	}
 
 	@Override
-	public String multiply(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 * decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal divide(Hexadecimal a, Hexadecimal b) {
+		String aStr = a.getNumber(); //Hex str
+		String bStr = b.getNumber(); //Hex str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt / bInt; // int
+		String resultStr = Integer.toHexString(result); //Hex str
+		Hexadecimal resultHex = new Hexadecimal(resultStr);
+		return resultHex;
 	}
-
+	
 	@Override
-	public String divide(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 / decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal mod(Hexadecimal a, Hexadecimal b) {
+		String aStr = a.getNumber(); //Hex str
+		String bStr = b.getNumber(); //Hex str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt % bInt; // int
+		String resultStr = Integer.toHexString(result); //Hex str
+		Hexadecimal resultHex = new Hexadecimal(resultStr);
+		return resultHex;
 	}
 }
