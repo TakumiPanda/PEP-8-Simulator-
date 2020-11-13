@@ -1,40 +1,58 @@
 package model;
 
-public class HexCalculator extends Calculator {
-	private int decimal1;
-	private int decimal2;
-	private int result;
-	
-	private void initializeDecimals(String a, String b) {
-		decimal1 = Integer.parseInt(a, 16);
-		decimal2 = Integer.parseInt(b, 16);
+public class HexCalculator implements Calculator {
+
+	@Override
+	public Hexadecimal add(Object num1, Object num2) {
+		Binary a = (Binary) num1;
+		Binary b = (Binary) num2;
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 16); //int
+		int bInt = Integer.parseInt(bStr, 16); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		return new Hexadecimal(resultStr);
 	}
 
 	@Override
-	public String add(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 + decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal subtract(Object num1, Object num2){
+		Binary a = (Binary) num1;
+		Binary b = (Binary) num2;
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 16); //int
+		int bInt = Integer.parseInt(bStr, 16); //int 
+		int result = aInt - bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		return new Hexadecimal(resultStr);
 	}
 
 	@Override
-	public String subtract(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 - decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal multiply(Object num1, Object num2) {
+		Binary a = (Binary) num1;
+		Binary b = (Binary) num2;
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 16); //int
+		int bInt = Integer.parseInt(bStr, 16); //int 
+		int result = aInt * bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		return new Hexadecimal(resultStr);
 	}
 
+	// should i include actual decimals in divisions?
 	@Override
-	public String multiply(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 * decimal2;
-		return Integer.toHexString(result);
+	public Hexadecimal divide(Object num1, Object num2) {
+		Binary a = (Binary) num1;
+		Binary b = (Binary) num2;
+		String aStr = a.getNumber(); //bin str
+		String bStr = b.getNumber(); //bin str
+		int aInt = Integer.parseInt(aStr, 16); //int
+		int bInt = Integer.parseInt(bStr, 16); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toBinaryString(result); //bin str
+		return new Hexadecimal(resultStr);
 	}
 
-	@Override
-	public String divide(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 / decimal2;
-		return Integer.toHexString(result);
-	}
 }
