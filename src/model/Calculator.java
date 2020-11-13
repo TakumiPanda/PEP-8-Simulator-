@@ -1,10 +1,7 @@
-package model;
-
-public abstract class Calculator<T> {
+package model; public interface Calculator<T> {
 	
-	public abstract T add(T a, T b);
-	public abstract T subtract(T a, T b);
-	public abstract T multiply(T a, T b);
-	public abstract T divide(T a, T b);
-	
+	public T add(T num1, T num2);
+	public T subtract(T num1, T num2);
+	public T multiply(T a, T b);
+	public T divide(T a, T b);
 }
