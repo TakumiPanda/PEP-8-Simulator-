@@ -1,42 +1,36 @@
 package model;
 
-public class DecimalCalculator extends Calculator {
-	private int decimal1;
-	private int decimal2;
-	private int result;
-	
-	private void initializeDecimals(String a, String b) {
-		decimal1 = Integer.parseInt(a);
-		decimal2 = Integer.parseInt(a);
+public class DecimalCalculator implements Calculator {
+
+	@Override
+	public Object add(Object a, Object b) {
+		Decimal num1 = (Decimal) a;
+		Decimal num2 = (Decimal) b;
+		int sum = Integer.parseInt(num1.getNumber()) + Integer.parseInt(num2.getNumber());
+		return new Decimal("" + sum);
 	}
 
 	@Override
-	public String add(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 + decimal2;
-		return result + "";
+	public Object subtract(Object a, Object b) {
+		Decimal num1 = (Decimal) a;
+		Decimal num2 = (Decimal) b;
+		int sum = Integer.parseInt(num1.getNumber()) - Integer.parseInt(num2.getNumber());
+		return new Decimal("" + sum);
 	}
 
 	@Override
-	public String subtract(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 - decimal2;
-		return result + "";
+	public Object multiply(Object a, Object b) {
+		Decimal num1 = (Decimal) a;
+		Decimal num2 = (Decimal) b;
+		int sum = Integer.parseInt(num1.getNumber()) * Integer.parseInt(num2.getNumber());
+		return new Decimal("" + sum);
 	}
 
 	@Override
-	public String multiply(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 * decimal2;
-		return result + "";
+	public Object divide(Object a, Object b) {
+		Decimal num1 = (Decimal) a;
+		Decimal num2 = (Decimal) b;
+		int sum = Integer.parseInt(num1.getNumber()) / Integer.parseInt(num2.getNumber());
+		return new Decimal("" + sum);
 	}
-
-	@Override
-	public String divide(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 / decimal2;
-		return result + "";
-	}
-	
-
 }
