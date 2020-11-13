@@ -1,42 +1,64 @@
 package model;
 
-public class DecimalCalculator extends Calculator {
-	private int decimal1;
-	private int decimal2;
-	private int result;
+public class DecimalCalculator extends Calculator<Decimal> {
 	
-	private void initializeDecimals(String a, String b) {
-		decimal1 = Integer.parseInt(a);
-		decimal2 = Integer.parseInt(a);
+	@Override
+	public Decimal add(Decimal a, Decimal b) {
+		String aStr = a.getNumber(); //Dec str
+		String bStr = b.getNumber(); //Dec str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt + bInt; // int
+		String resultStr = Integer.toString(result); //Dec str
+		Decimal resultDec = new Decimal(resultStr);
+		return resultDec;
 	}
 
 	@Override
-	public String add(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 + decimal2;
-		return result + "";
+	public Decimal subtract(Decimal a, Decimal b) {
+		String aStr = a.getNumber(); //Dec str
+		String bStr = b.getNumber(); //Dec str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt - bInt; // int
+		String resultStr = Integer.toString(result); //Dec str
+		Decimal resultDec = new Decimal(resultStr);
+		return resultDec;
 	}
 
 	@Override
-	public String subtract(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 - decimal2;
-		return result + "";
+	public Decimal multiply(Decimal a, Decimal b) {
+		String aStr = a.getNumber(); //Dec str
+		String bStr = b.getNumber(); //Dec str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt * bInt; // int
+		String resultStr = Integer.toString(result); //Dec str
+		Decimal resultDec = new Decimal(resultStr);
+		return resultDec;
 	}
 
 	@Override
-	public String multiply(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 * decimal2;
-		return result + "";
-	}
-
-	@Override
-	public String divide(String a, String b) {
-		initializeDecimals(a, b);
-		result = decimal1 / decimal2;
-		return result + "";
+	public Decimal divide(Decimal a, Decimal b) {
+		String aStr = a.getNumber(); //Dec str
+		String bStr = b.getNumber(); //Dec str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt / bInt; // int
+		String resultStr = Integer.toString(result); //Dec str
+		Decimal resultDec = new Decimal(resultStr);
+		return resultDec;
 	}
 	
-
+	@Override
+	public Decimal mod(Decimal a, Decimal b) {
+		String aStr = a.getNumber(); //Dec str
+		String bStr = b.getNumber(); //Dec str
+		int aInt = Integer.parseInt(aStr, 2); //int
+		int bInt = Integer.parseInt(bStr, 2); //int 
+		int result = aInt % bInt; // int
+		String resultStr = Integer.toString(result); //Dec str
+		Decimal resultDec = new Decimal(resultStr);
+		return resultDec;
+	}
 }
