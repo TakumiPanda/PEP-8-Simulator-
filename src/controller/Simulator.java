@@ -2,7 +2,6 @@ package controller;
 
 import model.Binary;
 import model.ControlUnitImpl;
-import model.Decimal;
 import model.MemoryDumpImpl;
 import view.SimulatorWindowImpl;
 
