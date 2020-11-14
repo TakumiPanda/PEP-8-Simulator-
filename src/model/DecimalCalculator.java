@@ -6,8 +6,8 @@ public class DecimalCalculator extends Calculator<Decimal> {
 	public Decimal add(Decimal a, Decimal b) {
 		String aStr = a.getNumber(); //Dec str
 		String bStr = b.getNumber(); //Dec str
-		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int aInt = Integer.parseInt(aStr); //int
+		int bInt = Integer.parseInt(bStr); //int 
 		int result = aInt + bInt; // int
 		String resultStr = Integer.toString(result); //Dec str
 		Decimal resultDec = new Decimal(resultStr);
@@ -18,8 +18,8 @@ public class DecimalCalculator extends Calculator<Decimal> {
 	public Decimal subtract(Decimal a, Decimal b) {
 		String aStr = a.getNumber(); //Dec str
 		String bStr = b.getNumber(); //Dec str
-		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int aInt = Integer.parseInt(aStr); //int
+		int bInt = Integer.parseInt(bStr); //int 
 		int result = aInt - bInt; // int
 		String resultStr = Integer.toString(result); //Dec str
 		Decimal resultDec = new Decimal(resultStr);
@@ -30,8 +30,8 @@ public class DecimalCalculator extends Calculator<Decimal> {
 	public Decimal multiply(Decimal a, Decimal b) {
 		String aStr = a.getNumber(); //Dec str
 		String bStr = b.getNumber(); //Dec str
-		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int aInt = Integer.parseInt(aStr); //int
+		int bInt = Integer.parseInt(bStr); //int 
 		int result = aInt * bInt; // int
 		String resultStr = Integer.toString(result); //Dec str
 		Decimal resultDec = new Decimal(resultStr);
@@ -42,8 +42,8 @@ public class DecimalCalculator extends Calculator<Decimal> {
 	public Decimal divide(Decimal a, Decimal b) {
 		String aStr = a.getNumber(); //Dec str
 		String bStr = b.getNumber(); //Dec str
-		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int aInt = Integer.parseInt(aStr); //int
+		int bInt = Integer.parseInt(bStr); //int 
 		int result = aInt / bInt; // int
 		String resultStr = Integer.toString(result); //Dec str
 		Decimal resultDec = new Decimal(resultStr);
@@ -54,8 +54,8 @@ public class DecimalCalculator extends Calculator<Decimal> {
 	public Decimal mod(Decimal a, Decimal b) {
 		String aStr = a.getNumber(); //Dec str
 		String bStr = b.getNumber(); //Dec str
-		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int aInt = Integer.parseInt(aStr); //int
+		int bInt = Integer.parseInt(bStr); //int 
 		int result = aInt % bInt; // int
 		String resultStr = Integer.toString(result); //Dec str
 		Decimal resultDec = new Decimal(resultStr);
