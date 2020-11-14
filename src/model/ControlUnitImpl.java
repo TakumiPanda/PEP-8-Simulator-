@@ -1,194 +1,274 @@
 package model;
 
 import java.util.Map;
+
 import static java.util.Map.entry;
+
 import utils.Transformer;
 import view.SimulatorWindow;
 
 public class ControlUnitImpl implements ControlUnit {
 
-	private Binary PC = new Binary("0000000000000000");
-	private Binary AR = new Binary("0000000000000000");
-	private Binary IR = new Binary("0000000000000000");
+    private Binary PC = new Binary("0000000000000000");
+    private Binary AR = new Binary("0000000000000000");
+    private Binary IR = new Binary("0000000000000000");
 
-	private boolean stopProgram = false;
+    private boolean stopProgram = false;
 
-	/** N bit is set if result of operation in negative. */
-	private Binary N = new Binary("" + 0);
-	/** C bit is set if operation produced a carry (borrow on subtraction. */
-	private Binary C = new Binary("" + 0);
-	/** V bit is set if operation produced an overflow. */
-	private Binary V = new Binary("" + 0);
-	/** Z bit is set if result of operation is zero (All bits = 0 */
-	private Binary Z = new Binary("" + 0);
+    /**
+     * N bit is set if result of operation in negative.
+     */
+    private Binary N = new Binary("" + 0);
+    /**
+     * C bit is set if operation produced a carry (borrow on subtraction.
+     */
+    private Binary C = new Binary("" + 0);
+    /**
+     * V bit is set if operation produced an overflow.
+     */
+    private Binary V = new Binary("" + 0);
+    /**
+     * Z bit is set if result of operation is zero (All bits = 0
+     */
+    private Binary Z = new Binary("" + 0);
 
-	private BinaryCalculator binCalculator = new BinaryCalculator();
-	private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
-	private SimulatorWindow window;
-	private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
+    private BinaryCalculator binCalculator = new BinaryCalculator();
+    private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
+    private SimulatorWindow window;
+    private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
 
-	public ControlUnitImpl(SimulatorWindow window) {
-		this.window = window;
-	}
+    public ControlUnitImpl(SimulatorWindow window) {
+        this.window = window;
+    }
 
-	@Override
-	public void executeSingleInstruction(String instr) {
-		Instruction instruction = Transformer.decodeInstruction(instr);
-		executeInstruction(instruction);
-	}
+    @Override
+    public void executeSingleInstruction(String instr) {
+        Instruction instruction = Transformer.decodeInstruction(instr);
+        executeInstruction(instruction);
+    }
 
-	@Override
-	public void startCycle() throws InterruptedException {
-		String pcStr = memoryDump.fetch(Integer.parseInt(this.PC.getNumber()));
-		this.IR.setNumber(pcStr);
-		
-		Instruction currentInstruction = Transformer.decodeInstruction(pcStr);
+    @Override
+    public void startCycle() {
+        String formattedPCAddress = formatBinaryAddress(this.PC.getNumber().replace(" ", ""));
+        String hexAddress = Transformer.binToHex(formattedPCAddress).replace(" ", "");
+        String formattedHex = String.format("%06X", Integer.parseInt(hexAddress, 16));
+        String pcStr = memoryDump.fetch(Integer.parseInt(formattedHex, 16));
+        this.IR.setNumber(pcStr);
 
-		executeInstruction(currentInstruction);
 
-		if (stopProgram == false) {
-			startCycle();
-		}
-	}
+        Instruction currentInstruction = Transformer.decodeInstruction(pcStr);
+        executeInstruction(currentInstruction);
 
-	@Override
-	public String getCurrentInstruction() {
-		return this.IR.getNumber();	
-	}
+        if (stopProgram == false) {
+            startCycle();
+        }
+    }
 
-	@Override
-	public ArithmeticLogicUnitImpl getALU() {
-		return ALU;
-	}
+    private String formatBinaryAddress(String binAddress) {
+        int lengthExtended = 16 - binAddress.length();
+        for (int i = 0; i < lengthExtended; i++) {
+            binAddress = "0" + binAddress;
+        }
+        return binAddress;
+    }
 
-	@Override
-	public MemoryDump getMemoryDump() {
-		return memoryDump;
-	}
+    @Override
+    public String getCurrentInstruction() {
+        return this.IR.getNumber();
+    }
 
-	private void executeInstruction(Instruction instruction) {
-		switch (instruction.getOpcode()) {
-			case ("0000"):// stop & branch
-				executeStopBranch(instruction);
-				break;
-			case ("0001"):// shift, negate, invert, branch
-				executeShiftNegateInvertBranch(instruction);
-				break;
-			case ("0010"):// rotate & Op trap
-				executeRotateOpTrap(instruction);
-				break;
-			case ("0011"):// decOut
-				executeDecOut(instruction);
-				break;
-			case ("0100"):// char in
-				executeCharIn(instruction);
-				break;
-			case ("0101"):// char out
-				executeCharOut(instruction);
-				break;
-			case ("0111"):// add
-				executeAdd(instruction);
-				break;
-			case ("1000"):// sub
-				executeSub(instruction);
-				break;
-			case ("1001"):// and
-				executeAnd(instruction);
-				break;
-			case ("1010"):// or
-				executeOr(instruction);
-				break;
-			case ("1011"):// compare
-				executeCompare(instruction);
-				break;
-			case ("1100"):// load memory
-				executeLW(instruction);
-				break;
-			case ("1110"):// sw
-				executeSW(instruction);
-				break;
-			default:
-		}
-		// PC must be updated to hold the address of the next instruction to be executed
-		this.PC.setNumber(binCalculator.add(new Binary(this.PC.getNumber()), new Binary("1")).getNumber()); //double check work
+    @Override
+    public ArithmeticLogicUnitImpl getALU() {
+        return ALU;
+    }
 
-		// Registers must be updated in the GUI Window.
-		Binary[] updatedRegisters = ALU.getRegisters();
-		updatedRegisters[0] = this.PC; 
-		updatedRegisters[1] = this.IR; 
-		updatedRegisters[2] = this.AR; 
-		ALU.updateState(updatedRegisters);
-	}
+    @Override
+    public MemoryDump getMemoryDump() {
+        return memoryDump;
+    }
 
-	private void executeAdd(Instruction instr) {
-		setFlagsForArithmetic(new Binary("" + this.AR), new Binary(instr.getOperand()), "Addition");
-		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
-			Binary operandValue = new Binary(instr.getOperand());
-			this.AR = binCalculator.add(operandValue,AR);
-		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
-			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-			Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-			this.AR = binCalculator.add(memVal, AR);
-		}
-		incrementPC();
-	}
+    private void executeInstruction(Instruction instruction) {
+        switch (instruction.getOpcode()) {
+            case ("0000"):// stop
+                executeStop(instruction);
+                break;
+            case ("0000010"):
+                executeBR(instruction);
+                break;
+            case ("0000011"):
+                executeBRLE(instruction);
+                break;
+            case ("0000100"):
+                executeBRLT(instruction);
+                break;
+            case ("0000101"):
+                executeBREQ(instruction);
+                break;
+            case ("0000110"):
+                executeBRNE(instruction);
+                break;
+            case ("0000111"):
+                executeBRGE(instruction);
+                break;
+            case ("0001000"):
+                executeBRGT(instruction);
+                break;
+            case ("0001001"):
+                executeBRN(instruction);
+                break;
+            case ("0001010"):
+                executeBRC(instruction);
+                break;
+            case "0001110": //shift left
+                executeShiftLeft(instruction);
+                break;
+            case "0001111": //Shift right
+                executeShiftRight(instruction);
+                break;
+            case "0001101": //Negate
+                executeNegate(instruction);
+                break;
+            case "0001100":
+                executeBitwiseInvert(instruction);
+                break;
+            case "0010000": //rotate right
+                executeRotateLeft(instruction);
+                break;
+            case "0010001": // rotate left
+                executeRotateRight(instruction);
+                break;
+            case ("0011"):// decOut
+                executeDecOut(instruction);
+                break;
+            case ("01001"):// char in
+                executeCharIn(instruction);
+                break;
+            case ("01010"):// char out
+                executeCharOut(instruction);
+                break;
+            case ("0111"):// add
+                executeAdd(instruction);
+                break;
+            case ("1000"):// sub
+                executeSub(instruction);
+                break;
+            case ("1001"):// and
+                executeAnd(instruction);
+                break;
+            case ("1010"):// or
+                executeOr(instruction);
+                break;
+            case ("1011"):// compare
+                executeCompare(instruction);
+                break;
+            case ("1100"):// load memory
+                executeLW(instruction);
+                break;
+            case ("1110"):// sw
+                executeSW(instruction);
+                break;
+            default:
+        }
+        // PC must be updated to hold the address of the next instruction to be executed
+        incrementPC();
 
-	private void executeCharIn(Instruction instr) {
-		// Wait for a character to be pressed in the terminal window
-	}
+        // Registers must be updated in the GUI Window.
+        Binary[] updatedRegisters = ALU.getRegisters();
+        updatedRegisters[0] = this.PC;
+        updatedRegisters[1] = this.IR;
+        updatedRegisters[2] = this.AR;
+        ALU.updateState(updatedRegisters);
+    }
 
-	private void executeCharOut(Instruction instr) {
-		String operand = instr.getOperand();
-		char character = (char) Transformer.binToDecimal(operand);
-		window.setTerminalArea(window.getTerminalArea() + "" + character);
-		incrementPC();
-	}
+    private void executeNegate(Instruction instr) {
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        ARInt *= -1; //2s comp
+        String negateARStr = Integer.toBinaryString(ARInt);
+        this.AR = new Binary(negateARStr);
+    }
 
-	private void executeLW(Instruction instr) {
-		int address = Transformer.binToDecimal(instr.getOperand());
-		Binary memBin = new Binary(Integer.toBinaryString(
-				Transformer.hexToDecimal(memoryDump.getMemory(address))));
-		this.AR = memBin;
-	}
+    private void executeShiftLeft(Instruction instr) {
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        int shiftedARInt = (ARInt << 1);
+        String shiftedARStr = Integer.toBinaryString(shiftedARInt);
+        ARInt = Integer.parseInt(AR.getNumber(), 2);
+        ARInt *= -1; //2s comp
+        String negateARStr = Integer.toBinaryString(ARInt);
+        this.AR = new Binary(negateARStr);
+    }
 
-	private void executeSub(Instruction instr) {
+    private void executeShiftRight(Instruction instr) {
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        int shiftedARInt = (ARInt >> 1);
+        String shiftedARStr = Integer.toBinaryString(shiftedARInt);
+        this.AR = new Binary(shiftedARStr);
+    }
 
-		setFlagsForArithmetic(new Binary("" + this.AR), new Binary(instr.getOperand()), "Subtraction");
-		
-		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
-			Binary operandVal = new Binary (instr.getOperand());
-			this.AR = binCalculator.subtract(AR, operandVal);
-		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
-			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-			Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-			this.AR = binCalculator.subtract(AR, memVal);
-		}
-	}
+    private void executeAdd(Instruction instr) {
+        if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
+            Binary operandValue = new Binary(instr.getOperand());
+            this.AR = binCalculator.add(operandValue, AR);
+        } else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
+            int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+            Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            this.AR = binCalculator.add(memVal, AR);
+        }
+        incrementPC();
+        incrementPC();
+    }
 
-	private void executeSW(Instruction instr) {
-		String hexAddress = Transformer.binToHex(instr.getOperand());
-		memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(),2)); //double check if radix is 2 or 16
-	}
+    private void executeCharIn(Instruction instr) {
+        // Wait for a character to be pressed in the terminal window
+    }
 
-	private void executeAnd(Instruction instr) {
-		if (instr.get5thBit().contentEquals("0")){ //AC
-			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR & immediate
-				int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
-				int ARint = Integer.parseInt(AR.getNumber(),2);
-				int andInt = (ARint & valueInt);
-				String andStr = Integer.toBinaryString(andInt);
-				Binary andBin = new Binary(andStr);
-				this.AR = andBin;
-			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR & memory
-				int address = Transformer.binToDecimal(instr.getOperand());
-				int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
-				int valueAR = Integer.parseInt(AR.getNumber(),2);
-				int andInt = (valueAR & memValue);
-				String andStr = Integer.toBinaryString(andInt);
-				Binary andBin = new Binary(andStr);
-				this.AR = andBin;
-			}
-		}
+    private void executeCharOut(Instruction instr) {
+        String operand = instr.getOperand();
+        char character = (char) Transformer.binToDecimal(operand);
+        window.setTerminalArea(window.getTerminalArea() + "" + character);
+    }
+
+    private void executeLW(Instruction instr) {
+        int address = Transformer.binToDecimal(instr.getOperand());
+        Binary memBin = new Binary(Integer.toBinaryString(
+                Transformer.hexToDecimal(memoryDump.getMemory(address))));
+        this.AR = memBin;
+    }
+
+    private void executeSub(Instruction instr) {
+        if (instr.getAddressingMode().contentEquals("000")) { // immediate
+            Binary operandVal = new Binary(instr.getOperand());
+            this.AR = binCalculator.subtract(AR, operandVal);
+        } else if (instr.getAddressingMode().contentEquals("001")) { // direct
+            int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+            Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            this.AR = binCalculator.subtract(AR, memVal);
+        }
+    }
+
+    private void executeSW(Instruction instr) {
+        String hexAddress = Transformer.binToHex(instr.getOperand());
+        memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(), 2)); //double check if radix is 2 or 16
+    }
+
+    private void executeAnd(Instruction instr) {
+        if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
+            if (instr.getAddressingMode().contentEquals("000")) { //AR & immediate
+                int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int ARint = Integer.parseInt(AR.getNumber(), 2);
+                int andInt = (ARint & valueInt);
+                String andStr = Integer.toBinaryString(andInt);
+                Binary andBin = new Binary(andStr);
+                this.AR = andBin;
+            } else if (instr.getAddressingMode().contentEquals("001")) { //AR & memory
+                int address = Transformer.binToDecimal(instr.getOperand());
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int valueAR = Integer.parseInt(AR.getNumber(), 2);
+                int andInt = (valueAR & memValue);
+                String andStr = Integer.toBinaryString(andInt);
+                Binary andBin = new Binary(andStr);
+                this.AR = andBin;
+            }
+        }
 //		currently implementing later: Reason (Don't know index register and how it works)
 //		}else if(instr.get5thBit().contentEquals("1")){ //Reg
 //			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg & immediate
@@ -197,26 +277,32 @@ public class ControlUnitImpl implements ControlUnit {
 //				
 //			}
 //		}
-	}
+    }
 
-	private void executeOr(Instruction instr) {
-		if (instr.get5thBit().contentEquals("0")){ //AC
-		if (instr.getRegisterSpecifier().contentEquals("000")) { //AR | immediate
-			int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
-			int ARvalue = Integer.parseInt(AR.getNumber(),2);
-			int resultInt = (value | ARvalue);
-			String resultStr = Integer.toBinaryString(resultInt);
-			this.AR = new Binary(resultStr);
-		}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR | memory
-			int address = Transformer.binToDecimal(instr.getOperand());
-			int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-			int ARvalue = Integer.parseInt(AR.getNumber(),2);
-			int resultInt = (value | ARvalue);
-			String resultStr = Integer.toBinaryString(resultInt);
-			this.AR = new Binary(resultStr);
-		}
-	}
-	//work on later	
+    private void executeBitwiseInvert(Instruction instr) {
+        String onesCompStr = AR.getNumber();
+        String replacedStr = onesCompStr.replace('0', '2').replace('1', '0').replace('2', '1'); //1s comp
+        this.AR = new Binary(replacedStr);
+    }
+
+    private void executeOr(Instruction instr) {
+        if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
+            if (instr.getAddressingMode().contentEquals("000")) { //AR | immediate
+                int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int ARvalue = Integer.parseInt(AR.getNumber(), 2);
+                int resultInt = (value | ARvalue);
+                String resultStr = Integer.toBinaryString(resultInt);
+                this.AR = new Binary(resultStr);
+            } else if (instr.getAddressingMode().contentEquals("001")) { //AR | memory
+                int address = Transformer.binToDecimal(instr.getOperand());
+                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int ARvalue = Integer.parseInt(AR.getNumber(), 2);
+                int resultInt = (value | ARvalue);
+                String resultStr = Integer.toBinaryString(resultInt);
+                this.AR = new Binary(resultStr);
+            }
+        }
+        //work on later
 //	}else if(instr.get5thBit().contentEquals("1")){ //Reg
 //		if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg | immediate
 //			
@@ -224,22 +310,22 @@ public class ControlUnitImpl implements ControlUnit {
 //			
 //		}
 //	}
-	}
+    }
 
-	private void executeCompare(Instruction instr) {
-		if (instr.get5thBit().contentEquals("0")){ //AC
-			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
-				Binary operandBin = new Binary(instr.getOperand());
-				this.AR = new Binary(Integer.toBinaryString(
-						AR.compare(operandBin.getNumber(),AR.getNumber())));
-			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
-				int address = Transformer.binToDecimal(instr.getOperand());
-				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-				this.AR = new Binary(Integer.toBinaryString(
-						AR.compare(Integer.toString(value),AR.getNumber())));
-			}
-		}
-	}
+    private void executeCompare(Instruction instr) {
+        if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
+            if (instr.getAddressingMode().contentEquals("000")) { //AR Compare immediate
+                Binary operandBin = new Binary(instr.getOperand());
+                this.AR = new Binary(Integer.toBinaryString(
+                        AR.compare(operandBin.getNumber(), AR.getNumber())));
+            } else if (instr.getAddressingMode().contentEquals("001")) { //AR Compare memory
+                int address = Transformer.binToDecimal(instr.getOperand());
+                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                this.AR = new Binary(Integer.toBinaryString(
+                        AR.compare(Integer.toString(value), AR.getNumber())));
+            }
+        }
+    }
 //		}else if(instr.get5thBit().contentEquals("1")){ //Reg
 //			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
 //				
@@ -249,198 +335,128 @@ public class ControlUnitImpl implements ControlUnit {
 //		}
 //	}
 
-	private void executeRotateOpTrap(Instruction instr) {
-		if (instr.get5thBit().equals("0")) {
-			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // rotate left
-				String ARString = AR.getNumber();
-				String rotatedARString = ARString.substring(1, ARString.length()) + ARString.substring(0);
-				this.AR = new Binary(rotatedARString);
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // rotate right
-				String ARString = AR.getNumber();
-				String rotatedARString = ARString.substring(ARString.length() - 1)
-						+ ARString.substring(0, ARString.length() - 1);
-				this.AR = new Binary(rotatedARString);
-			} else if ((instr.getRegisterSpecifier().substring(0)).contentEquals("1")) { // Unary no OP trap
+    private void executeRotateRight(Instruction instr) {
+        String ARString = AR.getNumber();
+        String rotatedARString = ARString.substring(ARString.length() - 1)
+                + ARString.substring(0, ARString.length() - 1);
+        this.AR = new Binary(rotatedARString);
+    }
 
-			}
-		} else if (instr.get5thBit().equals("1")) { // Nonunary no OP trap
+    private void executeRotateLeft(Instruction instr) {
+        String ARString = AR.getNumber();
+        String rotatedARString = ARString.substring(1, ARString.length()) + ARString.substring(0);
+        this.AR = new Binary(rotatedARString);
+    }
 
-		}
-	}
+    private void executeNOPn(Instruction instr) {
 
-	private void executeDecOut(Instruction instr) {
-		if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
-			String operand = instr.getOperand();
-			int dec = Transformer.binToDecimal(operand);
-			window.setTerminalArea(window.getTerminalArea() + "" + dec);
-		} else if (instr.getRegisterSpecifier().contentEquals("001")) { // memory
-			int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-			int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
-			window.setTerminalArea(window.getTerminalArea() + "" + dec);
-		}
-		incrementPC();
-	}
+    }
 
-	private void executeStopBranch(Instruction instr) {
-		if (instr.getRegisterSpecifier().equals("0")) {
-			if (instr.getRegisterSpecifier().contentEquals("000")) { // Stop
-				stopProgram = true;
-				return;
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch specified address/unconditional
-				Binary addr = new Binary (instr.getOperand());
-				this.PC = addr;
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if less-than-or-equal
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt >= addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			}
-		} else if (instr.get5thBit().contentEquals("1")) {
-			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // branch if less than
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt > addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // branch if equal
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt == addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if not equal
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt != addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if greater or equal
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt <= addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			}
-		}
-	}
+    private void executeNOP(Instruction instr) {
 
-	private void executeShiftNegateInvertBranch(Instruction instr) {
-		if (instr.get5thBit().equals("0")) {
-			if (instr.getRegisterSpecifier().contentEquals("00")) { // branch greater
-				int addrInt = Integer.parseInt(instr.getOperand(),2);
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				if (ARInt > addrInt) {
-					this.PC = new Binary(Integer.toBinaryString(addrInt));
-				}
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if V (overflow)
-				if (Integer.parseInt(V.getNumber()) == 1) {
-					this.PC = new Binary(instr.getOperand());
-				}
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if C (carry)
-				if (Integer.parseInt(C.getNumber()) == 1) {
-					this.PC = new Binary(instr.getOperand());
-				}
-			}
-		} else if (instr.get5thBit().contentEquals("1")) {
-			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // bitwise invert
-				String onesCompStr = AR.getNumber();
-				String replacedStr = onesCompStr.replace('0', '2').replace('1', '0').replace('2', '1'); //1s comp
-				this.AR = new Binary(replacedStr);
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // negate
-				int ARInt = Integer.parseInt(AR.getNumber(),2);
-				ARInt *= -1; //2s comp
-				String negateARStr = Integer.toBinaryString(ARInt);
-				this.AR = new Binary(negateARStr);
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // shift left
-				int ARInt = Integer.parseInt(AR.getNumber(), 2);
-				int shiftedARInt = (ARInt << 1);
-				String shiftedARStr = Integer.toBinaryString(shiftedARInt);
-				this.AR = new Binary(shiftedARStr);
-			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // shift right
-				int ARInt = Integer.parseInt(AR.getNumber(), 2);
-				int shiftedARInt = (ARInt >> 1);
-				String shiftedARStr = Integer.toBinaryString(shiftedARInt);
-				this.AR = new Binary(shiftedARStr);
-			}
-		}
-	}
-	
-	private void incrementPC() {
-		String twoStr = "10";
-		Binary twoBin = new Binary(twoStr);
-		this.PC = binCalculator.add(twoBin, PC);
-	}
+    }
 
-	private void setFlags(Number operand) {
-		String binNum = operand.toString();
-		if (binNum.charAt(0) == '1') {
-			N = new Binary("1");
-		} else if (binNum.equals("00000000")) {
-			Z = new Binary("1");
-		}
-	}
+    private void executeDecOut(Instruction instr) {
+        if (instr.getAddressingMode().contentEquals("000")) { // immediate
+            String operand = instr.getOperand();
+            int dec = Transformer.binToDecimal(operand);
+            window.setTerminalArea(window.getTerminalArea() + "" + dec);
+        } else if (instr.getAddressingMode().contentEquals("001")) { // memory
+            int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+            int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
+            window.setTerminalArea(window.getTerminalArea() + "" + dec);
+        }
+        incrementPC();
+    }
 
-	private void setFlagsForArithmetic(Number operandOne, Number operandTwo, String operation) {
-		String bin1 = operandOne.toString();
-		String bin2 = operandTwo.toString();
+    private void executeStop(Instruction instr) {
+        stopProgram = true;
+    }
 
-		// First check for overflow by analyzing the most significant bit
-		char MSB1 = bin1.charAt(0);
-		char MSB2 = bin2.charAt(0);
-		char sum = Transformer.decimalToBinary(Transformer.binToDecimal(bin1) + Transformer.binToDecimal(bin2))
-				.charAt(0);
-		if (MSB1 == MSB2 && MSB1 != sum) {
-			V = new Binary("1");
-		}
+    private void executeBR(Instruction instr) {
+        Binary addr = new Binary(instr.getOperand());
+        this.PC = addr;
+    }
 
-		switch (operation) {
-			case "Subtract":
-				int s = 0;
-				// Traverse both strings starting
-				// from last characters
-				int i = bin1.length() - 1, j = bin2.length() - 1;
-				while (i >= 0 || j >= 0 || s == 1) {
-					// Comput sum of last
-					// digits and carry
-					s -= ((i >= 0) ? bin1.charAt(i) - '0' : 0);
-					s -= ((j >= 0) ? bin2.charAt(j) - '0' : 0);
-					// Compute carry
-					s /= 2;
-					if (s == 1) {
-						C = new Binary("1");
-					}
-					// Move to next digits
-					i--;
-					j--;
-				}
+    private void executeBRLE(Instruction instr) {
+        int addrInt = Integer.parseInt(instr.getOperand(), 2);
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        if (ARInt >= addrInt) {
+            this.PC = new Binary(Integer.toBinaryString(addrInt));
+        }
+    }
 
-				break;
-			case "Addition":
-				int a = 0;
-				// Traverse both strings starting
-				// from last characters
-				int k = bin1.length() - 1, l = bin2.length() - 1;
-				while (k >= 0 || l >= 0 || a == 1) {
-					// Comput sum of last
-					// digits and carry
-					a += ((k >= 0) ? bin1.charAt(k) - '0' : 0);
-					a += ((l >= 0) ? bin2.charAt(l) - '0' : 0);
-					// Compute carry
-					a /= 2;
-					if (a == 1) {
-						C = new Binary("1");
-					}
-					// Move to next digits
-					k--;
-					l--;
-				}
-				break;
-		}
-	}
+    private void executeBRLT(Instruction instr) {
+        if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // branch if less than
+            int addrInt = Integer.parseInt(instr.getOperand(), 2);
+            int ARInt = Integer.parseInt(AR.getNumber(), 2);
+            if (ARInt > addrInt) {
+                this.PC = new Binary(Integer.toBinaryString(addrInt));
+            }
+        }
+    }
 
-	@Override
-	public Map<String, Binary> getConditionRegisterBits() {
-		return Map.ofEntries(entry("N", N), entry("Z", Z), entry("V", V), entry("C", C));
-	}
+    private void executeBREQ(Instruction instr) {
+        int addrInt = Integer.parseInt(instr.getOperand(), 2);
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        if (ARInt == addrInt) {
+            this.PC = new Binary(Integer.toBinaryString(addrInt));
+        }
+    }
+
+    private void executeBRNE(Instruction instr) {
+        int addrInt = Integer.parseInt(instr.getOperand(), 2);
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        if (ARInt != addrInt) {
+            this.PC = new Binary(Integer.toBinaryString(addrInt));
+        }
+    }
+
+    private void executeBRGE(Instruction instr) {
+
+    }
+
+    private void executeBRGT(Instruction instr) {
+        int addrInt = Integer.parseInt(instr.getOperand(), 2);
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        if (ARInt > addrInt) {
+            this.PC = new Binary(Integer.toBinaryString(addrInt));
+        }
+    }
+
+    private void executeBRC(Instruction instr) {
+        if (Integer.parseInt(C.getNumber()) == 1) {
+            this.PC = new Binary(instr.getOperand());
+        }
+    }
+
+    private void executeBRN(Instruction instr) {
+
+    }
+
+    private void executeBRV(Instruction instr) {
+        if (Integer.parseInt(V.getNumber()) == 1) {
+            this.PC = new Binary(instr.getOperand());
+        }
+    }
+
+    private void incrementPC() {
+        String twoStr = "01";
+        Binary twoBin = new Binary(twoStr);
+        this.PC = binCalculator.add(twoBin, PC);
+    }
+
+    private void setFlags(Number operand) {
+        String binNum = operand.toString();
+        if (binNum.charAt(0) == '1') {
+            N = new Binary("1");
+        } else if (binNum.equals("00000000")) {
+            Z = new Binary("1");
+        }
+    }
+
+    @Override
+    public Map<String, Binary> getConditionRegisterBits() {
+        return Map.ofEntries(entry("N", N), entry("Z", Z), entry("V", V), entry("C", C));
+    }
 }

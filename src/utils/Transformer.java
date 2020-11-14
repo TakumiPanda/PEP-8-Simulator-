@@ -10,15 +10,11 @@ public class Transformer {
 	 * @throws IllegalArgumentException if value for immediate is out of bound.
 	 */
 	public static Instruction decodeInstruction(final String binaryString) throws IllegalArgumentException {
-
-		Instruction finalInstr = new Instruction();
-		if (binaryString.equals("00000000")) { // Stop instruction
+		if (binaryString.equals("000000000000000000000000")) { // Stop instruction
 			return new Instruction("0000", "0000");
 		}
-		String operand = binaryString.substring(8,15);
-		
-		int strLength = binaryString.length();
-		for (int i = strLength - 1; i >=0; i--) {
+		String operand = binaryString.substring(8,24);
+		for (int i = 7; i >=0; i--) {
 			String possibleOpcode = binaryString.substring(0,i);
 			switch (possibleOpcode) {
 				case "0000010":
@@ -31,18 +27,15 @@ public class Transformer {
 				case "0001001":
 				case "0001010":
 				case "0001011":
-					finalInstr = new Instruction(binaryString.substring(3, 6), "", ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, "", ""+binaryString.charAt(7), operand);
 				case "0001100":
 				case "0001101":
 				case "0001110":
 				case "0001111":
-					finalInstr = new Instruction(binaryString.substring(3, 6), ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
 				case "0010000":
 				case "0010001": 
-					finalInstr = new Instruction(binaryString.substring(2, 6), ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
 				case "00101":
 				case "00110":
 				case "00111":
@@ -52,31 +45,21 @@ public class Transformer {
 				case "01011":
 				case "01100":
 				case "01101":
-				case "01110":
-				case "01111":
-					finalInstr = new Instruction(binaryString.substring(1, 4), binaryString.substring(5, 7), operand);
-					break;
-				case "10000":
-				case "10001":
-				case "10010":
-				case "10011":
-				case "10100":
-				case "10101":
-				case "10110":
-				case "10111":
-				case "11000":
-				case "11001":
-				case "11010":
-				case "11011":
-				case "11100":
-				case "11101":
-				case "11110":
-				case "11111":
-					finalInstr = new Instruction(binaryString.substring(0, 4), "", binaryString.substring(5, 7), operand);
-					break;
+					return new Instruction(possibleOpcode, binaryString.substring(5, 7), operand);
+				case "0111":
+				case "1000":
+				case "1001":
+				case "1010":
+				case "1011":
+				case "1100":
+				case "1101":
+				case "1110":
+				case "1111":
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(4), binaryString.substring(5, 8));
 				} 
+				
 		}
-		return finalInstr;
+		return new Instruction("", "");
 	}
 
 	/**

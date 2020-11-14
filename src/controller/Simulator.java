@@ -2,7 +2,6 @@ package controller;
 
 import model.Binary;
 import model.ControlUnitImpl;
-import model.Decimal;
 import model.MemoryDumpImpl;
 import view.SimulatorWindowImpl;
 
@@ -66,11 +65,7 @@ public class Simulator implements Observer {
 		if (arg instanceof String) {
 			controlUnit.executeSingleInstruction((String) arg);
 		} else {
-			try {
-				controlUnit.startCycle();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			controlUnit.startCycle();
 		}
 		// Update the memory dump.
 		window.setMemoryDump((MemoryDumpImpl) controlUnit.getMemoryDump());

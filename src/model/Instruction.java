@@ -5,22 +5,13 @@ package model;
  */
 
 public class Instruction {
-	/**
-	 * The destination register number.
-	 */
-	private String myRegisterSpecifier;
+	private String myRegisterSpecifier = "";
 
-	/** The operandSpecifier value. */
-	private String myOperand;
+	private String myOperand = "";
 
-	private String myAddressingMode;
+	private String myAddressingMode = "";
 
-	/**
-	 * The opcode of the instruction.
-	 */
-	private String myOpcode;
-
-	public Instruction(){}
+	private String myOpcode = "";
 
 	public Instruction(String opCode, String operand) {
 		this.myOpcode = opCode;
@@ -42,7 +33,11 @@ public class Instruction {
 
 	@Override
 	public String toString() {
-		return myOpcode + myOperand;
+		return this.myOpcode + this.myRegisterSpecifier + this.myAddressingMode + this.myOpcode;
+	}
+
+	public String getAddressingMode() {
+		return (myAddressingMode == null)? "": myAddressingMode;
 	}
 
 	public String getOpcode() {
@@ -54,8 +49,4 @@ public class Instruction {
 	public String getRegisterSpecifier() {
 		return (myRegisterSpecifier == null)? "": myRegisterSpecifier;
 	}	
-
-	public String get5thBit() {
-		return null;
-	}
 }
