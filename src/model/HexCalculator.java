@@ -54,5 +54,4 @@ public class HexCalculator implements Calculator {
 		String resultStr = Integer.toBinaryString(result); //bin str
 		return new Hexadecimal(resultStr);
 	}
-
 }
