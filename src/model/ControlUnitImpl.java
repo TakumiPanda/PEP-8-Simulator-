@@ -49,14 +49,11 @@ public class ControlUnitImpl implements ControlUnit {
 
     @Override
     public void startCycle() {
-        String formattedPCAddress = formatBinaryAddress(this.PC.getNumber().replace(" ", ""));
-        String hexAddress = Transformer.binToHex(formattedPCAddress).replace(" ", "");
-        String formattedHex = String.format("%06X", Integer.parseInt(hexAddress, 16));
-        String pcStr = memoryDump.fetch(Integer.parseInt(formattedHex, 16));
-        this.IR.setNumber(pcStr);
+        int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
+        String instructionFromAddress = memoryDump.fetch(addressOfInstructionInMemory);
+        this.IR.setNumber(instructionFromAddress);
 
-
-        Instruction currentInstruction = Transformer.decodeInstruction(pcStr);
+        Instruction currentInstruction = Transformer.decodeInstruction(this.IR.getNumber());
         executeInstruction(currentInstruction);
 
         if (stopProgram == false) {
