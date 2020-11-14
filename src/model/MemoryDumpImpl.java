@@ -76,15 +76,6 @@ public class MemoryDumpImpl implements MemoryDump {
 
     @Override
     public String fetch(int address) {
-        /*
-        if (address < 0x0000 || address > 0xFFFF) {
-            throw new IllegalArgumentException("Invalid address");
-        }
-        String hex = hexDump[address] + hexDump[address + 1] + hexDump[address + 2];
-        String formattedHex = String.format("%06X", Integer.parseInt(hex, 16));
-        return Transformer.hexToBinary(formattedHex).replace(" ", "");
-         */
-        System.out.println(address);
         return binInstructions.get(address);
     }
 
