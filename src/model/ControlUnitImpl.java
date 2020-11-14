@@ -38,10 +38,14 @@ public class ControlUnitImpl implements ControlUnit {
 	}
 
 	@Override
-	public void startCycle() throws InterruptedException {
-		String pcStr = memoryDump.fetch(Integer.parseInt(this.PC.getNumber()));
+	public void startCycle() {
+		String formattedPCAddress = formatBinaryAddress(this.PC.getNumber().replace(" ", ""));
+		String hexAddress = Transformer.binToHex(formattedPCAddress).replace(" ", "");
+		String formattedHex = String.format("%06X", Integer.parseInt(hexAddress,16));
+		String pcStr = memoryDump.fetch(Integer.parseInt(formattedHex, 16));
 		this.IR.setNumber(pcStr);
-		
+
+
 		Instruction currentInstruction = Transformer.decodeInstruction(pcStr);
 		executeInstruction(currentInstruction);
 
@@ -49,7 +53,13 @@ public class ControlUnitImpl implements ControlUnit {
 			startCycle();
 		}
 	}
-
+	private String formatBinaryAddress(String binAddress) {
+		int lengthExtended = 16 - binAddress.length();
+		for (int i = 0; i < lengthExtended; i++) {
+			binAddress = "0" + binAddress;
+		}
+		return binAddress;
+	}
 	@Override
 	public String getCurrentInstruction() {
 		return this.IR.getNumber();	
