@@ -10,13 +10,11 @@ public class Transformer {
 	 * @throws IllegalArgumentException if value for immediate is out of bound.
 	 */
 	public static Instruction decodeInstruction(final String binaryString) throws IllegalArgumentException {
-		Instruction finalInstr = new Instruction();
 		if (binaryString.equals("000000000000000000000000")) { // Stop instruction
 			return new Instruction("0000", "0000");
 		}
-		String operand = binaryString.substring(8,15);
-		int strLength = binaryString.length();
-		for (int i = strLength - 1; i >=0; i--) {
+		String operand = binaryString.substring(8,24);
+		for (int i = 7; i >=0; i--) {
 			String possibleOpcode = binaryString.substring(0,i);
 			switch (possibleOpcode) {
 				case "0000010":
@@ -29,18 +27,15 @@ public class Transformer {
 				case "0001001":
 				case "0001010":
 				case "0001011":
-					finalInstr = new Instruction(possibleOpcode, "", ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, "", ""+binaryString.charAt(7), operand);
 				case "0001100":
 				case "0001101":
 				case "0001110":
 				case "0001111":
-					finalInstr = new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
 				case "0010000":
 				case "0010001": 
-					finalInstr = new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
-					break;
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
 				case "00101":
 				case "00110":
 				case "00111":
@@ -50,8 +45,7 @@ public class Transformer {
 				case "01011":
 				case "01100":
 				case "01101":
-					finalInstr = new Instruction(possibleOpcode, binaryString.substring(5, 7), operand);
-					break;
+					return new Instruction(possibleOpcode, binaryString.substring(5, 7), operand);
 				case "0111":
 				case "1000":
 				case "1001":
@@ -61,11 +55,11 @@ public class Transformer {
 				case "1101":
 				case "1110":
 				case "1111":
-					finalInstr = new Instruction(possibleOpcode, ""+binaryString.charAt(4), binaryString.substring(5, 8));
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(4), binaryString.substring(5, 8));
 				} 
 				
 		}
-		return finalInstr;
+		return new Instruction("", "");
 	}
 
 	/**
