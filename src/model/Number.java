@@ -6,6 +6,8 @@ public abstract class Number {
 
 	private String number;
 
+//	public Number() {}
+	
 	public Number(String num) {
 		this.number = num;
 	}

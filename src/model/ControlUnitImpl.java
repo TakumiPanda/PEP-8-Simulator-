@@ -226,19 +226,20 @@ public class ControlUnitImpl implements ControlUnit {
 //	}
 	}
 
-	//work on later
-	private void executeCompare(Instruction instr) {}
-////		Decimal dec;
-//		if (instr.get5thBit().contentEquals("0")){ //AC
-//			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
-//				Binary operandBin = new Binary(instr.getOperand());
-//				Binary resultBin = new Binary(Integer.toBinaryString(Number.compare(operandBin.getNumber(),AR.getNumber())));
-//			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
-//				int address = Transformer.binToDecimal(instr.getOperand());
-//				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
-//				this.AR = dec.compare(Integer.toString(value), Integer.toString(AR));
-//			}
-//		}
+	private void executeCompare(Instruction instr) {
+		if (instr.get5thBit().contentEquals("0")){ //AC
+			if (instr.getRegisterSpecifier().contentEquals("000")) { //AR Compare immediate
+				Binary operandBin = new Binary(instr.getOperand());
+				this.AR = new Binary(Integer.toBinaryString(
+						AR.compare(operandBin.getNumber(),AR.getNumber())));
+			}else if(instr.getRegisterSpecifier().contentEquals("001")) { //AR Compare memory
+				int address = Transformer.binToDecimal(instr.getOperand());
+				int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+				this.AR = new Binary(Integer.toBinaryString(
+						AR.compare(Integer.toString(value),AR.getNumber())));
+			}
+		}
+	}
 //		}else if(instr.get5thBit().contentEquals("1")){ //Reg
 //			if (instr.getRegisterSpecifier().contentEquals("000")) { //Reg Compare immediate
 //				
@@ -246,6 +247,7 @@ public class ControlUnitImpl implements ControlUnit {
 //				
 //			}
 //		}
+//	}
 
 	private void executeRotateOpTrap(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
@@ -285,19 +287,40 @@ public class ControlUnitImpl implements ControlUnit {
 				stopProgram = true;
 				return;
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch specified address/unconditional
-
+				Binary addr = new Binary (instr.getOperand());
+				this.PC = addr;
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if less-than-or-equal
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt >= addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
 			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // branch if less than
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt > addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("01")) { // branch if equal
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt == addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if not equal
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt != addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if greater or equal
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt <= addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			}
 		}
 	}
@@ -305,11 +328,19 @@ public class ControlUnitImpl implements ControlUnit {
 	private void executeShiftNegateInvertBranch(Instruction instr) {
 		if (instr.get5thBit().equals("0")) {
 			if (instr.getRegisterSpecifier().contentEquals("00")) { // branch greater
-
+				int addrInt = Integer.parseInt(instr.getOperand(),2);
+				int ARInt = Integer.parseInt(AR.getNumber(),2);
+				if (ARInt > addrInt) {
+					this.PC = new Binary(Integer.toBinaryString(addrInt));
+				}
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("10")) { // branch if V (overflow)
-
+				if (Integer.parseInt(V.getNumber()) == 1) {
+					this.PC = new Binary(instr.getOperand());
+				}
 			} else if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("11")) { // branch if C (carry)
-
+				if (Integer.parseInt(C.getNumber()) == 1) {
+					this.PC = new Binary(instr.getOperand());
+				}
 			}
 		} else if (instr.get5thBit().contentEquals("1")) {
 			if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // bitwise invert
