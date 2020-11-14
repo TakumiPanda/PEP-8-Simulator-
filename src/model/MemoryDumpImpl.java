@@ -5,7 +5,6 @@ import utils.Transformer;
 public class MemoryDumpImpl implements MemoryDump {
 	public String[] hexDump;
 	public String[] charDump;
-	private Hexadecimal hex;
 	private static final int SIZE = 65536;
 
 	public MemoryDumpImpl() {
@@ -60,8 +59,8 @@ public class MemoryDumpImpl implements MemoryDump {
 			throw new IllegalArgumentException("Invalid address");
 		}
 		String hex = hexDump[address] + hexDump[address+1] + hexDump[address+2];
-		String formatedHex = String.format("%06X", Integer.parseInt(hex,16));
-		return Transformer.hexToBinary(formatedHex).replace(" ", "");
+		String formattedHex = String.format("%06X", Integer.parseInt(hex,16));
+		return Transformer.hexToBinary(formattedHex).replace(" ", "");
 	}
 
 	@Override
@@ -75,7 +74,7 @@ public class MemoryDumpImpl implements MemoryDump {
 
 	@Override
 	public void setMemory(String hexAddress, int value) {
-		int hexA = Integer.parseInt(hex.get(hexAddress,0));
+		int hexA = Integer.parseInt(String.valueOf(Transformer.hexToDecimal(hexAddress)));
 		String hexVal = Integer.toHexString(value);
 
 		//dump[hexA * 2 - hexA % 8] = hexVal;
