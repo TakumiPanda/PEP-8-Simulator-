@@ -13,8 +13,6 @@ public class Instruction {
 
 	private String myOpcode = "";
 
-	public Instruction(){}
-
 	public Instruction(String opCode, String operand) {
 		this.myOpcode = opCode;
 		this.myOperand = operand;
