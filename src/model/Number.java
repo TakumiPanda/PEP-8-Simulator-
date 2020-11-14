@@ -1,19 +1,38 @@
 package model;
 
-import java.util.Objects;
-
+/**
+ * 
+ * 
+ * @author
+ * @version 2.4
+ *
+ */
 public abstract class Number {
 
+	/**
+	 * number is the String variable of the Number class.
+	 */
 	private String number;
-
-//	public Number() {}
 	
+	/**
+	 * Parameterized constructor. Constructs a Number object.
+	 *
+	 * @param num String that'll be the variable number's value.
+	 */
 	public Number(String num) {
 		this.number = num;
 	}
 
-	public abstract String get(String in, int i);
-
+	/**
+	 * Compare function. Compares two strings and returns:
+	 * 0 if first String is equal to the second String.
+	 * -1 if first String is less than the second String.
+	 * 1 if first String is greater than the second String.
+	 * 
+	 * @param in First String to be compared.
+	 * @param compare Second String to be compared.
+	 * @return int.
+	 */
 	public int compare(String in, String compare) {
 		int compare1 = Integer.parseInt(in);
 		int compare2 = Integer.parseInt(compare);
@@ -31,31 +50,33 @@ public abstract class Number {
 		}
 	}
 
-	public boolean equality(Object o) {
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null)
-		{
-			return false;
-		}
-		if (getClass() != o.getClass())
-		{
-			return false;
-		}
-		Binary bin = (Binary) o;
-		return Objects.equals(number, bin.getNumber());
-	}
+	/**
+	 * Equality function. Different for each extension class.
+	 */
+	public abstract boolean equality(Object o);
 
+	/**
+	 * Sets variable to be the new value that is 
+	 * set in the parameter.
+	 * 
+	 * @param newNum New value for variable.
+	 */
 	public void setNumber(String newNum){
 		this.number = newNum;
 	}
 
+	/**
+	 * Returns the variable.
+	 * 
+	 * @return The variable number as a String.
+	 */
 	public String getNumber() {
 		return number;
 	}
 
+	/**
+	 *  Is this required if we have a getNumber()?
+	 */
 	@Override
 	public String toString() {
 		return number;

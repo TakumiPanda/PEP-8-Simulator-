@@ -1,25 +1,51 @@
 package model;
 
-import utils.Transformer;
+import java.util.Objects;
 
+/**
+ * Hexadecimal object class that extends Number.
+ * 
+ * @author
+ * @version 2.4
+ * 
+ */
 public class Hexadecimal extends Number {
 
-	private String number;
-
-	public Hexadecimal(String in)
+	/**
+	 * Parameter constructor that creates a Hexadecimal Object.
+	 * 
+	 * @param num String object that'll set to the Hexadecimal object.
+	 */
+	public Hexadecimal(String num)
 	{
-		super(in);
+		super(num);
 	}
 
+	/**
+	 * Equality function. Checks the object o to be:
+	 * the same value as o.
+	 * the value isn't null.
+	 * the same class as o.
+	 * 
+	 * @param o Object to be compared.
+	 * @return boolean false if equal to null, different class,
+	 * or not equals to number. Else, true.
+	 */
 	@Override
-	public String get(String in, int i) {
-		if (i == 0)
+	public boolean equality(Object o) {
+		if (this == o)
 		{
-			return String.valueOf(Transformer.hexToDecimal(in));
+			return true;
 		}
-		else
+		if (o == null)
 		{
-			return Transformer.hexToBinary(in);
+			return false;
 		}
+		if (getClass() != o.getClass())
+		{
+			return false;
+		}
+		Binary bin = (Binary) o;
+		return Objects.equals(this, bin);
 	}
 }
