@@ -7,12 +7,34 @@ import static java.util.Map.entry;
 import utils.Transformer;
 import view.SimulatorWindow;
 
+/**
+ * 
+ * @author
+ * @version 2.0
+ *
+ */
 public class ControlUnitImpl implements ControlUnit {
 
+	/**
+	 * PC is the pointer counter of the simulator.
+	 */
     private Binary PC = new Binary("0000000000000000");
+    
+    /**
+     * AR is the accumulator register of the simulator.
+     */
     private Binary AR = new Binary("0000000000000000");
+    
+    /**
+     * IR is the instruction register of the simulator.
+     */
     private Binary IR = new Binary("0000000000000000");
 
+    /**
+     * stopProgram is the boolean that'll halt the program.
+     * Initialize to false. False means keep the simulator 
+     * running. True means halt the program.
+     */
     private boolean stopProgram = false;
 
     /**
@@ -32,21 +54,48 @@ public class ControlUnitImpl implements ControlUnit {
      */
     private Binary Z = new Binary("" + 0);
 
+    /**
+     * binCalculator is the BinaryCalculator object for the simulator.
+     */
     private BinaryCalculator binCalculator = new BinaryCalculator();
+    
+    /**
+     * ALU is the ArithmeticLogicUnitImpl object for the simulator
+     */
     private ArithmeticLogicUnitImpl ALU = new ArithmeticLogicUnitImpl();
+    
+    /**
+     * window is the SimulatorWindow object for the simulator.
+     */
     private SimulatorWindow window;
+    
+    /**
+     * memoryDump is the MemoryDumpImpl object for the simulator.
+     */
     private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
 
+    /**
+     * Parameterized constructor. Creates an ControlUnitImpl 
+     * object.
+     * 
+     * @param window SimulatorWindow object
+     */
     public ControlUnitImpl(SimulatorWindow window) {
         this.window = window;
     }
 
+    /**
+     * Executes a single instruction.
+     */
     @Override
     public void executeSingleInstruction(String instr) {
         Instruction instruction = Transformer.decodeInstruction(instr);
         executeInstruction(instruction);
     }
 
+    /**
+     * 
+     */
     @Override
     public void startCycle() {
         int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
@@ -61,6 +110,13 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * Formats the length of the Binary address. Adds zero extension
+     * to the current binary address.
+     * 
+     * @param binAddress String binary address.
+     * @return String binary address.
+     */
     private String formatBinaryAddress(String binAddress) {
         int lengthExtended = 16 - binAddress.length();
         for (int i = 0; i < lengthExtended; i++) {
@@ -69,21 +125,35 @@ public class ControlUnitImpl implements ControlUnit {
         return binAddress;
     }
 
+    /**
+     * Returns the current instruction from IR.
+     */
     @Override
     public String getCurrentInstruction() {
         return this.IR.getNumber();
     }
 
+    /**
+     * Returns the ALU (Arithmetic Logic Unit) Impl.
+     */
     @Override
     public ArithmeticLogicUnitImpl getALU() {
         return ALU;
     }
 
+    /**
+     * Returns the memoryDump.
+     */
     @Override
     public MemoryDump getMemoryDump() {
         return memoryDump;
     }
 
+    /**
+     * Decodes the given instruction.
+     * 
+     * @param instruction instruction to be decoded.
+     */
     private void executeInstruction(Instruction instruction) {
         switch (instruction.getOpcode()) {
             case ("0000"):// stop
@@ -177,6 +247,11 @@ public class ControlUnitImpl implements ControlUnit {
         ALU.updateState(updatedRegisters);
     }
 
+    /**
+     * Negates the AR value.
+     * 
+     * @param instr 
+     */
     private void executeNegate(Instruction instr) {
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
         ARInt *= -1; //2s comp
@@ -184,16 +259,23 @@ public class ControlUnitImpl implements ControlUnit {
         this.AR = new Binary(negateARStr);
     }
 
+    /**
+     * Shifts the AR value to the left.
+     * 
+     * @param instr
+     */
     private void executeShiftLeft(Instruction instr) {
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
         int shiftedARInt = (ARInt << 1);
         String shiftedARStr = Integer.toBinaryString(shiftedARInt);
-        ARInt = Integer.parseInt(AR.getNumber(), 2);
-        ARInt *= -1; //2s comp
-        String negateARStr = Integer.toBinaryString(ARInt);
-        this.AR = new Binary(negateARStr);
+        this.AR = new Binary(shiftedARStr);
     }
 
+    /**
+     * Shifts the AR value to the right.
+     * 
+     * @param instr
+     */
     private void executeShiftRight(Instruction instr) {
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
         int shiftedARInt = (ARInt >> 1);
@@ -201,11 +283,18 @@ public class ControlUnitImpl implements ControlUnit {
         this.AR = new Binary(shiftedARStr);
     }
 
+    /**
+     * Adds the AR value with the operand value if addressing mode
+     * is "000". Else, adds the AR value with a memory dump
+     * value if addressing mode is "001". NEED TESTING
+     * 
+     * @param instr
+     */
     private void executeAdd(Instruction instr) {
-        if (instr.getRegisterSpecifier().contentEquals("000")) { // immediate
+        if (instr.getAddressingMode().contentEquals("000")) { // immediate
             Binary operandValue = new Binary(instr.getOperand());
             this.AR = binCalculator.add(operandValue, AR);
-        } else if (instr.getRegisterSpecifier().contentEquals("001")) { // direct
+        } else if (instr.getAddressingMode().contentEquals("001")) { // direct
             int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
             Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
             this.AR = binCalculator.add(memVal, AR);
@@ -214,16 +303,32 @@ public class ControlUnitImpl implements ControlUnit {
         incrementPC();
     }
 
+    /**
+     * Takes in an character input from the simulator window.
+     * 
+     * @param instr
+     */
     private void executeCharIn(Instruction instr) {
         // Wait for a character to be pressed in the terminal window
     }
 
+    /**
+     * Outputs an ascii character from the operand
+     * to the simulator window. 
+     * 
+     * @param instr
+     */
     private void executeCharOut(Instruction instr) {
         String operand = instr.getOperand();
         char character = (char) Transformer.binToDecimal(operand);
         window.setTerminalArea(window.getTerminalArea() + "" + character);
     }
 
+    /**
+     * Loads a memory dump value into the AR.
+     * 
+     * @param instr
+     */
     private void executeLW(Instruction instr) {
         int address = Transformer.binToDecimal(instr.getOperand());
         Binary memBin = new Binary(Integer.toBinaryString(
@@ -231,6 +336,13 @@ public class ControlUnitImpl implements ControlUnit {
         this.AR = memBin;
     }
 
+    /**
+     * subtracts the operand value with the AR value if addressing mode
+     * is "000". Else, subtracts the memory dump value with the AR value
+     * if addressing mode is "001".
+     * 
+     * @param instr
+     */
     private void executeSub(Instruction instr) {
         if (instr.getAddressingMode().contentEquals("000")) { // immediate
             Binary operandVal = new Binary(instr.getOperand());
@@ -242,11 +354,24 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * Stores the AR value in a memory dump address.
+     * 
+     * @param instr
+     */
     private void executeSW(Instruction instr) {
         String hexAddress = Transformer.binToHex(instr.getOperand());
         memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(), 2)); //double check if radix is 2 or 16
     }
 
+    /**
+     * If addressing mode is "000" and register specifier is "0",
+     * bitwise and the AR value with the operand value.
+     * If addressing mode is "001" and register specifier is "0",
+     * bitwise and the AR value with a memory dump value.
+     * 
+     * @param instr
+     */
     private void executeAnd(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR & immediate
@@ -276,12 +401,25 @@ public class ControlUnitImpl implements ControlUnit {
 //		}
     }
 
+    /**
+     * Bitwise inverts the AR value.
+     *
+     * @param instr
+     */
     private void executeBitwiseInvert(Instruction instr) {
         String onesCompStr = AR.getNumber();
         String replacedStr = onesCompStr.replace('0', '2').replace('1', '0').replace('2', '1'); //1s comp
         this.AR = new Binary(replacedStr);
     }
 
+    /**
+     * If addressing mode is "000" and register specifier is "0",
+     * bitwise or the AR value with the operand value.
+     * If addressing mode is "001" and register specifier is "0",
+     * bitwise or the AR value with a memory dump value.
+     * 
+     * @param instr
+     */
     private void executeOr(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR | immediate
@@ -309,6 +447,14 @@ public class ControlUnitImpl implements ControlUnit {
 //	}
     }
 
+    /**
+     * If addressing mode is "000" and register specifier is "0",
+     * compare the AR value with the operand value.
+     * If addressing mode is "001" and register specifier is "0",
+     * compare the AR value with a memory dump value.
+     * 
+     * @param instr
+     */
     private void executeCompare(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR Compare immediate
@@ -332,6 +478,11 @@ public class ControlUnitImpl implements ControlUnit {
 //		}
 //	}
 
+    /**
+     * Rotates the AR value to the right.
+     * 
+     * @param instr
+     */
     private void executeRotateRight(Instruction instr) {
         String ARString = AR.getNumber();
         String rotatedARString = ARString.substring(ARString.length() - 1)
@@ -339,20 +490,43 @@ public class ControlUnitImpl implements ControlUnit {
         this.AR = new Binary(rotatedARString);
     }
 
+    /**
+     * Rotates the AR value to the left.
+     * 
+     * @param instr
+     */
     private void executeRotateLeft(Instruction instr) {
         String ARString = AR.getNumber();
         String rotatedARString = ARString.substring(1, ARString.length()) + ARString.substring(0);
         this.AR = new Binary(rotatedARString);
     }
 
+    /**
+     * 
+     * 
+     * @param instr
+     */
     private void executeNOPn(Instruction instr) {
 
     }
 
+    /**
+     * 
+     * 
+     * @param instr
+     */
     private void executeNOP(Instruction instr) {
 
     }
 
+    /**
+     * If addressing mode is "000", outputs a decimal integer
+     * from the operand value. If addressing mode is "001",
+     * outputs a decimal integer from the memory address.
+     * 
+     * 
+     * @param instr
+     */
     private void executeDecOut(Instruction instr) {
         if (instr.getAddressingMode().contentEquals("000")) { // immediate
             String operand = instr.getOperand();
@@ -366,33 +540,58 @@ public class ControlUnitImpl implements ControlUnit {
         incrementPC();
     }
 
+    /**
+     * Halts the simulator.
+     * 
+     * @param instr
+     */
     private void executeStop(Instruction instr) {
         stopProgram = true;
     }
 
+    /**
+     * Branch unconditionally.
+     * 
+     * @param instr
+     */
     private void executeBR(Instruction instr) {
         Binary addr = new Binary(instr.getOperand());
         this.PC = addr;
     }
 
+    /**
+     * Branch if less-than-or-equal.
+     * 
+     * @param instr
+     */
     private void executeBRLE(Instruction instr) {
-        int addrInt = Integer.parseInt(instr.getOperand(), 2);
+    	int addrInt = Integer.parseInt(instr.getOperand(), 2);
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
-        if (ARInt >= addrInt) {
+        if (ARInt <= addrInt) {
             this.PC = new Binary(Integer.toBinaryString(addrInt));
         }
     }
 
+    /**
+     * Branch if less-than.
+     * 
+     * @param instr
+     */
     private void executeBRLT(Instruction instr) {
         if ((instr.getRegisterSpecifier().substring(0, 1)).contentEquals("00")) { // branch if less than
             int addrInt = Integer.parseInt(instr.getOperand(), 2);
             int ARInt = Integer.parseInt(AR.getNumber(), 2);
-            if (ARInt > addrInt) {
+            if (ARInt < addrInt) {
                 this.PC = new Binary(Integer.toBinaryString(addrInt));
             }
         }
     }
 
+    /**
+     * Branch if equal to.
+     * 
+     * @param instr
+     */
     private void executeBREQ(Instruction instr) {
         int addrInt = Integer.parseInt(instr.getOperand(), 2);
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
@@ -401,6 +600,11 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * Branch if not equal to.
+     * 
+     * @param instr
+     */
     private void executeBRNE(Instruction instr) {
         int addrInt = Integer.parseInt(instr.getOperand(), 2);
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
@@ -409,10 +613,24 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * Branch if greater-than-or-equal.
+     * 
+     * @param instr
+     */
     private void executeBRGE(Instruction instr) {
-
+    	int addrInt = Integer.parseInt(instr.getOperand(), 2);
+        int ARInt = Integer.parseInt(AR.getNumber(), 2);
+        if (ARInt >= addrInt) {
+            this.PC = new Binary(Integer.toBinaryString(addrInt));
+        }
     }
 
+    /**
+     * Branch if greater-than.
+     * 
+     * @param instr
+     */
     private void executeBRGT(Instruction instr) {
         int addrInt = Integer.parseInt(instr.getOperand(), 2);
         int ARInt = Integer.parseInt(AR.getNumber(), 2);
@@ -421,28 +639,52 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * Branch if carry.
+     * 
+     * @param instr
+     */
     private void executeBRC(Instruction instr) {
         if (Integer.parseInt(C.getNumber()) == 1) {
             this.PC = new Binary(instr.getOperand());
         }
     }
 
+    /**
+     * Branch if negative.
+     * 
+     * @param instr
+     */
     private void executeBRN(Instruction instr) {
-
+    	if (Integer.parseInt(N.getNumber()) == 1) {
+            this.PC = new Binary(instr.getOperand());
+        }
     }
 
+    /**
+     * Branch if overflow.
+     * 
+     * @param instr
+     */
     private void executeBRV(Instruction instr) {
         if (Integer.parseInt(V.getNumber()) == 1) {
             this.PC = new Binary(instr.getOperand());
         }
     }
 
+    /**
+     * Increments PC by one.
+     */
     private void incrementPC() {
         String twoStr = "01";
         Binary twoBin = new Binary(twoStr);
         this.PC = binCalculator.add(twoBin, PC);
     }
 
+    /**
+     * 
+     * @param operand
+     */
     private void setFlags(Number operand) {
         String binNum = operand.toString();
         if (binNum.charAt(0) == '1') {
@@ -452,6 +694,9 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
+    /**
+     * 
+     */
     @Override
     public Map<String, Binary> getConditionRegisterBits() {
         return Map.ofEntries(entry("N", N), entry("Z", Z), entry("V", V), entry("C", C));
