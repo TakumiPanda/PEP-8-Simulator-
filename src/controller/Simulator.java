@@ -57,6 +57,7 @@ public class Simulator implements Observer {
 		}
 
 		controlUnit.getMemoryDump().updateMemory(window.getObjectCodeArea().getText());
+		controlUnit.getMemoryDump().updateMemoryAssembly(window.getSourceCodeArea().getText());
 		window.getMemoryArea().setText(controlUnit.getMemoryDump().toString());
 		window.getMemoryArea().setCaretPosition(0);
 

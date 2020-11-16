@@ -1,5 +1,6 @@
 package model;
 
+import utils.AssemblyConverter;
 import utils.Transformer;
 
 import java.util.ArrayList;
@@ -47,6 +48,12 @@ public class MemoryDumpImpl implements MemoryDump {
             }
             placeInstructionsIntoMemory(code);
         }
+    }
+
+    public void updateMemoryAssembly(String assemblyCode) {
+        AssemblyConverter aCon = new AssemblyConverter();
+        String objCode = aCon.generateHexString(assemblyCode);
+        updateMemory(objCode);
     }
 
     private void placeInstructionsIntoMemory(String objCode) {

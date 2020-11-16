@@ -20,21 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ece2555e-42e2-4028-a00c-6b2886aad44b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/utils/AssemblyConverter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/ControlUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ControlUnit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Add.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Add.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/CharIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/CharIn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/CharOut.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/CharOut.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Instruction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Instruction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/LW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/LW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/SW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/SW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Stop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Stop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/instructionType/Sub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/instructionType/Sub.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/MemoryDump.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/MemoryDump.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/MemoryDumpImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/MemoryDumpImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -47,7 +45,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1iellVmSUjZ93jIb7KcW29FXxOW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH" value="232" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -63,8 +66,24 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="model" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\maxin\OneDrive\Documents\GitHub\PEP-8-Simulator-\src\utils" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="view.Main" />
+      <module name="PEP-8-Simulator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="SimulatorWindow" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="view.SimulatorWindow" />
       <module name="PEP-8-Simulator" />
@@ -80,10 +99,12 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.SimulatorWindow" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -102,6 +123,15 @@
     <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -118,9 +148,44 @@
     </state>
     <state x="743" y="414" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602862301425" />
     <state x="2663" y="414" width="433" height="218" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602831821423" />
-    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602827099158">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom" timestamp="1605494334535">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1605494334535" />
+    <state width="1323" height="179" key="GridCell.Tab.0.center" timestamp="1605494334535">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1605494334535" />
+    <state width="1323" height="179" key="GridCell.Tab.0.left" timestamp="1605494334535">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1605494334535" />
+    <state width="1323" height="179" key="GridCell.Tab.0.right" timestamp="1605494334535">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1605494334535" />
+    <state x="207" y="99" width="951" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1605368277470">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="207" y="99" width="951" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1366.728@0.0.1366.728" timestamp="1605368277470" />
+    <state x="443" y="158" width="672" height="475" key="search.everywhere.popup" timestamp="1605494926749">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="443" y="158" width="672" height="475" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1605494926749" />
     <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602827099158" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
