@@ -53,7 +53,9 @@ public class MemoryDumpImpl implements MemoryDump {
     public void updateMemoryAssembly(String assemblyCode) {
         AssemblyConverter aCon = new AssemblyConverter();
         String objCode = aCon.generateHexString(assemblyCode);
-        updateMemory(objCode);
+        if (!objCode.isBlank()) {
+            updateMemory(objCode);
+        }
     }
 
     private void placeInstructionsIntoMemory(String objCode) {

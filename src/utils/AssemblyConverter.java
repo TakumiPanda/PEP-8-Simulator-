@@ -27,7 +27,7 @@ public class AssemblyConverter {
      * @return A string of hexadecimal code
      */
     public String generateHexString(String assemblyCode) {
-        if (assemblyCode.replaceAll(" ", "").isBlank()) {
+        if (assemblyCode.isBlank()) {
             return "";
         }
 
@@ -242,7 +242,7 @@ public class AssemblyConverter {
             hexBuild.append("0".repeat(Math.max(0, 4 - hexVal.length())));
             hexBuild.append(hexVal);
 
-            hexList.add(hexBuild.toString());
+            hexList.add(hexBuild.toString().toUpperCase());
         }
     }
 
