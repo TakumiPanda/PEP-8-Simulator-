@@ -1,27 +1,51 @@
 package model;
 
-import utils.Transformer;
+import java.util.Objects;
 
+/**
+ * Decimal object class that extends Number.
+ * 
+ * @author 
+ * @version 2.4 
+ *
+ */
 public class Decimal extends Number {
 
-	private String number;
-
+	/**
+	 * Parameter constructor that creates a Decimal Object.
+	 * 
+	 * @param num String object that'll set to the Decimal object.
+	 */
 	public Decimal(String num)
 	{
 		super(num);
 	}
-
+	
+	/**
+	 * Equality function. Checks the object o to be:
+	 * the same value as o.
+	 * the value isn't null.
+	 * the same class as o.
+	 * 
+	 * @param o Object to be compared.
+	 * @return boolean false if equal to null, different class,
+	 * or not equals to number. Else, true.
+	 */
 	@Override
-	public String get(String in, int i) {
-		if (i == 0)
+	public boolean equality(Object o) {
+		if (this == o)
 		{
-			int temp = Integer.parseInt(in);
-			return Transformer.decimalToBinary(temp);
+			return true;
 		}
-		else
+		if (o == null)
 		{
-			//placeholder for decToHex if wanted to add here
-			return null;
+			return false;
 		}
+		if (getClass() != o.getClass())
+		{
+			return false;
+		}
+		Decimal dec = (Decimal) o;
+		return Objects.equals(this, dec);
 	}
 }

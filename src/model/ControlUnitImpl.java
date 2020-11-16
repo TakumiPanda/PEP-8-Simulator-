@@ -10,7 +10,7 @@ import view.SimulatorWindow;
 /**
  * 
  * @author
- * @version 2.0
+ * @version 2.9
  *
  */
 public class ControlUnitImpl implements ControlUnit {
@@ -159,79 +159,79 @@ public class ControlUnitImpl implements ControlUnit {
             case ("0000"):// stop
                 executeStop(instruction);
                 break;
-            case ("0000010"):
+            case ("0000010"): //branch unconditional
                 executeBR(instruction);
                 break;
-            case ("0000011"):
+            case ("0000011"): //branch if less-than-or-equal
                 executeBRLE(instruction);
                 break;
-            case ("0000100"):
+            case ("0000100"): //branch if less-than
                 executeBRLT(instruction);
                 break;
-            case ("0000101"):
+            case ("0000101"): //branch if equal
                 executeBREQ(instruction);
                 break;
-            case ("0000110"):
+            case ("0000110"): //branch if not equal
                 executeBRNE(instruction);
                 break;
-            case ("0000111"):
+            case ("0000111"): //branch if greater-than-or-equal
                 executeBRGE(instruction);
                 break;
-            case ("0001000"):
+            case ("0001000"): //branch if greater-than
                 executeBRGT(instruction);
                 break;
-            case ("0001001"):
+            case ("0001001"): //branch if negative
                 executeBRN(instruction);
                 break;
-            case ("0001010"):
+            case ("0001010"): //branch if carry
                 executeBRC(instruction);
                 break;
-            case "0001110": //shift left
+            case ("0001110"): //shift left
                 executeShiftLeft(instruction);
                 break;
-            case "0001111": //Shift right
+            case ("0001111"): //shift right
                 executeShiftRight(instruction);
                 break;
-            case "0001101": //Negate
+            case ("0001101"): //negate (2s comp)
                 executeNegate(instruction);
                 break;
-            case "0001100":
+            case ("0001100"): //invert (1s comp)
                 executeBitwiseInvert(instruction);
                 break;
-            case "0010000": //rotate right
+            case ("0010000"): //rotate right
                 executeRotateLeft(instruction);
                 break;
-            case "0010001": // rotate left
+            case ("0010001"): // rotate left
                 executeRotateRight(instruction);
                 break;
-            case ("0011"):// decOut
+            case ("0011"): //decOut
                 executeDecOut(instruction);
                 break;
-            case ("01001"):// char in
+            case ("01001"): //char in
                 executeCharIn(instruction);
                 break;
-            case ("01010"):// char out
+            case ("01010"): //char out
                 executeCharOut(instruction);
                 break;
-            case ("0111"):// add
+            case ("0111"): //add
                 executeAdd(instruction);
                 break;
-            case ("1000"):// sub
+            case ("1000"): //sub
                 executeSub(instruction);
                 break;
-            case ("1001"):// and
+            case ("1001"): //and
                 executeAnd(instruction);
                 break;
-            case ("1010"):// or
+            case ("1010"): //or
                 executeOr(instruction);
                 break;
-            case ("1011"):// compare
+            case ("1011"): //compare
                 executeCompare(instruction);
                 break;
-            case ("1100"):// load memory
+            case ("1100"): //load memory
                 executeLW(instruction);
                 break;
-            case ("1110"):// sw
+            case ("1110"): //sw
                 executeSW(instruction);
                 break;
             default:

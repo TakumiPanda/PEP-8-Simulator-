@@ -1,10 +1,12 @@
 package model;
 
-import utils.Transformer;
+import java.util.Objects;
 
 /**
+ * Binary object class that extends Number.
  * 
- * @author danieyll
+ * @author
+ * @version 2.4
  *
  */
 public class Binary extends Number {
@@ -18,13 +20,31 @@ public class Binary extends Number {
 		super(num);
 	}
 	
-	
-	public String get(String in, int i) {
-		if (i == 0) {
-			return Transformer.binToHex(in);
-		} else {
-			int temp = Transformer.binToDecimal(in);
-			return String.valueOf(temp);
+	/**
+	 * Equality function. Checks the object o to be:
+	 * the same value as o.
+	 * the value isn't null.
+	 * the same class as o.
+	 * 
+	 * @param o Object to be compared.
+	 * @return boolean false if equal to null, different class,
+	 * or not equals to number. Else, true.
+	 */
+	@Override
+	public boolean equality(Object o) {
+		if (this == o)
+		{
+			return true;
 		}
+		if (o == null)
+		{
+			return false;
+		}
+		if (getClass() != o.getClass())
+		{
+			return false;
+		}
+		Binary bin = (Binary) o;
+		return Objects.equals(this, bin);
 	}
 }
