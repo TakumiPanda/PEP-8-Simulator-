@@ -4,14 +4,15 @@ import model.MemoryDumpImpl;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
-import static java.util.Map.entry;
 import java.util.Observable;
+
+import static java.util.Map.entry;
 
 public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 
@@ -56,8 +57,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 	private JTextField accumalatorField = new JTextField();
 	private JLabel indexRegisterLabel = new JLabel("Index Register");
 	private JTextField indexRegisterField = new JTextField();
-	private JLabel stackPointerLabel = new JLabel("Stack Pointer");
-	private JTextField stackPointerField = new JTextField();
 	private JLabel programCounterLabel = new JLabel("Program Counter");
 	private JTextField programCounterField = new JTextField();;
 	private JLabel instructionSpecifierLabel = new JLabel("Instruction Specifier");
@@ -168,8 +167,7 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 	public Map<String, JTextField> getCPUComponents() {
 		return Map.ofEntries(entry("N", nField), entry("Z", zField), entry("V", vField), entry("C", cField),
 				entry("Accumulator", accumalatorField), entry("Index Register", indexRegisterField),
-				entry("Stack Pointer", stackPointerField), entry("Program Counter", programCounterField),
-				entry("Instruction Specifier", instructionSpecifierField),
+				entry("Program Counter", programCounterField), entry("Instruction Specifier", instructionSpecifierField),
 				entry("Operand Specifier", operandSpecifierField));
 	}
 
@@ -194,9 +192,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 					break;
 				case "Index Register":
 					indexRegisterField = entry.getValue();
-					break;
-				case "Stack Pointer":
-					stackPointerField = entry.getValue();
 					break;
 				case "Program Counter":
 					programCounterField = entry.getValue();
@@ -259,8 +254,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 		accumalatorField.setEditable(false);
 		indexRegisterField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
 		indexRegisterField.setEditable(false);
-		stackPointerField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
-		stackPointerField.setEditable(false);
 		programCounterField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
 		programCounterField.setEditable(false);
 		instructionSpecifierField.setPreferredSize(new Dimension(PANEL_WIDTH / 2, PANEL_HEIGHT / 10));
@@ -306,14 +299,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 		constraints.gridx++;
 		constraints.gridwidth = 7;
 		cpuPanel.add(indexRegisterField, constraints);
-
-		constraints.gridy++;
-		constraints.gridx = 0;
-		constraints.gridwidth = 1;
-		cpuPanel.add(stackPointerLabel, constraints);
-		constraints.gridx++;
-		constraints.gridwidth = 7;
-		cpuPanel.add(stackPointerField, constraints);
 
 		constraints.gridy++;
 		constraints.gridx = 0;
