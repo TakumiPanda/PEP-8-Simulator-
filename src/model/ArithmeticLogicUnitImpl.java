@@ -6,7 +6,8 @@ import java.util.Observable;
  * Registers[0] -> PC
  * Registers[1] -> IR
  * Registers[2] -> AR
- * Register[3..6] -> Storage registers
+ * Register[3] -> Index Register
+ * Register[4..6] -> Storage registers
  */
 public class ArithmeticLogicUnitImpl extends Observable implements ArithmeticLogicUnit{
 
@@ -14,6 +15,9 @@ public class ArithmeticLogicUnitImpl extends Observable implements ArithmeticLog
 
     public ArithmeticLogicUnitImpl() {
         registers = new Binary[7];
+        for (int i = 0; i < registers.length; i++) {
+            registers[i] = new Binary();
+        }
     }
 
     @Override
