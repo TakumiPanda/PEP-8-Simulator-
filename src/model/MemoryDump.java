@@ -8,6 +8,12 @@ public interface MemoryDump {
     void updateMemory(String objCode);
 
     /**
+     *
+     * @param assemblyCode
+     */
+    void updateMemoryAssembly(String assemblyCode);
+
+    /**
      * 
      * @param address
      * @return
@@ -24,5 +30,5 @@ public interface MemoryDump {
     /**
      * 
      */
-    String getMemory(int address);   
+    String getMemory(int address);
 }

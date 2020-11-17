@@ -10,7 +10,7 @@ public class Transformer {
 	 * @throws IllegalArgumentException if value for immediate is out of bound.
 	 */
 	public static Instruction decodeInstruction(final String binaryString) throws IllegalArgumentException {
-		if (binaryString.equals("000000000000000000000000")) { // Stop instruction
+		if (binaryString.equals("00000000")) { // Stop instruction
 			return new Instruction("0000", "0000");
 		}
 		String operand = binaryString.substring(8,24);
@@ -32,7 +32,6 @@ public class Transformer {
 				case "0001101":
 				case "0001110":
 				case "0001111":
-					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
 				case "0010000":
 				case "0010001": 
 					return new Instruction(possibleOpcode, ""+binaryString.charAt(7), operand);
@@ -55,7 +54,7 @@ public class Transformer {
 				case "1101":
 				case "1110":
 				case "1111":
-					return new Instruction(possibleOpcode, ""+binaryString.charAt(4), binaryString.substring(5, 8));
+					return new Instruction(possibleOpcode, ""+binaryString.charAt(4), binaryString.substring(5, 8), operand);
 				} 
 				
 		}
@@ -95,7 +94,8 @@ public class Transformer {
 	 * @return Decimal
 	 */
 	public static int hexToDecimal(String hex) {
-		return Integer.parseInt(hex, 16);
+		String formattedString = hex.replaceAll("\\s","");
+		return Integer.parseInt(formattedString, 16);
 	}
 
 	/**
@@ -139,5 +139,19 @@ public class Transformer {
 	 */
 	public static String decimalToBinary(int decimal) {
 		return Integer.toBinaryString(decimal);
+	}
+
+	/**
+	 * Formats the binary number by padding the value with 0/1 or sign extending it to the proper length
+	 *
+	 * @param binAddress String binary address.
+	 * @return String binary address.
+	 */
+	public static String formatBinaryAddress(String binAddress, int length, String extendCharacter) {
+		int lengthExtended = length - binAddress.length();
+		for (int i = 0; i < lengthExtended; i++) {
+			binAddress = extendCharacter + binAddress;
+		}
+		return binAddress;
 	}
 }

@@ -28,7 +28,11 @@ public class Simulator implements Observer {
 		controlUnit = new ControlUnitImpl(window);
 		window.addObserver(this);
 		controlUnit.getALU().addObserver(this);
-		updateCPUComponents(window.getCPUComponents(), new Binary[7]);
+		Binary[] registers = new Binary[7];
+		for (int i = 0; i < registers.length; i++) {
+			registers[i] = new Binary();
+		}
+		updateCPUComponents(window.getCPUComponents(),registers);
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(3);
@@ -37,15 +41,20 @@ public class Simulator implements Observer {
 	}
 
 	private void updateCPUComponents(Map<String, JTextField> cpuComponents, Binary[] register) {
-		cpuComponents.get("Accumulator").setText(register[2] + "");
-		cpuComponents.get("Program Counter").setText(register[0] + "");
-		cpuComponents.get("Instruction Specifier").setText(register[1] + "");
-		cpuComponents.get("Operand Specifier").setText(controlUnit.getCurrentInstruction());
+		cpuComponents.get("Accumulator").setText(formatBinaryToHex(register[2].getNumber()) + "");
+		cpuComponents.get("Program Counter").setText(formatBinaryToHex(register[0].getNumber()) + "");
+		cpuComponents.get("Instruction Specifier").setText(controlUnit.getInstructionSpecifier());
+		cpuComponents.get("Operand Specifier").setText(formatBinaryToHex(controlUnit.getInstructionOperand()));
+		cpuComponents.get("Index Register").setText(formatBinaryToHex(register[3].getNumber())+"");
 		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
 		cpuComponents.get("N").setText(conditionRegisterBits.get("N").toString());
 		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").toString());
 		cpuComponents.get("V").setText(conditionRegisterBits.get("V").toString());
 		cpuComponents.get("C").setText(conditionRegisterBits.get("C").toString());
+	}
+
+	private String formatBinaryToHex(String binary) {
+		return String.format("0x%04X", Integer.parseInt(binary, 2));
 	}
 
 	@Override
@@ -57,6 +66,7 @@ public class Simulator implements Observer {
 		}
 
 		controlUnit.getMemoryDump().updateMemory(window.getObjectCodeArea().getText());
+		controlUnit.getMemoryDump().updateMemoryAssembly(window.getSourceCodeArea().getText());
 		window.getMemoryArea().setText(controlUnit.getMemoryDump().toString());
 		window.getMemoryArea().setCaretPosition(0);
 
@@ -69,6 +79,5 @@ public class Simulator implements Observer {
 		}
 		// Update the memory dump.
 		window.setMemoryDump((MemoryDumpImpl) controlUnit.getMemoryDump());
-
 	}
 }

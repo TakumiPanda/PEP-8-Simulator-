@@ -11,6 +11,10 @@ import java.util.Objects;
  */
 public class Binary extends Number {
 
+	public Binary() {
+		super("000000000000000000000000");
+	}
+
 	/**
 	 * Parameter constructor that creates a Binary Object.
 	 * 

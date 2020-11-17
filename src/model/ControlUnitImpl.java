@@ -1,11 +1,11 @@
 package model;
 
+import utils.Transformer;
+import view.SimulatorWindow;
+
 import java.util.Map;
 
 import static java.util.Map.entry;
-
-import utils.Transformer;
-import view.SimulatorWindow;
 
 /**
  * 
@@ -15,20 +15,26 @@ import view.SimulatorWindow;
  */
 public class ControlUnitImpl implements ControlUnit {
 
+    private Instruction currentInstruction = new Instruction("0000", "0000");
+
+    /**
+     * Index register used to indexing array elements
+     */
+    private Binary IndexRegister = new Binary();
+
 	/**
 	 * PC is the pointer counter of the simulator.
 	 */
-    private Binary PC = new Binary("0000000000000000");
+    private Binary PC = new Binary();
     
     /**
      * AR is the accumulator register of the simulator.
      */
-    private Binary AR = new Binary("0000000000000000");
-    
+    private Binary AR = new Binary();
     /**
      * IR is the instruction register of the simulator.
      */
-    private Binary IR = new Binary("0000000000000000");
+    private Binary IR = new Binary();
 
     /**
      * stopProgram is the boolean that'll halt the program.
@@ -40,19 +46,19 @@ public class ControlUnitImpl implements ControlUnit {
     /**
      * N bit is set if result of operation in negative.
      */
-    private Binary N = new Binary("" + 0);
+    private Binary N = new Binary("0");
     /**
      * C bit is set if operation produced a carry (borrow on subtraction.
      */
-    private Binary C = new Binary("" + 0);
+    private Binary C = new Binary("0");
     /**
      * V bit is set if operation produced an overflow.
      */
-    private Binary V = new Binary("" + 0);
+    private Binary V = new Binary("0");
     /**
      * Z bit is set if result of operation is zero (All bits = 0
      */
-    private Binary Z = new Binary("" + 0);
+    private Binary Z = new Binary("0");
 
     /**
      * binCalculator is the BinaryCalculator object for the simulator.
@@ -89,8 +95,9 @@ public class ControlUnitImpl implements ControlUnit {
      */
     @Override
     public void executeSingleInstruction(String instr) {
-        Instruction instruction = Transformer.decodeInstruction(instr);
-        executeInstruction(instruction);
+        currentInstruction = Transformer.decodeInstruction(instr);
+        this.IR.setNumber(currentInstruction.toString());
+        executeInstruction(currentInstruction);
     }
 
     /**
@@ -102,7 +109,7 @@ public class ControlUnitImpl implements ControlUnit {
         String instructionFromAddress = memoryDump.fetch(addressOfInstructionInMemory);
         this.IR.setNumber(instructionFromAddress);
 
-        Instruction currentInstruction = Transformer.decodeInstruction(this.IR.getNumber());
+        currentInstruction = Transformer.decodeInstruction(this.IR.getNumber());
         executeInstruction(currentInstruction);
 
         if (stopProgram == false) {
@@ -111,26 +118,27 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Formats the length of the Binary address. Adds zero extension
-     * to the current binary address.
-     * 
-     * @param binAddress String binary address.
-     * @return String binary address.
-     */
-    private String formatBinaryAddress(String binAddress) {
-        int lengthExtended = 16 - binAddress.length();
-        for (int i = 0; i < lengthExtended; i++) {
-            binAddress = "0" + binAddress;
-        }
-        return binAddress;
-    }
-
-    /**
      * Returns the current instruction from IR.
      */
     @Override
-    public String getCurrentInstruction() {
-        return this.IR.getNumber();
+    public Instruction getCurrentInstruction() {
+        return currentInstruction;
+    }
+
+    /**
+     * Returns the current Instruction Specifier.
+     * Should be 8 bits long
+     */
+    public String getInstructionSpecifier() {
+        return this.IR.getNumber().substring(0,7);
+    }
+
+    /**
+     * Returns the current instruction operand.
+     * Should be 16 bits long
+     */
+    public String getInstructionOperand() {
+        return currentInstruction.getOperand();
     }
 
     /**
@@ -229,10 +237,10 @@ public class ControlUnitImpl implements ControlUnit {
                 executeCompare(instruction);
                 break;
             case ("1100"): //load memory
-                executeLW(instruction);
+                executeLD(instruction);
                 break;
             case ("1110"): //sw
-                executeSW(instruction);
+                executeST(instruction);
                 break;
             default:
         }
@@ -294,10 +302,12 @@ public class ControlUnitImpl implements ControlUnit {
         if (instr.getAddressingMode().contentEquals("000")) { // immediate
             Binary operandValue = new Binary(instr.getOperand());
             this.AR = binCalculator.add(operandValue, AR);
+            setFlags(this.AR, operandValue, "Addition");
         } else if (instr.getAddressingMode().contentEquals("001")) { // direct
             int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
             Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
             this.AR = binCalculator.add(memVal, AR);
+            setFlags(this.AR, memVal, "Addition");
         }
         incrementPC();
         incrementPC();
@@ -329,11 +339,15 @@ public class ControlUnitImpl implements ControlUnit {
      * 
      * @param instr
      */
-    private void executeLW(Instruction instr) {
-        int address = Transformer.binToDecimal(instr.getOperand());
-        Binary memBin = new Binary(Integer.toBinaryString(
-                Transformer.hexToDecimal(memoryDump.getMemory(address))));
-        this.AR = memBin;
+    private void executeLD(Instruction instr) {
+        if (instr.getAddressingMode().equals("000")) { // immediate mode
+            this.AR.setNumber(instr.getOperand());
+        } else if(instr.getAddressingMode().equals("001")) { // Direct mode
+            int address = Transformer.binToDecimal(instr.getOperand());
+            String memBin = Integer.toBinaryString(
+                    Transformer.hexToDecimal(memoryDump.getMemory(address)));
+            this.AR.setNumber(memBin);
+        }
     }
 
     /**
@@ -347,10 +361,12 @@ public class ControlUnitImpl implements ControlUnit {
         if (instr.getAddressingMode().contentEquals("000")) { // immediate
             Binary operandVal = new Binary(instr.getOperand());
             this.AR = binCalculator.subtract(AR, operandVal);
+            setFlags(this.AR, operandVal, "Subtraction");
         } else if (instr.getAddressingMode().contentEquals("001")) { // direct
             int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
             Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
             this.AR = binCalculator.subtract(AR, memVal);
+            setFlags(this.AR, memVal, "Subtraction");
         }
     }
 
@@ -359,7 +375,7 @@ public class ControlUnitImpl implements ControlUnit {
      * 
      * @param instr
      */
-    private void executeSW(Instruction instr) {
+    private void executeST(Instruction instr) {
         String hexAddress = Transformer.binToHex(instr.getOperand());
         memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(), 2)); //double check if radix is 2 or 16
     }
@@ -679,18 +695,42 @@ public class ControlUnitImpl implements ControlUnit {
         String twoStr = "01";
         Binary twoBin = new Binary(twoStr);
         this.PC = binCalculator.add(twoBin, PC);
+        this.PC.setNumber(Transformer.formatBinaryAddress(this.PC.getNumber(), 16, "0"));
     }
 
     /**
-     * 
-     * @param operand
+     * Sets addressing bits when arithmetic operations are executed
+     * @param binObjectOne binObjectTwo operation
      */
-    private void setFlags(Number operand) {
-        String binNum = operand.toString();
-        if (binNum.charAt(0) == '1') {
-            N = new Binary("1");
-        } else if (binNum.equals("00000000")) {
-            Z = new Binary("1");
+    private void setFlags(Binary binObjectOne, Binary binObjectTwo, String operation) {
+        BinaryCalculator binaryCalc = new BinaryCalculator();
+        String product = "";
+        switch (operation) {
+            case "Addition":
+                product = binaryCalc.add(binObjectOne, binObjectTwo).getNumber();
+                break;
+            case "Subtraction":
+                product = binaryCalc.subtract(binObjectOne, binObjectTwo).getNumber();
+        }
+        char MSBOne = binObjectOne.getNumber().charAt(0);
+        char MSBTwo = binObjectTwo.getNumber().charAt(0);
+        char MSBProduct = product.charAt(0);
+        if (MSBOne == MSBTwo && MSBOne != MSBProduct){
+            V.setNumber("1");
+        }
+        if (product.length() > 16) {
+            C.setNumber("1");
+            N.setNumber("0");
+            Z.setNumber("0");
+        }
+        if (MSBProduct == '1') {
+            N.setNumber("1");
+            Z.setNumber("0");
+        }
+        if (product.equals("0000000000000000")) {
+            Z.setNumber("1");
+            N.setNumber("0");
+            C.setNumber("0");
         }
     }
 
