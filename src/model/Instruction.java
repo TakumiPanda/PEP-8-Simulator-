@@ -33,7 +33,7 @@ public class Instruction {
 
 	@Override
 	public String toString() {
-		return this.myOpcode + this.myRegisterSpecifier + this.myAddressingMode + this.myOpcode;
+		return this.myOpcode + this.myRegisterSpecifier + this.myAddressingMode + this.myOperand;
 	}
 
 	public String getAddressingMode() {
