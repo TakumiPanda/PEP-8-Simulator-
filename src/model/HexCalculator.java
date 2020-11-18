@@ -9,17 +9,17 @@ package model;
  *
  */
 public class HexCalculator implements Calculator {
-	
+
 	/**
 	 * Add two objects and returns a Hexadecimal.
 	 * 
 	 * @param num1 first object
 	 * @param num2 second object
 	 */
-	@Override
+	@Override 
 	public Hexadecimal add(Object num1, Object num2) {
-		Hexadecimal a = (Hexadecimal) num1;
-		Hexadecimal b = (Hexadecimal) num2;
+		Hexadecimal a = new Hexadecimal(num1 + "");
+		Hexadecimal b = new Hexadecimal(num2 + "");
 		String aStr = a.getNumber(); //Hex str
 		String bStr = b.getNumber(); //Hex str
 		int aInt = Integer.parseInt(aStr, 16); //int
@@ -38,8 +38,8 @@ public class HexCalculator implements Calculator {
 	 */
 	@Override
 	public Hexadecimal subtract(Object num1, Object num2) {
-		Hexadecimal a = (Hexadecimal) num1;
-		Hexadecimal b = (Hexadecimal) num2;
+		Hexadecimal a = new Hexadecimal(num1 + "");
+		Hexadecimal b = new Hexadecimal(num2 + "");
 		String aStr = a.getNumber(); //Hex str
 		String bStr = b.getNumber(); //Hex str
 		int aInt = Integer.parseInt(aStr, 16); //int
@@ -57,8 +57,8 @@ public class HexCalculator implements Calculator {
 	 */
 	@Override
 	public Hexadecimal multiply(Object num1, Object num2) {
-		Hexadecimal a = (Hexadecimal) num1;
-		Hexadecimal b = (Hexadecimal) num2;
+		Hexadecimal a = new Hexadecimal(num1 + "");
+		Hexadecimal b = new Hexadecimal(num2 + "");
 		String aStr = a.getNumber(); //Hex str
 		String bStr = b.getNumber(); //Hex str
 		int aInt = Integer.parseInt(aStr, 16); //int
@@ -75,10 +75,9 @@ public class HexCalculator implements Calculator {
 	 * @param num1 first object
 	 * @param num2 second object
 	 */
-	@Override
 	public Hexadecimal divide(Object num1, Object num2) {
-		Hexadecimal a = (Hexadecimal) num1;
-		Hexadecimal b = (Hexadecimal) num2;
+		Hexadecimal a = new Hexadecimal(num1 + "");
+		Hexadecimal b = new Hexadecimal(num2 + "");
 		String aStr = a.getNumber(); //Hex str
 		String bStr = b.getNumber(); //Hex str
 		int aInt = Integer.parseInt(aStr, 16); //int
@@ -87,7 +86,7 @@ public class HexCalculator implements Calculator {
 		String resultStr = Integer.toHexString(result); //Hex str
 		return new Hexadecimal(resultStr);
 	}
-	
+
 	/**
 	 * Mods the first object with the second object.
 	 * Returns a Hexadecimal.
@@ -97,8 +96,8 @@ public class HexCalculator implements Calculator {
 	 */
 	@Override
 	public Hexadecimal mod(Object num1, Object num2) {
-		Hexadecimal a = (Hexadecimal) num1;
-		Hexadecimal b = (Hexadecimal) num2;
+		Hexadecimal a = new Hexadecimal(num1 + "");
+		Hexadecimal b = new Hexadecimal(num2 + "");
 		String aStr = a.getNumber(); //Hex str
 		String bStr = b.getNumber(); //Hex str
 		int aInt = Integer.parseInt(aStr, 16); //int
