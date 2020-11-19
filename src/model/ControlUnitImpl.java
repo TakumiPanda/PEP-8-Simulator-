@@ -256,7 +256,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Negates the AR value.
+     * If addressing mode last bit is "1",
+     * Negates the IndexRegister value.
      * 
      * @param instr 
      */
@@ -275,7 +278,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Shifts the AR value to the left.
+     * If addressing mode last bit is "1",
+     * Shifts the IndexRegister value to the left.
      * 
      * @param instr
      */
@@ -292,12 +298,15 @@ public class ControlUnitImpl implements ControlUnit {
             this.IndexRegister = new Binary(shiftedIndexStr);
     	}
     }
-
-    /**
-     * Shifts the AR value to the right.
-     * 
-     * @param instr
-     */
+    
+  /**
+   * If addressing mode last bit is "0",
+   * Shifts the AR value to the right.
+   * If addressing mode last bit is "1",
+   * Shifts the IndexRegister value to the right.
+   * 
+   * @param instr
+   */
     private void executeShiftRight(Instruction instr) {
     	if (instr.getAddressingMode().substring(2).contentEquals("0")) {//AR
     		int ARInt = Integer.parseInt(AR.getNumber(), 2);
@@ -313,9 +322,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Adds the AR value with the operand value if addressing mode
-     * is "000". Else, adds the AR value with a memory dump
-     * value if addressing mode is "001".
+     * If Register Specifier is "0" and addressing mode is "000",
+     * adds the AR value with the operand value.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * adds the AR value with a memory dump value.
+     * If Register Specifier is "1" and addressing mode is "000",
+     * adds the IndexRegister value with the operand value.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * adds the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -369,7 +383,15 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Loads a memory dump value into the AR.
+     * If Register Specifier is "0" and addressing mode is "000",
+     * loads immediate value into the AR.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * loads a memory dump value into the AR.
+     * If Register Specifier is "1" and addressing mode is "000",
+     * loads immediate value into the IndexRegister.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * loads a memory dump value into the IndexRegister.
+     * 
      * 
      * @param instr
      */
@@ -398,9 +420,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * subtracts the operand value with the AR value if addressing mode
-     * is "000". Else, subtracts the memory dump value with the AR value
-     * if addressing mode is "001".
+     * If Register Specifier is "0" and addressing mode is "000",
+     * subtracts the operand value with the AR value.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * subtracts the memory dump value with the AR value
+     * If Register Specifier is "1" and addressing mode is "000",
+     * subtracts the operand value with the IndexRegister value.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * subtracts the memory dump value with the IndexRegister value
      * 
      * @param instr
      */
@@ -431,7 +458,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Stores the AR value in a memory dump address.
+     * If Register Specifier is "0",
+     * stores the AR value in a memory dump address.
+     * If Register Specifier is "1",
+     * stores the IndexRegister value in a memory dump address.
      * 
      * @param instr
      */
@@ -454,10 +484,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "000",
      * bitwise and the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "001",
      * bitwise and the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * bitwise and the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * bitwise and the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -500,8 +534,11 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Bitwise inverts the AR value.
-     *
+     * If addressing mode last bit is "1",
+     * Bitwise inverts the IndexRegister value.
+     * 
      * @param instr
      */
     private void executeBitwiseInvert(Instruction instr) {
@@ -517,10 +554,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
-     * bitwise or the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
-     * bitwise or the AR value with a memory dump value.
+     * If register specifier is "0" and addressing mode is "000",
+     * bitwise and the AR value with the operand value.
+     * If register specifier is "0" and addressing mode is "001",
+     * bitwise and the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * bitwise and the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * bitwise and the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -559,10 +600,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "000",
      * compare the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "001",
      * compare the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * compare the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * compare the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -593,7 +638,10 @@ public class ControlUnitImpl implements ControlUnit {
 	}
 
     /**
+     * If addressing mode last bit is "0",
      * Rotates the AR value to the right.
+     * If addressing mode last bit is "1",
+     * Rotates the IndexRegister value to the right.
      * 
      * @param instr
      */
@@ -612,7 +660,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Rotates the AR value to the left.
+     * If addressing mode last bit is "1",
+     * Rotates the IndexRegister value to the left.
      * 
      * @param instr
      */
