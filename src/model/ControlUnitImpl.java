@@ -443,6 +443,14 @@ public class ControlUnitImpl implements ControlUnit {
     		String hexAddressStr = Transformer.binToHex(instr.getOperand());
             memoryDump.setMemory(hexAddressStr,Integer.parseInt(this.IndexRegister.getNumber(), 2));
     	}
+        if (instr.getAddressingMode().equals("000")) { // immediate mode
+            String hexAddress = Transformer.binToHex(instr.getOperand());
+            memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(), 2));
+        } else if(instr.getAddressingMode().equals("001")) { // direct mode
+            String hexAddress = Transformer.binToHex(instr.getOperand());
+            String valueInAddress = memoryDump.getMemory(Integer.parseInt(hexAddress.replaceAll("\\s+",""), 16));
+            memoryDump.setMemory(hexAddress, Integer.parseInt(valueInAddress, 16)) ;
+        }
     }
 
     /**
