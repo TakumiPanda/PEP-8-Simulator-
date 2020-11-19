@@ -24,9 +24,8 @@ public class BinaryCalculator implements Calculator {
 		String aStr = num1 + ""; //bin str
 		String bStr = num2 + ""; //bin str
 		Binary a = new Binary(aStr);
-		Binary b = new Binary(bStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int bInt = Integer.parseInt(bStr, 2); //int
 		int result = aInt + bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
