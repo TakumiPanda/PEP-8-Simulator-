@@ -1,9 +1,9 @@
 package utils;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import model.HexCalculator;
+import model.Hexadecimal;
 import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 class HexCalculatorTest {
 
 	/**
