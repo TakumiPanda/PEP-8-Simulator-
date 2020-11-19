@@ -26,10 +26,14 @@ Command will execute the Branch unconditional instruction
 000001010000000000000000 00000000
 
 Command will Load 0111 into A register than Store A register value into Memory[1010]
-110000000000000000000111 111000010000000000001010 00000000
+110000000000000000000111 111000000000000000001010 00000000
 
 Command will Load the A register with the value of 1(in binary). Then perform an ADD operation to increment by one
 110000000000000000000001 011100000000000000000001 00000000
+
+Command will Load the A register with the value of 1. Then add a -1 to it. Should trigger the Z addressing bit.
+110000000000000000000001 100000000000000000000001 00000000
+
 
 This command will print out Hello in Assembly
 charo 0x0048,d ; Output a 'H'

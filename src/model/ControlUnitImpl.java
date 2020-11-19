@@ -323,24 +323,24 @@ public class ControlUnitImpl implements ControlUnit {
     	if (instr.getRegisterSpecifier().contentEquals("0")) { //Accumulator
     		if (instr.getAddressingMode().contentEquals("000")) { // immediate
                 Binary operandValue = new Binary(instr.getOperand());
-                this.AR = binCalculator.add(operandValue, AR);
                 setFlags(this.AR, operandValue, "Addition");
+                this.AR = binCalculator.add(operandValue, AR);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
                 int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
                 Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-                this.AR = binCalculator.add(memVal, AR);
                 setFlags(this.AR, memVal, "Addition");
+                this.AR = binCalculator.add(memVal, AR);
             }
     	} else if (instr.getRegisterSpecifier().contentEquals("1")) { //Index Reg
     		if (instr.getAddressingMode().contentEquals("000")) { // immediate
                 Binary operandValue = new Binary(instr.getOperand());
-                this.IndexRegister = binCalculator.add(operandValue, IndexRegister);
                 setFlags(this.IndexRegister, operandValue, "Addition");
+                this.IndexRegister = binCalculator.add(operandValue, IndexRegister);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
                 int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
                 Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-                this.IndexRegister = binCalculator.add(memVal, IndexRegister);
                 setFlags(this.IndexRegister, memVal, "Addition");
+                this.IndexRegister = binCalculator.add(memVal, IndexRegister);
             }
     	}
         incrementPC();
@@ -408,24 +408,24 @@ public class ControlUnitImpl implements ControlUnit {
     	if (instr.getRegisterSpecifier().contentEquals("0")) { //Accumulator
     		if (instr.getAddressingMode().contentEquals("000")) { // immediate
     			Binary operandVal = new Binary(instr.getOperand());
-                this.AR = binCalculator.subtract(AR, operandVal);
                 setFlags(this.AR, operandVal, "Subtraction");
+                this.AR = binCalculator.subtract(AR, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
             	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
                 Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-                this.AR = binCalculator.subtract(AR, memVal);
                 setFlags(this.AR, memVal, "Subtraction");
+                this.AR = binCalculator.subtract(AR, memVal);
             }
     	} else if (instr.getRegisterSpecifier().contentEquals("1")) { //Index Reg
     		if (instr.getAddressingMode().contentEquals("000")) { // immediate
     			Binary operandVal = new Binary(instr.getOperand());
-                this.IndexRegister = binCalculator.subtract(IndexRegister, operandVal);
                 setFlags(this.IndexRegister, operandVal, "Subtraction");
+                this.IndexRegister = binCalculator.subtract(IndexRegister, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
             	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
                 Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
-                this.IndexRegister = binCalculator.subtract(IndexRegister, memVal);
                 setFlags(this.IndexRegister, memVal, "Subtraction");
+                this.IndexRegister = binCalculator.subtract(IndexRegister, memVal);
             }
     	}
     }
@@ -443,6 +443,14 @@ public class ControlUnitImpl implements ControlUnit {
     		String hexAddressStr = Transformer.binToHex(instr.getOperand());
             memoryDump.setMemory(hexAddressStr,Integer.parseInt(this.IndexRegister.getNumber(), 2));
     	}
+        if (instr.getAddressingMode().equals("000")) { // immediate mode
+            String hexAddress = Transformer.binToHex(instr.getOperand());
+            memoryDump.setMemory(hexAddress, Integer.parseInt(this.AR.getNumber(), 2));
+        } else if(instr.getAddressingMode().equals("001")) { // direct mode
+            String hexAddress = Transformer.binToHex(instr.getOperand());
+            String valueInAddress = memoryDump.getMemory(Integer.parseInt(hexAddress.replaceAll("\\s+",""), 16));
+            memoryDump.setMemory(hexAddress, Integer.parseInt(valueInAddress, 16)) ;
+        }
     }
 
     /**

@@ -8,9 +8,10 @@ import utils.Transformer;
  * 
  * @author 
  * @version 2.3
- *
+ * 
  */
 public class BinaryCalculator implements Calculator {
+
 
 	/**
 	 * Add two objects and returns a Binary.
@@ -20,16 +21,15 @@ public class BinaryCalculator implements Calculator {
 	 */
 	@Override
 	public Binary add(Object num1, Object num2) {
-		Binary a = (Binary) num1;
-		Binary b = (Binary) num2;
-		String aStr = a.getNumber(); //bin str
-		String bStr = b.getNumber(); //bin str
+		String aStr = num1 + ""; //bin str
+		String bStr = num2 + ""; //bin str
+		Binary a = new Binary(aStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
-		int bInt = Integer.parseInt(bStr, 2); //int 
+		int bInt = Integer.parseInt(bStr, 2); //int
 		int result = aInt + bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
-				Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
+			Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
 		return new Binary(resultStr);
 	}
 
@@ -42,16 +42,16 @@ public class BinaryCalculator implements Calculator {
 	 */
 	@Override
 	public Binary subtract(Object num1, Object num2){
-		Binary a = (Binary) num1;
-		Binary b = (Binary) num2;
-		String aStr = a.getNumber(); //bin str
-		String bStr = b.getNumber(); //bin str
+		String aStr = num1 + ""; //bin str
+		String bStr = num2 + ""; //bin str
+		Binary a = new Binary(aStr);
+		Binary b = new Binary(bStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
 		int bInt = Integer.parseInt(bStr, 2); //int 
 		int result = aInt - bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
-				Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
+			Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
 		return new Binary(resultStr);
 	}
 
@@ -63,16 +63,16 @@ public class BinaryCalculator implements Calculator {
 	 */
 	@Override
 	public Binary multiply(Object num1, Object num2) {
-		Binary a = (Binary) num1;
-		Binary b = (Binary) num2;
-		String aStr = a.getNumber(); //bin str
-		String bStr = b.getNumber(); //bin str
+		String aStr = num1 + ""; //bin str
+		String bStr = num2 + "";; //bin str
+		Binary a = new Binary(aStr);
+		Binary b = new Binary(bStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
 		int bInt = Integer.parseInt(bStr, 2); //int 
 		int result = aInt * bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
-				Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
+			Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
 		return new Binary(resultStr);
 	}
 
@@ -85,19 +85,19 @@ public class BinaryCalculator implements Calculator {
 	 */
 	@Override
 	public Binary divide(Object num1, Object num2) {
-		Binary a = (Binary) num1;
-		Binary b = (Binary) num2;
-		String aStr = a.getNumber(); //bin str
-		String bStr = b.getNumber(); //bin str
+		String aStr = num1 + ""; //bin str
+		String bStr = num2 + ""; //bin str
+		Binary a = new Binary(aStr);
+		Binary b = new Binary(bStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
 		int bInt = Integer.parseInt(bStr, 2); //int 
 		int result = aInt / bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
-				Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
+			Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
 		return new Binary(resultStr);
 	}
-	
+
 	/**
 	 * Mods the first object with the second object.
 	 * Returns a Binary.
@@ -107,16 +107,16 @@ public class BinaryCalculator implements Calculator {
 	 */
 	@Override
 	public Binary mod(Object num1, Object num2) {
-		Binary a = (Binary) num1;
-		Binary b = (Binary) num2;
-		String aStr = a.getNumber(); //bin str
-		String bStr = b.getNumber(); //bin str
+		String aStr = num1 + ""; //bin str
+		String bStr = num2 + ""; //bin str
+		Binary a = new Binary(aStr);
+		Binary b = new Binary(bStr);
 		int aInt = Integer.parseInt(aStr, 2); //int
 		int bInt = Integer.parseInt(bStr, 2); //int 
 		int result = aInt % bInt; // int
 		String resultStr = Integer.toBinaryString(result); //bin str
 		resultStr = (result < 0)? Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "1"):
-				Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
+			Transformer.formatBinaryAddress(resultStr, a.getNumber().length(), "0");
 		return new Binary(resultStr);
 	}
 }
