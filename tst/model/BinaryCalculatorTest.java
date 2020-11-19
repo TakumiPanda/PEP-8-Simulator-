@@ -1,7 +1,5 @@
-package utils;
+package model;
 
-import model.Binary;
-import model.BinaryCalculator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

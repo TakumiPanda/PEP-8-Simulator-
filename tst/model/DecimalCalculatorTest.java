@@ -1,7 +1,5 @@
-package utils;
+package model;
 
-import model.Decimal;
-import model.DecimalCalculator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
