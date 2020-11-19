@@ -67,7 +67,4 @@ class DecimalCalculatorTest {
 		Decimal actual = (Decimal) c.mod("1", "10");
 		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
 	}
-	
-	
-
 }
