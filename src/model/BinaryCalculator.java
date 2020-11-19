@@ -1,5 +1,7 @@
 package model;
 
+import utils.Transformer;
+
 /**
  * Calculator class that'll do addition, subtraction, multiplication, 
  * division, and modulo. Takes in two objects and returns a Binary.
