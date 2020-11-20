@@ -7,7 +7,7 @@ package model;
  * @version 2.4
  *
  */
-public abstract class Number {
+public class Number {
 
 	/**
 	 * number is the String variable of the Number class.
@@ -51,9 +51,31 @@ public abstract class Number {
 	}
 
 	/**
-	 * Equality function. Different for each extension class.
+	 * Equality function. Checks the object o to be:
+	 * the same value as o.
+	 * the value isn't null.
+	 * the same class as o.
+	 *
+	 * @param o Object to be compared.
+	 * @return boolean false if equal to null, different class,
+	 * or not equals to number. Else, true.
 	 */
-	public abstract boolean equality(Object o);
+	public boolean equality(Object o) {
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null)
+		{
+			return false;
+		}
+		if (getClass() != o.getClass())
+		{
+			return false;
+		}
+		Number bin = (Number) o;
+		return bin.number.equals(this.number);
+	}
 
 	/**
 	 * Sets variable to be the new value that is 
