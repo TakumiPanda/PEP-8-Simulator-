@@ -30,10 +30,18 @@ Command will Load 0111 into A register than Store A register value into Memory[1
 
 Command will Load the A register with the value of 1(in binary). Then perform an ADD operation to increment by one
 110000000000000000000001 011100000000000000000001 00000000
+In assembly
+LDR 1, i
+ADDR 1, i
+STOP
+.END
 
 Command will Load the A register with the value of 1. Then add a -1 to it. Should trigger the Z addressing bit.
 110000000000000000000001 100000000000000000000001 00000000
-
+LDR 1, i
+SUBR 1, i
+STOP
+.END
 
 This command will print out Hello in Assembly
 CHARO 72,i
@@ -43,7 +51,6 @@ CHARO 108,i
 CHARO 111,i
 STOP
 .END
-
 
 Program that does something
 	CHARI   1,d
