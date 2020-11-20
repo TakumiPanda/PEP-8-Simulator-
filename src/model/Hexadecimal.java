@@ -45,7 +45,7 @@ public class Hexadecimal extends Number {
 		{
 			return false;
 		}
-		Binary bin = (Binary) o;
+		Hexadecimal bin = (Hexadecimal) o;
 		return Objects.equals(this, bin);
 	}
 }
