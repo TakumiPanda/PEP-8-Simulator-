@@ -8,6 +8,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 /**
+ * Decodes and execute given instructions.
  * 
  * @author
  * @version 2.9
@@ -256,7 +257,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Negates the AR value.
+     * If addressing mode last bit is "1",
+     * Negates the IndexRegister value.
      * 
      * @param instr 
      */
@@ -275,7 +279,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Shifts the AR value to the left.
+     * If addressing mode last bit is "1",
+     * Shifts the IndexRegister value to the left.
      * 
      * @param instr
      */
@@ -292,12 +299,15 @@ public class ControlUnitImpl implements ControlUnit {
             this.IndexRegister = new Binary(shiftedIndexStr);
     	}
     }
-
-    /**
-     * Shifts the AR value to the right.
-     * 
-     * @param instr
-     */
+    
+  /**
+   * If addressing mode last bit is "0",
+   * Shifts the AR value to the right.
+   * If addressing mode last bit is "1",
+   * Shifts the IndexRegister value to the right.
+   * 
+   * @param instr
+   */
     private void executeShiftRight(Instruction instr) {
     	if (instr.getAddressingMode().substring(2).contentEquals("0")) {//AR
     		int ARInt = Integer.parseInt(AR.getNumber(), 2);
@@ -313,9 +323,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Adds the AR value with the operand value if addressing mode
-     * is "000". Else, adds the AR value with a memory dump
-     * value if addressing mode is "001".
+     * If Register Specifier is "0" and addressing mode is "000",
+     * adds the AR value with the operand value.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * adds the AR value with a memory dump value.
+     * If Register Specifier is "1" and addressing mode is "000",
+     * adds the IndexRegister value with the operand value.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * adds the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -326,8 +341,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.AR, operandValue, "Addition");
                 this.AR = binCalculator.add(operandValue, AR);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-                int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+                int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.AR, memVal, "Addition");
                 this.AR = binCalculator.add(memVal, AR);
             }
@@ -337,8 +352,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.IndexRegister, operandValue, "Addition");
                 this.IndexRegister = binCalculator.add(operandValue, IndexRegister);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-                int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+                int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.IndexRegister, memVal, "Addition");
                 this.IndexRegister = binCalculator.add(memVal, IndexRegister);
             }
@@ -369,7 +384,15 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Loads a memory dump value into the AR.
+     * If Register Specifier is "0" and addressing mode is "000",
+     * loads immediate value into the AR.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * loads a memory dump value into the AR.
+     * If Register Specifier is "1" and addressing mode is "000",
+     * loads immediate value into the IndexRegister.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * loads a memory dump value into the IndexRegister.
+     * 
      * 
      * @param instr
      */
@@ -398,9 +421,14 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * subtracts the operand value with the AR value if addressing mode
-     * is "000". Else, subtracts the memory dump value with the AR value
-     * if addressing mode is "001".
+     * If Register Specifier is "0" and addressing mode is "000",
+     * subtracts the operand value with the AR value.
+     * If Register Specifier is "0" and addressing mode is "001",
+     * subtracts the memory dump value with the AR value
+     * If Register Specifier is "1" and addressing mode is "000",
+     * subtracts the operand value with the IndexRegister value.
+     * If Register Specifier is "1" and addressing mode is "001",
+     * subtracts the memory dump value with the IndexRegister value
      * 
      * @param instr
      */
@@ -411,8 +439,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.AR, operandVal, "Subtraction");
                 this.AR = binCalculator.subtract(AR, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-            	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            	int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.AR, memVal, "Subtraction");
                 this.AR = binCalculator.subtract(AR, memVal);
             }
@@ -422,8 +450,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.IndexRegister, operandVal, "Subtraction");
                 this.IndexRegister = binCalculator.subtract(IndexRegister, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-            	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            	int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.IndexRegister, memVal, "Subtraction");
                 this.IndexRegister = binCalculator.subtract(IndexRegister, memVal);
             }
@@ -431,7 +459,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * Stores the AR value in a memory dump address.
+     * If Register Specifier is "0",
+     * stores the AR value in a memory dump address.
+     * If Register Specifier is "1",
+     * stores the IndexRegister value in a memory dump address.
      * 
      * @param instr
      */
@@ -454,19 +485,23 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "000",
      * bitwise and the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "001",
      * bitwise and the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * bitwise and the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * bitwise and the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
     private void executeAnd(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR & immediate
-                int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int immediateInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int ARint = Integer.parseInt(AR.getNumber(), 2);
-                int andInt = (ARint & valueInt);
+                int andInt = (ARint & immediateInt);
                 String andStr = Integer.toBinaryString(andInt);
                 Binary andBin = new Binary(andStr);
                 this.AR = andBin;
@@ -480,9 +515,9 @@ public class ControlUnitImpl implements ControlUnit {
                 this.AR = andBin;
 		}else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
 			if (instr.getAddressingMode().contentEquals("000")) { //Index Reg & immediate
-				int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				int immediateInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int Indexint = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int andInt = (Indexint & valueInt);
+                int andInt = (Indexint & immediateInt);
                 String andStr = Integer.toBinaryString(andInt);
                 Binary andBin = new Binary(andStr);
                 this.IndexRegister = andBin;
@@ -500,8 +535,11 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Bitwise inverts the AR value.
-     *
+     * If addressing mode last bit is "1",
+     * Bitwise inverts the IndexRegister value.
+     * 
      * @param instr
      */
     private void executeBitwiseInvert(Instruction instr) {
@@ -517,52 +555,60 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
-     * bitwise or the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
-     * bitwise or the AR value with a memory dump value.
+     * If register specifier is "0" and addressing mode is "000",
+     * bitwise and the AR value with the operand value.
+     * If register specifier is "0" and addressing mode is "001",
+     * bitwise and the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * bitwise and the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * bitwise and the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
     private void executeOr(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR | immediate
-                int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int immediateValue = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int ARvalue = Integer.parseInt(AR.getNumber(), 2);
-                int resultInt = (value | ARvalue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.AR = new Binary(resultStr);
+                int orInt = (immediateValue | ARvalue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.AR = new Binary(orStr);
             } else if (instr.getAddressingMode().contentEquals("001")) { //AR | memory
                 int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 int ARvalue = Integer.parseInt(AR.getNumber(), 2);
-                int resultInt = (value | ARvalue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.AR = new Binary(resultStr);
+                int orInt = (memValue | ARvalue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.AR = new Binary(orStr);
             }
         }else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
         	if (instr.getAddressingMode().contentEquals("000")) { //Index Reg | immediate
-        		int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+        		int immediateValue = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int indexValue = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int resultInt = (value | indexValue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.IndexRegister = new Binary(resultStr);
+                int orInt = (immediateValue | indexValue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.IndexRegister = new Binary(orStr);
         	}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Index Reg | memory
         		int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 int indexValue = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int resultInt = (value | indexValue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.IndexRegister = new Binary(resultStr);
+                int orInt = (memValue | indexValue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.IndexRegister = new Binary(orStr);
         	}
         }
     }
 
     /**
-     * If addressing mode is "000" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "000",
      * compare the AR value with the operand value.
-     * If addressing mode is "001" and register specifier is "0",
+     * If register specifier is "0" and addressing mode is "001",
      * compare the AR value with a memory dump value.
+     * If register specifier is "1" and addressing mode is "000",
+     * compare the IndexRegister value with the operand value.
+     * If register specifier is "1" and addressing mode is "001",
+     * compare the IndexRegister value with a memory dump value.
      * 
      * @param instr
      */
@@ -574,9 +620,9 @@ public class ControlUnitImpl implements ControlUnit {
                         AR.compare(operandBin.getNumber(), AR.getNumber())));
             } else if (instr.getAddressingMode().contentEquals("001")) { //AR Compare memory
                 int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 this.AR = new Binary(Integer.toBinaryString(
-                        AR.compare(Integer.toString(value), AR.getNumber())));
+                        AR.compare(Integer.toString(memValue), AR.getNumber())));
             }
 		}else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
 			if (instr.getAddressingMode().contentEquals("000")) { //Index Reg Compare immediate
@@ -585,15 +631,18 @@ public class ControlUnitImpl implements ControlUnit {
                 		IndexRegister.compare(operandBin.getNumber(), IndexRegister.getNumber())));
 			}else if(instr.getAddressingMode().contentEquals("001")) { //Index Reg Compare memory
 				int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 this.IndexRegister = new Binary(Integer.toBinaryString(
-                		IndexRegister.compare(Integer.toString(value), IndexRegister.getNumber())));
+                		IndexRegister.compare(Integer.toString(memValue), IndexRegister.getNumber())));
 			}
 		}
 	}
 
     /**
+     * If addressing mode last bit is "0",
      * Rotates the AR value to the right.
+     * If addressing mode last bit is "1",
+     * Rotates the IndexRegister value to the right.
      * 
      * @param instr
      */
@@ -612,7 +661,10 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
+     * If addressing mode last bit is "0",
      * Rotates the AR value to the left.
+     * If addressing mode last bit is "1",
+     * Rotates the IndexRegister value to the left.
      * 
      * @param instr
      */
@@ -642,8 +694,8 @@ public class ControlUnitImpl implements ControlUnit {
             int dec = Transformer.binToDecimal(operand);
             window.setTerminalArea(window.getTerminalArea() + "" + dec);
         } else if (instr.getAddressingMode().contentEquals("001")) { // memory
-            int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-            int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
+            int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+            int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexAddress));
             window.setTerminalArea(window.getTerminalArea() + "" + dec);
         }
         incrementPC();
@@ -828,7 +880,7 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * 
+     * Returns condition register bits.
      */
     @Override
     public Map<String, Binary> getConditionRegisterBits() {
