@@ -1,8 +1,8 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DecimalTest {
 
@@ -53,7 +53,4 @@ class DecimalTest {
 		boolean actual = a.equality(b);
 		assertFalse(actual);
 	}
-	 
-	
-
 }
