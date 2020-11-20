@@ -818,7 +818,7 @@ public class ControlUnitImpl implements ControlUnit {
         String twoStr = "01";
         Binary twoBin = new Binary(twoStr);
         this.PC = binCalculator.add(twoBin, PC);
-        this.PC.setNumber(Transformer.formatBinaryAddress(this.PC.getNumber(), 16, "0"));
+        this.PC.setNumber(Transformer.formatAddress(this.PC.getNumber(), 16, "0"));
     }
 
     /**
