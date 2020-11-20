@@ -80,29 +80,16 @@ public class ControlUnitImpl implements ControlUnit {
      */
     private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
 
-    /**
-     * Parameterized constructor. Creates an ControlUnitImpl 
-     * object.
-     * 
-     * @param window SimulatorWindow object
-     */
     public ControlUnitImpl(SimulatorWindow window) {
         this.window = window;
     }
 
-    /**
-     * Executes a single instruction.
-     */
-    @Override
     public void executeSingleInstruction(String instr) {
         currentInstruction = Transformer.decodeInstruction(instr);
         this.IR.setNumber(currentInstruction.toString());
         executeInstruction(currentInstruction);
     }
 
-    /**
-     * 
-     */
     @Override
     public void startCycle() {
         int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
@@ -117,9 +104,6 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
-    /**
-     * Returns the current instruction from IR.
-     */
     @Override
     public Instruction getCurrentInstruction() {
         return currentInstruction;
@@ -141,17 +125,11 @@ public class ControlUnitImpl implements ControlUnit {
         return currentInstruction.getOperand();
     }
 
-    /**
-     * Returns the ALU (Arithmetic Logic Unit) Impl.
-     */
     @Override
     public ArithmeticLogicUnitImpl getALU() {
         return ALU;
     }
 
-    /**
-     * Returns the memoryDump.
-     */
     @Override
     public MemoryDump getMemoryDump() {
         return memoryDump;
@@ -827,9 +805,6 @@ public class ControlUnitImpl implements ControlUnit {
         }
     }
 
-    /**
-     * 
-     */
     @Override
     public Map<String, Binary> getConditionRegisterBits() {
         return Map.ofEntries(entry("N", N), entry("Z", Z), entry("V", V), entry("C", C));
