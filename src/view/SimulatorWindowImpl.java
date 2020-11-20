@@ -16,8 +16,8 @@ import static java.util.Map.entry;
 
 public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 
-	private static int PANEL_WIDTH = 400;
-	private static int PANEL_HEIGHT = 200;
+	public static int PANEL_WIDTH = 400;
+	public static int PANEL_HEIGHT = 200;
 
 	/** Current instruction index used for single step operation */
 	private int currentInstructionIndex = 0;
@@ -94,8 +94,13 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 		});
 
 		singleStepButton.addActionListener(e -> {
-			String[] instructions = objectCodeArea.getText().split("\\s+");
+			String[] instructions = (objectCodeArea.getText().length() != 0)? objectCodeArea.getText().split("\\s+"):
+					sourceCodeArea.getText().split("\\r?\\n");
 
+			if (instructions.length == 0) {
+				JOptionPane.showMessageDialog(mainPanel, "Please input Code");
+				return;
+			}
 			if (currentInstructionIndex < instructions.length) {
 				String currentInstruction = instructions[currentInstructionIndex++];
 				setChanged();

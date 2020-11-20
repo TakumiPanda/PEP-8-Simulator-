@@ -3,6 +3,8 @@ package controller;
 import model.Binary;
 import model.ControlUnitImpl;
 import model.MemoryDumpImpl;
+import utils.AssemblyConverter;
+import utils.Transformer;
 import view.SimulatorWindowImpl;
 
 import javax.swing.*;
@@ -65,15 +67,35 @@ public class Simulator implements Observer {
 			return;
 		}
 
-		controlUnit.getMemoryDump().updateMemory(window.getObjectCodeArea().getText());
-		controlUnit.getMemoryDump().updateMemoryAssembly(window.getSourceCodeArea().getText());
+		String objectCode = window.getObjectCodeArea().getText();
+		String sourceCode = window.getSourceCodeArea().getText();
+		if (objectCode.length() != 0) {
+			controlUnit.getMemoryDump().updateMemory(objectCode);
+		}
+		if (sourceCode.length() != 0) {
+			controlUnit.getMemoryDump().updateMemoryAssembly(sourceCode);
+		}
 		window.getMemoryArea().setText(controlUnit.getMemoryDump().toString());
 		window.getMemoryArea().setCaretPosition(0);
 
 		// Case that is used if single step is pressed, and only one instruction needs
 		// to be executed.
 		if (arg instanceof String) {
-			controlUnit.executeSingleInstruction((String) arg);
+			String machineCodeInstruction = "";
+			String instructionToBeExecuted = (String) arg;
+			switch (instructionToBeExecuted.length()) {
+				case 6:
+					machineCodeInstruction = Transformer.hexToBinary(instructionToBeExecuted);
+					break;
+				case 24:
+					machineCodeInstruction =instructionToBeExecuted;
+					break;
+				default: //Assembly code
+					AssemblyConverter assemblyConverter = new AssemblyConverter();
+					String hexInstruction = assemblyConverter.generateHexString(instructionToBeExecuted);
+					machineCodeInstruction = Transformer.hexToBinary(hexInstruction);
+			}
+			controlUnit.executeSingleInstruction(machineCodeInstruction);
 		} else {
 			controlUnit.startCycle();
 		}
