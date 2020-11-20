@@ -73,12 +73,4 @@ public abstract class Number {
 	public String getNumber() {
 		return number;
 	}
-
-	/**
-	 *  Is this required if we have a getNumber()?
-	 */
-	@Override
-	public String toString() {
-		return number;
-	}
 }

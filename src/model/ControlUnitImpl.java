@@ -8,6 +8,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 /**
+ * Decodes and execute given instructions.
  * 
  * @author
  * @version 2.9
@@ -340,8 +341,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.AR, operandValue, "Addition");
                 this.AR = binCalculator.add(operandValue, AR);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-                int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+                int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.AR, memVal, "Addition");
                 this.AR = binCalculator.add(memVal, AR);
             }
@@ -351,8 +352,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.IndexRegister, operandValue, "Addition");
                 this.IndexRegister = binCalculator.add(operandValue, IndexRegister);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-                int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+                int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.IndexRegister, memVal, "Addition");
                 this.IndexRegister = binCalculator.add(memVal, IndexRegister);
             }
@@ -438,8 +439,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.AR, operandVal, "Subtraction");
                 this.AR = binCalculator.subtract(AR, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-            	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            	int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.AR, memVal, "Subtraction");
                 this.AR = binCalculator.subtract(AR, memVal);
             }
@@ -449,8 +450,8 @@ public class ControlUnitImpl implements ControlUnit {
                 setFlags(this.IndexRegister, operandVal, "Subtraction");
                 this.IndexRegister = binCalculator.subtract(IndexRegister, operandVal);
             } else if (instr.getAddressingMode().contentEquals("001")) { // direct
-            	int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexVal)));
+            	int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+                Binary memVal = new Binary(Transformer.hexToBinary(memoryDump.getMemory(hexAddress)));
                 setFlags(this.IndexRegister, memVal, "Subtraction");
                 this.IndexRegister = binCalculator.subtract(IndexRegister, memVal);
             }
@@ -498,9 +499,9 @@ public class ControlUnitImpl implements ControlUnit {
     private void executeAnd(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR & immediate
-                int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int immediateInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int ARint = Integer.parseInt(AR.getNumber(), 2);
-                int andInt = (ARint & valueInt);
+                int andInt = (ARint & immediateInt);
                 String andStr = Integer.toBinaryString(andInt);
                 Binary andBin = new Binary(andStr);
                 this.AR = andBin;
@@ -514,9 +515,9 @@ public class ControlUnitImpl implements ControlUnit {
                 this.AR = andBin;
 		}else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
 			if (instr.getAddressingMode().contentEquals("000")) { //Index Reg & immediate
-				int valueInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+				int immediateInt = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int Indexint = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int andInt = (Indexint & valueInt);
+                int andInt = (Indexint & immediateInt);
                 String andStr = Integer.toBinaryString(andInt);
                 Binary andBin = new Binary(andStr);
                 this.IndexRegister = andBin;
@@ -568,33 +569,33 @@ public class ControlUnitImpl implements ControlUnit {
     private void executeOr(Instruction instr) {
         if (instr.getRegisterSpecifier().contentEquals("0")) { //AC
             if (instr.getAddressingMode().contentEquals("000")) { //AR | immediate
-                int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+                int immediateValue = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int ARvalue = Integer.parseInt(AR.getNumber(), 2);
-                int resultInt = (value | ARvalue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.AR = new Binary(resultStr);
+                int orInt = (immediateValue | ARvalue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.AR = new Binary(orStr);
             } else if (instr.getAddressingMode().contentEquals("001")) { //AR | memory
                 int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 int ARvalue = Integer.parseInt(AR.getNumber(), 2);
-                int resultInt = (value | ARvalue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.AR = new Binary(resultStr);
+                int orInt = (memValue | ARvalue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.AR = new Binary(orStr);
             }
         }else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
         	if (instr.getAddressingMode().contentEquals("000")) { //Index Reg | immediate
-        		int value = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
+        		int immediateValue = Integer.parseInt(Transformer.binToHex(instr.getOperand()));
                 int indexValue = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int resultInt = (value | indexValue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.IndexRegister = new Binary(resultStr);
+                int orInt = (immediateValue | indexValue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.IndexRegister = new Binary(orStr);
         	}else if(instr.getRegisterSpecifier().contentEquals("001")) { //Index Reg | memory
         		int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 int indexValue = Integer.parseInt(IndexRegister.getNumber(), 2);
-                int resultInt = (value | indexValue);
-                String resultStr = Integer.toBinaryString(resultInt);
-                this.IndexRegister = new Binary(resultStr);
+                int orInt = (memValue | indexValue);
+                String orStr = Integer.toBinaryString(orInt);
+                this.IndexRegister = new Binary(orStr);
         	}
         }
     }
@@ -619,9 +620,9 @@ public class ControlUnitImpl implements ControlUnit {
                         AR.compare(operandBin.getNumber(), AR.getNumber())));
             } else if (instr.getAddressingMode().contentEquals("001")) { //AR Compare memory
                 int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 this.AR = new Binary(Integer.toBinaryString(
-                        AR.compare(Integer.toString(value), AR.getNumber())));
+                        AR.compare(Integer.toString(memValue), AR.getNumber())));
             }
 		}else if(instr.getRegisterSpecifier().contentEquals("1")){ //Index Reg
 			if (instr.getAddressingMode().contentEquals("000")) { //Index Reg Compare immediate
@@ -630,9 +631,9 @@ public class ControlUnitImpl implements ControlUnit {
                 		IndexRegister.compare(operandBin.getNumber(), IndexRegister.getNumber())));
 			}else if(instr.getAddressingMode().contentEquals("001")) { //Index Reg Compare memory
 				int address = Transformer.binToDecimal(instr.getOperand());
-                int value = Transformer.hexToDecimal(memoryDump.getMemory(address));
+                int memValue = Transformer.hexToDecimal(memoryDump.getMemory(address));
                 this.IndexRegister = new Binary(Integer.toBinaryString(
-                		IndexRegister.compare(Integer.toString(value), IndexRegister.getNumber())));
+                		IndexRegister.compare(Integer.toString(memValue), IndexRegister.getNumber())));
 			}
 		}
 	}
@@ -693,8 +694,8 @@ public class ControlUnitImpl implements ControlUnit {
             int dec = Transformer.binToDecimal(operand);
             window.setTerminalArea(window.getTerminalArea() + "" + dec);
         } else if (instr.getAddressingMode().contentEquals("001")) { // memory
-            int hexVal = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
-            int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexVal));
+            int hexAddress = Integer.parseInt(Transformer.binToHex(instr.getOperand()), 16);
+            int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexAddress));
             window.setTerminalArea(window.getTerminalArea() + "" + dec);
         }
         incrementPC();
@@ -879,7 +880,7 @@ public class ControlUnitImpl implements ControlUnit {
     }
 
     /**
-     * 
+     * Returns condition register bits.
      */
     @Override
     public Map<String, Binary> getConditionRegisterBits() {
