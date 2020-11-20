@@ -2,7 +2,7 @@ package model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DecimalCalculatorTest {
 
@@ -14,8 +14,8 @@ class DecimalCalculatorTest {
 	void testAdd() { 
 		DecimalCalculator c = new DecimalCalculator();
 		Decimal expected = new Decimal("3");
-		Decimal actual = (Decimal) c.add("1", "2");
-		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
+		Decimal actual = c.add(new Decimal("1"), new Decimal("2"));
+		assertTrue(expected.equality(actual));
 	}
 	
 	/**
@@ -26,8 +26,8 @@ class DecimalCalculatorTest {
 	void testSubtract() {
 		DecimalCalculator c = new DecimalCalculator();
 		Decimal expected = new Decimal("1");
-		Decimal actual = (Decimal) c.subtract("3", "2");
-		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
+		Decimal actual = c.subtract(new Decimal("3"), new Decimal("2"));
+		assertTrue(expected.equality(actual));
 	}
 	
 	/**
@@ -38,8 +38,8 @@ class DecimalCalculatorTest {
 	void testMultiply() {
 		DecimalCalculator c = new DecimalCalculator();
 		Decimal expected = new Decimal("6");
-		Decimal actual = (Decimal) c.multiply("3", "2");
-		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
+		Decimal actual = c.multiply(new Decimal("3"), new Decimal("2"));
+		assertTrue(expected.equality(actual));
 	}
 	
 	/**
@@ -50,8 +50,8 @@ class DecimalCalculatorTest {
 	void testDivide() {
 		DecimalCalculator c = new DecimalCalculator();
 		Decimal expected = new Decimal("2");
-		Decimal actual = (Decimal) c.divide("4", "2");
-		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
+		Decimal actual = c.divide(new Decimal("4"), new Decimal("2"));
+		assertTrue(expected.equality(actual));
 	}
 	
 	/**
@@ -62,7 +62,7 @@ class DecimalCalculatorTest {
 	void testMod() {
 		DecimalCalculator c = new DecimalCalculator();
 		Decimal expected = new Decimal("1");
-		Decimal actual = (Decimal) c.mod("1", "10");
-		assertEquals(expected.toString(), actual.toString(), "Expected: "+expected+", Actual: "+actual);
+		Decimal actual = c.mod(new Decimal("1"), new Decimal("10"));
+		assertTrue(expected.equality(actual));
 	}
 }
