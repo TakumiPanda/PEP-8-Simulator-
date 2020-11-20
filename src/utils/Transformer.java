@@ -1,6 +1,8 @@
 package utils;
 import model.Instruction;
 
+import static java.lang.Integer.toHexString;
+
 
 public class Transformer {
 
@@ -142,16 +144,23 @@ public class Transformer {
 	}
 
 	/**
+	 * decimal --> Hex
+	 */
+	public static String decimalToHex(int decimal) {
+		return toHexString(decimal);
+	}
+
+	/**
 	 * Formats the binary number by padding the value with 0/1 or sign extending it to the proper length
 	 *
-	 * @param binAddress String binary address.
+	 * @param address tring binary address.
 	 * @return String binary address.
 	 */
-	public static String formatBinaryAddress(String binAddress, int length, String extendCharacter) {
-		int lengthExtended = length - binAddress.length();
+	public static String formatAddress(String address, int length, String extendCharacter) {
+		int lengthExtended = length - address.length();
 		for (int i = 0; i < lengthExtended; i++) {
-			binAddress = extendCharacter + binAddress;
+			address = extendCharacter + address;
 		}
-		return binAddress;
+		return address;
 	}
 }
