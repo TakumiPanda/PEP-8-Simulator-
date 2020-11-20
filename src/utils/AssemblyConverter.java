@@ -76,7 +76,6 @@ public class AssemblyConverter {
         }
 
         String hexCode = listToHexString();
-        System.out.println(hexCode);
         return hexCode;
     }
 
@@ -236,7 +235,6 @@ public class AssemblyConverter {
             StringBuilder hexBuild = new StringBuilder();
             hexBuild.append(hex);
             hexBuild.append(Integer.toHexString(addMode));
-
             int valDec = Integer.parseInt(value);
             String hexVal = Integer.toHexString(valDec);
             hexBuild.append("0".repeat(Math.max(0, 4 - hexVal.length())));
