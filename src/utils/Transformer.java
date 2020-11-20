@@ -128,7 +128,7 @@ public class Transformer {
 			binary.append(String.format("%4s", Integer.toBinaryString(binVal)).replace(" ", "0"));
 			binary.append(" ");
 		}
-		return binary.toString();
+		return binary.toString().replaceAll("\\s","");
 	}
 
 	/**
