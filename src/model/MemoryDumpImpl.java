@@ -38,6 +38,10 @@ public class MemoryDumpImpl implements MemoryDump {
         String[] instructions = objCode.split("\\s+");
         if (instructions[0].length() == 6) { // Hex code
             placeInstructionsIntoMemory(objCode);
+            for (String instruction: instructions) {
+                String machineCode = Transformer.hexToBinary(instruction);
+                binInstructions.add(machineCode);
+            }
         } else { //Machine code
             //Fill memory list if first time launching
             String code = "";
@@ -51,8 +55,8 @@ public class MemoryDumpImpl implements MemoryDump {
     }
 
     public void updateMemoryAssembly(String assemblyCode) {
-        AssemblyConverter aCon = new AssemblyConverter();
-        String objCode = aCon.generateHexString(assemblyCode);
+        AssemblyConverter assemblyConverter = new AssemblyConverter();
+        String objCode = assemblyConverter.generateHexString(assemblyCode);
         if (!objCode.isBlank()) {
             updateMemory(objCode);
         }
