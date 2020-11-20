@@ -36,12 +36,12 @@ Command will Load the A register with the value of 1. Then add a -1 to it. Shoul
 
 
 This command will print out Hello in Assembly
-charo 0x0048,d ; Output a 'H'
-charo 0x0065,d ; Output a 'e'
-charo 0x006C,d ; Output a 'l'
-charo 0x006C,d ; Output a 'l'
-charo 0x006F,d ; Output a 'o'
-STOP          ; End program
+CHARO 72,i
+CHARO 101,i
+CHARO 108,i
+CHARO 108,i
+CHARO 111,i
+STOP
 .END
 
 
