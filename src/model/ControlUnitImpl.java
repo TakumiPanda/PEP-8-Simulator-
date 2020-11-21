@@ -16,8 +16,6 @@ import static java.util.Map.entry;
  */
 public class ControlUnitImpl implements ControlUnit {
 
-    private Instruction currentInstruction = new Instruction("0000", "0000");
-
     /**
      * Index register used to indexing array elements
      */
@@ -81,82 +79,44 @@ public class ControlUnitImpl implements ControlUnit {
      */
     private MemoryDumpImpl memoryDump = new MemoryDumpImpl();
 
-    /**
-     * Parameterized constructor. Creates an ControlUnitImpl 
-     * object.
-     * 
-     * @param window SimulatorWindow object
-     */
     public ControlUnitImpl(SimulatorWindow window) {
         this.window = window;
     }
 
-    /**
-     * Executes a single instruction.
-     */
-    @Override
-    public void executeSingleInstruction(String instr) {
-        currentInstruction = Transformer.decodeInstruction(instr);
-        this.IR.setNumber(currentInstruction.toString());
-        executeInstruction(currentInstruction);
-    }
 
-    /**
-     * 
-     */
     @Override
     public void startCycle() {
-        int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
-        String instructionFromAddress = memoryDump.fetch(addressOfInstructionInMemory);
-        this.IR.setNumber(instructionFromAddress);
-
-        currentInstruction = Transformer.decodeInstruction(this.IR.getNumber());
-        executeInstruction(currentInstruction);
-
-        if (stopProgram == false) {
-            startCycle();
+        while (!stopProgram) {
+            executeNextInstruction();
         }
     }
 
-    /**
-     * Returns the current instruction from IR.
-     */
     @Override
-    public Instruction getCurrentInstruction() {
-        return currentInstruction;
+    public void executeNextInstruction() {
+        Instruction nextInstruction = getNextInstructionFromPC();
+        loadNextInstructionIntoIR(nextInstruction);
+        executeInstruction(nextInstruction);
+        incrementPC();
+        updateRegisters();
     }
 
-    /**
-     * Returns the current Instruction Specifier.
-     * Should be 8 bits long
-     */
-    public String getInstructionSpecifier() {
-        return this.IR.getNumber().substring(0,7);
-    }
-
-    /**
-     * Returns the current instruction operand.
-     * Should be 16 bits long
-     */
-    public String getInstructionOperand() {
-        return currentInstruction.getOperand();
-    }
-
-    /**
-     * Returns the ALU (Arithmetic Logic Unit) Impl.
-     */
     @Override
-    public ArithmeticLogicUnitImpl getALU() {
-        return ALU;
+    public void executeSingleInstruction(String instr) {
+        Instruction instruction = Transformer.decodeInstruction(instr);
+        executeInstruction(instruction);
     }
 
-    /**
-     * Returns the memoryDump.
-     */
-    @Override
-    public MemoryDump getMemoryDump() {
-        return memoryDump;
+    private void loadNextInstructionIntoIR(Instruction nextInstruction) {
+        this.IR.setNumber(nextInstruction.toString());
     }
+
+    private Instruction getNextInstructionFromPC() {
+        int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
+        String instructionFromAddress = memoryDump.fetch(addressOfInstructionInMemory);
+        return Transformer.decodeInstruction(instructionFromAddress);
+    }
+
+
 
     /**
      * Decodes the given instruction.
@@ -245,15 +205,39 @@ public class ControlUnitImpl implements ControlUnit {
                 break;
             default:
         }
-        // PC must be updated to hold the address of the next instruction to be executed
-        incrementPC();
+        updateRegisters();
+    }
 
-        // Registers must be updated in the GUI Window.
-        Binary[] updatedRegisters = ALU.getRegisters();
-        updatedRegisters[0] = this.PC;
-        updatedRegisters[1] = this.IR;
-        updatedRegisters[2] = this.AR;
-        ALU.updateState(updatedRegisters);
+    /**
+     * Returns the current Instruction Specifier.
+     * Should be 8 bits long
+     */
+    public String getInstructionSpecifier() {
+        return this.IR.getNumber().substring(0,7);
+    }
+
+    public Instruction getCurrentInstruction () {
+        int addressOfInstructionInMemory = Transformer.binToDecimal("" + this.PC.getNumber());
+        String instructionFromAddress = memoryDump.fetch(addressOfInstructionInMemory);
+        return Transformer.decodeInstruction(instructionFromAddress);
+    }
+
+    /**
+     * Returns the current instruction operand.
+     * Should be 16 bits long
+     */
+    public String getInstructionOperand() {
+        return getCurrentInstruction().getOperand();
+    }
+
+    @Override
+    public ArithmeticLogicUnitImpl getALU() {
+        return ALU;
+    }
+
+    @Override
+    public MemoryDump getMemoryDump() {
+        return memoryDump;
     }
 
     /**
@@ -358,8 +342,6 @@ public class ControlUnitImpl implements ControlUnit {
                 this.IndexRegister = binCalculator.add(memVal, IndexRegister);
             }
     	}
-        incrementPC();
-        incrementPC();
     }
 
     /**
@@ -698,7 +680,6 @@ public class ControlUnitImpl implements ControlUnit {
             int dec = Transformer.hexToDecimal(memoryDump.getMemory(hexAddress));
             window.setTerminalArea(window.getTerminalArea() + "" + dec);
         }
-        incrementPC();
     }
 
     /**
@@ -840,7 +821,7 @@ public class ControlUnitImpl implements ControlUnit {
         String twoStr = "01";
         Binary twoBin = new Binary(twoStr);
         this.PC = binCalculator.add(twoBin, PC);
-        this.PC.setNumber(Transformer.formatBinaryAddress(this.PC.getNumber(), 16, "0"));
+        this.PC.setNumber(Transformer.formatAddress(this.PC.getNumber(), 16, "0"));
     }
 
     /**
@@ -878,12 +859,22 @@ public class ControlUnitImpl implements ControlUnit {
             C.setNumber("0");
         }
     }
-
-    /**
-     * Returns condition register bits.
-     */
     @Override
     public Map<String, Binary> getConditionRegisterBits() {
         return Map.ofEntries(entry("N", N), entry("Z", Z), entry("V", V), entry("C", C));
+    }
+
+    public void updateRegisters() {
+        Binary[] updatedRegisters = ALU.getRegisters();
+        updatedRegisters[0] = this.PC;
+        updatedRegisters[1] = this.IR;
+        updatedRegisters[2] = this.AR;
+        ALU.updateState(updatedRegisters);
+    }
+
+    public void wipeRegisters() {
+        this.PC = new Binary();
+        this.AR = new Binary();
+        this.IR = new Binary();
     }
 }

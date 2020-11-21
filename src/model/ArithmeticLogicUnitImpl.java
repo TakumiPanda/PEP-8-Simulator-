@@ -30,9 +30,6 @@ public class ArithmeticLogicUnitImpl extends Observable implements ArithmeticLog
     public Binary[] getRegisters() {
         return registers;
     }
-    public void setRegisters(Binary[] reg) {
-        this.registers = reg;
-    }
     public Binary getPC() {
         return registers[0];
     }

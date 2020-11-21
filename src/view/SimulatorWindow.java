@@ -1,12 +1,9 @@
 package view;
 
-import java.util.Map;
-
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import model.MemoryDumpImpl;
+
+import javax.swing.*;
+import java.util.Map;
 
 public interface SimulatorWindow {
 
@@ -26,26 +23,24 @@ public interface SimulatorWindow {
      *  }
      * 
      */
-    public Map<String, JTextField> getCPUComponents();
-
-    public void setCPUComponents(Map<String, JTextField> cpuComponents);
+    Map<String, JTextField> getCPUComponents();
 
     /**
      * Resets the Object Code text box and Terminal text box.
      */
-    public void reset();
+    void reset();
 
-    public JPanel getMainPanel(); 
+    JPanel getMainPanel();
 
-    public JTextArea getObjectCodeArea();
+    JTextArea getObjectCodeArea();
 
-    public JTextArea getSourceCodeArea();
+    JTextArea getSourceCodeArea();
 
-    public JTextArea getMemoryArea();
+    JTextArea getMemoryArea();
 
-    public void setMemoryDump(MemoryDumpImpl updatedMemory);
+    void setMemoryDump(MemoryDumpImpl updatedMemory);
 
-    public void setTerminalArea(String output);
+    void setTerminalArea(String output);
 
-    public String getTerminalArea();
+    String getTerminalArea();
 }

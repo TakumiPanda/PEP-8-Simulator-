@@ -2,84 +2,30 @@ package model;
 
 /**
  * Calculator class that'll do addition, subtraction, multiplication, 
- * division, and modulo. Takes in two objects and returns a Decimal.
+ * division, and modulo. Takes in two Decimals and returns a Decimal.
  * 
  * @author 
  * @version 2.3
  *
  */  
-public class DecimalCalculator implements Calculator {
+public class DecimalCalculator extends Calculator {
 
-	/**
-	 * Add two objects and returns a Decimal.
-	 * 
-	 * @param num1 first object
-	 * @param num2 second object
-	 */
-	@Override
-	public Object add(Object a, Object b) {
-		Decimal num1 = new Decimal(a + "");
-		Decimal num2 = new Decimal(b + "");
-		int sum = Integer.parseInt(num1.getNumber()) + Integer.parseInt(num2.getNumber());
-		return new Decimal("" + sum);
+	public DecimalCalculator(){
+		super();
 	}
-
-	/**
-	 * Subtracts the second object with the first object.
-	 * Returns a Decimal.
-	 * 
-	 * @param num1 first object
-	 * @param num2 second object
-	 */
-	@Override
-	public Object subtract(Object a, Object b) {
-		Decimal num1 = new Decimal(a + "");
-		Decimal num2 = new Decimal(b + "");
-		int sum = Integer.parseInt(num1.getNumber()) - Integer.parseInt(num2.getNumber());
-		return new Decimal("" + sum);
+	public Decimal add(Decimal decOne, Decimal decTwo) {
+		return (Decimal) super.executeOperation(decOne, decTwo, 10, "Add");
 	}
-
-	/**
-	 * Multiply the two objects together. Returns a Decimal.
-	 * 
-	 * @param num1 first object
-	 * @param num2 second object
-	 */
-	@Override
-	public Object multiply(Object a, Object b) {
-		Decimal num1 = new Decimal(a + "");
-		Decimal num2 = new Decimal(b + "");
-		int sum = Integer.parseInt(num1.getNumber()) * Integer.parseInt(num2.getNumber());
-		return new Decimal("" + sum);
+	public Decimal subtract(Decimal decOne, Decimal decTwo) {
+		return (Decimal) super.executeOperation(decOne, decTwo, 10, "Subtract");
 	}
-
-	/**
-	 * Divide the first object with the second object.
-	 * Returns a Decimal.
-	 * 
-	 * @param num1 first object
-	 * @param num2 second object
-	 */
-	@Override
-	public Object divide(Object a, Object b) {
-		Decimal num1 = new Decimal(a + "");
-		Decimal num2 = new Decimal(b + "");
-		int sum = Integer.parseInt(num1.getNumber()) / Integer.parseInt(num2.getNumber());
-		return new Decimal("" + sum);
+	public Decimal multiply(Decimal decOne, Decimal decTwo) {
+		return (Decimal) super.executeOperation(decOne, decTwo, 10, "Multiply");
 	}
-
-	/**
-	 * Mods the first object with the second object.
-	 * Returns a Decimal.
-	 * 
-	 * @param num1 first object
-	 * @param num2 second object
-	 */
-	@Override
-	public Object mod(Object a, Object b) {
-		Decimal num1 = new Decimal(a + "");
-		Decimal num2 = new Decimal(b + "");
-		int sum = Integer.parseInt(num1.getNumber()) % Integer.parseInt(num2.getNumber());
-		return new Decimal("" + sum);
+	public Decimal divide(Decimal decOne, Decimal decTwo) {
+		return (Decimal) super.executeOperation(decOne, decTwo, 10, "Divide");
+	}
+	public Decimal mod(Decimal decOne, Decimal decTwo) {
+		return (Decimal) super.executeOperation(decOne, decTwo, 10, "Mod");
 	}
 }
