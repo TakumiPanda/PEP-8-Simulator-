@@ -3,8 +3,6 @@ package controller;
 import model.Binary;
 import model.ControlUnitImpl;
 import model.MemoryDumpImpl;
-import utils.AssemblyConverter;
-import utils.Transformer;
 import view.SimulatorWindowImpl;
 
 import javax.swing.*;
@@ -22,6 +20,7 @@ public class Simulator implements Observer {
 
 	private ControlUnitImpl controlUnit;
 	private SimulatorWindowImpl window;
+	private boolean resetSystem = false;
 
 	public Simulator() throws IOException {
 		JFrame frame = new JFrame();
@@ -30,33 +29,12 @@ public class Simulator implements Observer {
 		controlUnit = new ControlUnitImpl(window);
 		window.addObserver(this);
 		controlUnit.getALU().addObserver(this);
-		Binary[] registers = new Binary[7];
-		for (int i = 0; i < registers.length; i++) {
-			registers[i] = new Binary();
-		}
-		updateCPUComponents(window.getCPUComponents(),registers);
+		resetRegisters();
 		frame.add(window.getMainPanel());
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(3);
 		frame.setVisible(true);
 		frame.pack();
-	}
-
-	private void updateCPUComponents(Map<String, JTextField> cpuComponents, Binary[] register) {
-		cpuComponents.get("Accumulator").setText(formatBinaryToHex(register[2].getNumber()) + "");
-		cpuComponents.get("Program Counter").setText(formatBinaryToHex(register[0].getNumber()) + "");
-		cpuComponents.get("Instruction Specifier").setText(controlUnit.getInstructionSpecifier());
-		cpuComponents.get("Operand Specifier").setText(formatBinaryToHex(controlUnit.getInstructionOperand()));
-		cpuComponents.get("Index Register").setText(formatBinaryToHex(register[3].getNumber())+"");
-		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
-		cpuComponents.get("N").setText(conditionRegisterBits.get("N").toString());
-		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").toString());
-		cpuComponents.get("V").setText(conditionRegisterBits.get("V").toString());
-		cpuComponents.get("C").setText(conditionRegisterBits.get("C").toString());
-	}
-
-	private String formatBinaryToHex(String binary) {
-		return String.format("0x%04X", Integer.parseInt(binary, 2));
 	}
 
 	@Override
@@ -67,6 +45,33 @@ public class Simulator implements Observer {
 			return;
 		}
 
+		if (resetSystem == true) {
+			window.reset();
+			resetRegisters();
+			controlUnit.updateRegisters();
+			controlUnit.getMemoryDump().wipeMemory();
+			resetSystem = false;
+			return;
+		}
+		if (arg instanceof String) {
+			loadInstructionsIntoMemory();
+			String argument = (String) arg;
+			if (argument.equals("Single Step")) {
+				controlUnit.executeNextInstruction();
+				if (controlUnit.getCurrentInstruction().getOpcode().equals("0000")) {
+					resetSystem = true;
+				}
+			} else if (argument.equals("Execute")){
+				controlUnit.startCycle();
+				resetSystem = true;
+			}
+		}
+
+		// Update the memory dump.
+		window.setMemoryDump((MemoryDumpImpl) controlUnit.getMemoryDump());
+	}
+
+	private void loadInstructionsIntoMemory() {
 		String objectCode = window.getObjectCodeArea().getText();
 		String sourceCode = window.getSourceCodeArea().getText();
 		if (objectCode.length() != 0) {
@@ -77,29 +82,45 @@ public class Simulator implements Observer {
 		}
 		window.getMemoryArea().setText(controlUnit.getMemoryDump().toString());
 		window.getMemoryArea().setCaretPosition(0);
+	}
 
-		// Case that is used if single step is pressed, and only one instruction needs
-		// to be executed.
-		if (arg instanceof String) {
-			String machineCodeInstruction = "";
-			String instructionToBeExecuted = (String) arg;
-			switch (instructionToBeExecuted.length()) {
-				case 6:
-					machineCodeInstruction = Transformer.hexToBinary(instructionToBeExecuted);
-					break;
-				case 24:
-					machineCodeInstruction =instructionToBeExecuted;
-					break;
-				default: //Assembly code
-					AssemblyConverter assemblyConverter = new AssemblyConverter();
-					String hexInstruction = assemblyConverter.generateHexString(instructionToBeExecuted);
-					machineCodeInstruction = Transformer.hexToBinary(hexInstruction);
-			}
-			controlUnit.executeSingleInstruction(machineCodeInstruction);
-		} else {
-			controlUnit.startCycle();
+	private void resetRegisters() {
+		Binary[] registers = new Binary[7];
+		for (int i = 0; i < registers.length; i++) {
+			registers[i] = new Binary();
 		}
-		// Update the memory dump.
-		window.setMemoryDump((MemoryDumpImpl) controlUnit.getMemoryDump());
+		initializeCPUComponents(window.getCPUComponents(), registers);
+		controlUnit.wipeRegisters();
+	}
+
+	private void updateCPUComponents(Map<String, JTextField> cpuComponents, Binary[] register) {
+		cpuComponents.get("Accumulator").setText(formatBinaryToHex(register[2].getNumber()) + "");
+		cpuComponents.get("Program Counter").setText(formatBinaryToHex(register[0].getNumber()) + "");
+		cpuComponents.get("Instruction Specifier").setText(controlUnit.getInstructionSpecifier());
+		cpuComponents.get("Operand Specifier").setText(formatBinaryToHex(controlUnit.getInstructionOperand()));
+		cpuComponents.get("Index Register").setText(formatBinaryToHex(register[3].getNumber())+"");
+		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
+		cpuComponents.get("N").setText(conditionRegisterBits.get("N").getNumber());
+		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").getNumber());
+		cpuComponents.get("V").setText(conditionRegisterBits.get("V").getNumber());
+		cpuComponents.get("C").setText(conditionRegisterBits.get("C").getNumber());
+	}
+
+
+	private void initializeCPUComponents(Map<String, JTextField> cpuComponents, Binary[] register) {
+		cpuComponents.get("Accumulator").setText(formatBinaryToHex("0"));
+		cpuComponents.get("Program Counter").setText(formatBinaryToHex("0"));
+		cpuComponents.get("Instruction Specifier").setText(controlUnit.getInstructionSpecifier());
+		cpuComponents.get("Operand Specifier").setText(formatBinaryToHex("0"));
+		cpuComponents.get("Index Register").setText(formatBinaryToHex("0"));
+		Map<String, Binary> conditionRegisterBits = controlUnit.getConditionRegisterBits();
+		cpuComponents.get("N").setText(conditionRegisterBits.get("N").getNumber());
+		cpuComponents.get("Z").setText(conditionRegisterBits.get("Z").getNumber());
+		cpuComponents.get("V").setText(conditionRegisterBits.get("V").getNumber());
+		cpuComponents.get("C").setText(conditionRegisterBits.get("C").getNumber());
+	}
+
+	private String formatBinaryToHex(String binary) {
+		return String.format("0x%04X", Integer.parseInt(binary, 2));
 	}
 }
