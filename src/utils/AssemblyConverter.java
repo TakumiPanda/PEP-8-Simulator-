@@ -1,6 +1,8 @@
 package utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 import java.util.stream.IntStream;
 
 /**
@@ -66,8 +68,6 @@ public class AssemblyConverter {
             } else {
                 addOpcode(currentArr.get(0), currentArr.get(1), currentArr.get(2), tag);
             }
-
-            hexList.add(" ");
         }
 
         //Tabulates the offset tags and records them in a map
@@ -105,23 +105,41 @@ public class AssemblyConverter {
             case "STOP":
                 hex += "00";
                 break;
-            case "NOTR":
+            case "NOTA":
                 hex += "18";
                 break;
-            case "NEGR":
+            case "NOTR":
+                hex += "19";
+                break;
+            case "NEGA":
                 hex += "1A";
                 break;
-            case "ASLR":
+            case "NEGR":
+                hex += "1B";
+                break;
+            case "ASLA":
                 hex += "1C";
                 break;
-            case "ASRR":
+            case "ASLR":
+                hex += "1D";
+                break;
+            case "ASRA":
                 hex += "1E";
                 break;
-            case "ROLR":
+            case "ASRR":
+                hex += "1F";
+                break;
+            case "ROLA":
                 hex += "20";
                 break;
-            case "RORR":
+            case "ROLR":
+                hex += "21";
+                break;
+            case "RORA":
                 hex += "22";
+                break;
+            case "RORR":
+                hex += "23";
                 break;
             default:
                 exists = false;
@@ -129,6 +147,7 @@ public class AssemblyConverter {
 
         if (exists) {
             hexList.add(hex);
+            hexList.add(" ");
         }
     }
 
@@ -149,7 +168,6 @@ public class AssemblyConverter {
 
         switch (opcode) {
             case "BR":
-            case "BRC":
                 brHexCode += "04";
                 break;
             case "BRLE":
@@ -167,11 +185,14 @@ public class AssemblyConverter {
             case "BRGE":
                 brHexCode += "0E";
                 break;
-            case "BRN":
-            case "BRZ":
+            case "BRGT":
+                brHexCode += "10";
                 break;
-            case "BRV":
-                brHexCode += "02";
+            case "BRN":
+                brHexCode += "12";
+                break;
+            case "BRC":
+                brHexCode += "14";
                 break;
             default:
                 exists = false;
@@ -180,9 +201,9 @@ public class AssemblyConverter {
         if (exists) {
             String hexBuild = brHexCode + "!" + offset;
             hexList.add(hexBuild);
+            IntStream.range(0, 2).forEachOrdered(i -> hexList.add("00"));
+            hexList.add(" ");
         }
-
-        IntStream.range(0, 2).forEachOrdered(i -> hexList.add("00"));
     }
 
     /**
@@ -212,23 +233,47 @@ public class AssemblyConverter {
         }
 
         switch (opcode) {
-            case "LDR":
+            case "LDA":
                 addMode += 192;
                 break;
-            case "STR":
+            case "LDR":
+                addMode += 193;
+                break;
+            case "STA":
                 addMode += 224;
                 break;
-            case "ADDR":
+            case "STR":
+                addMode += 232;
+                break;
+            case "ADDA":
                 addMode += 112;
                 break;
-            case "SUBR":
+            case "ADDR":
+                addMode += 120;
+                break;
+            case "SUBA":
                 addMode += 128;
                 break;
-            case "ANDR":
+            case "SUBR":
+                addMode += 136;
+                break;
+            case "ANDA":
                 addMode += 144;
                 break;
-            case "ORR":
+            case "ANDR":
+                addMode += 152;
+                break;
+            case "ORA":
                 addMode += 160;
+                break;
+            case "ORR":
+                addMode += 168;
+                break;
+            case "CPA":
+                addMode += 176;
+                break;
+            case "CPR":
+                addMode += 184;
                 break;
             case "CHARO":
                 addMode += 80;
@@ -252,6 +297,8 @@ public class AssemblyConverter {
             for (int i = 0; i < 4; i += 2) {
                 hexList.add(hexBuild.substring(i, i + 2).toUpperCase());
             }
+
+            hexList.add(" ");
         }
     }
 
