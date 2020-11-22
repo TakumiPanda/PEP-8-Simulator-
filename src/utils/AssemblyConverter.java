@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Converts assembly code from the the given input into hexadecimal code.
@@ -38,7 +39,8 @@ public class AssemblyConverter {
         //Initializes an arrayList of each individual instruction's tokens inside
         //the primary arrayList
         for (int i = 0; i < assemblyArr.length; i++) {
-            StringTokenizer strToken = new StringTokenizer(assemblyArr[i], " ");
+            String[] assemblyComment = assemblyArr[i].split(";");
+            StringTokenizer strToken = new StringTokenizer(assemblyComment[0], " ");
             arrList.add(new ArrayList<>());
 
             while (strToken.hasMoreTokens()) {
@@ -64,19 +66,24 @@ public class AssemblyConverter {
             } else {
                 addOpcode(currentArr.get(0), currentArr.get(1), currentArr.get(2), tag);
             }
+
+            hexList.add(" ");
         }
 
         //Tabulates the offset tags and records them in a map
+        int spaces = 0;
         for (int i = 0; i < hexList.size(); i++) {
-            if (hexList.get(i).contains(":")) {
+            if (hexList.get(i).equals(" ")) {
+                spaces++;
+            }
+            else if (hexList.get(i).contains(":")) {
                 String[] hexArr = hexList.get(i).split(":");
-                offsetMap.put(hexArr[0], i);
+                offsetMap.put(hexArr[0], i - spaces);
                 hexList.set(i, hexArr[1]);
             }
         }
 
-        String hexCode = listToHexString();
-        return hexCode;
+        return listToHexString();
     }
 
     /**
@@ -174,6 +181,8 @@ public class AssemblyConverter {
             String hexBuild = brHexCode + "!" + offset;
             hexList.add(hexBuild);
         }
+
+        IntStream.range(0, 2).forEachOrdered(i -> hexList.add("00"));
     }
 
     /**
@@ -188,10 +197,10 @@ public class AssemblyConverter {
     private void addOpcode(String opcode, String value, String mode, String tag) {
         boolean exists = true;
         int addMode;
-        String hex = "";
+        String hexTag = "";
 
         if (tag != null) {
-            hex = tag;
+            hexTag = tag;
         }
 
         if (mode.equals("I")) {
@@ -232,15 +241,17 @@ public class AssemblyConverter {
         }
 
         if (exists) {
+            hexList.add(hexTag + Integer.toHexString(addMode));
+
             StringBuilder hexBuild = new StringBuilder();
-            hexBuild.append(hex);
-            hexBuild.append(Integer.toHexString(addMode));
             int valDec = Integer.parseInt(value);
             String hexVal = Integer.toHexString(valDec);
             hexBuild.append("0".repeat(Math.max(0, 4 - hexVal.length())));
             hexBuild.append(hexVal);
 
-            hexList.add(hexBuild.toString().toUpperCase());
+            for (int i = 0; i < 4; i += 2) {
+                hexList.add(hexBuild.substring(i, i + 2).toUpperCase());
+            }
         }
     }
 
@@ -254,17 +265,19 @@ public class AssemblyConverter {
      */
     private String listToHexString() {
         StringBuilder hexCode = new StringBuilder();
+        int spaces = 0;
 
         for (int i = 0; i < hexList.size(); i++) {
             if (hexList.get(i).contains("!")) {
                 String[] hexArr = hexList.get(i).split("!");
 
                 StringBuilder offsetBuild = new StringBuilder();
-                int offset = i + 1;
+                int offset = i + 3 - spaces;
 
                 for (String s : offsetMap.keySet()) {
                     if (hexArr[1].equals(s)) {
-                        offset = 3 * offsetMap.get(s);
+                        offset = offsetMap.get(s);
+                        break;
                     }
                 }
 
@@ -273,11 +286,13 @@ public class AssemblyConverter {
                 offsetBuild.append("0".repeat(Math.max(0, 4 - hexVal.length())));
                 offsetBuild.append(hexVal);
                 hexCode.append(offsetBuild.toString());
+                i += 2;
             } else {
+                if (hexList.get(i).equals(" ")) {
+                    spaces++;
+                }
                 hexCode.append(hexList.get(i));
             }
-
-            hexCode.append(" ");
         }
 
         return hexCode.toString();
