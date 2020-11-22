@@ -33,4 +33,9 @@ public interface MemoryDump {
      * Will return what ever is stored at that memory location.
      */
     String getMemory(int address);
+
+    /**
+     * Reset memory back to default.
+     */
+    void wipeMemory();
 }

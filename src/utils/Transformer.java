@@ -153,8 +153,8 @@ public class Transformer {
 	/**
 	 * Formats the binary number by padding the value with 0/1 or sign extending it to the proper length
 	 *
-	 * @param address tring binary address.
-	 * @return String binary address.
+	 * @param address address.
+	 * @return String formatted address.
 	 */
 	public static String formatAddress(String address, int length, String extendCharacter) {
 		int lengthExtended = length - address.length();

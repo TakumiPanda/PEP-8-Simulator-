@@ -10,16 +10,14 @@ public interface ControlUnit {
     void startCycle() throws InterruptedException;
 
     /**
-     * Executes only a single instruction specified
+     * Fetches the instruction from memory, loads it into IR and executes the instruction.
      */
-
-    void executeSingleInstruction(String instruction);
+    void executeNextInstruction();
 
     /**
-     * Gets the current Operand that is needed when displaying the internal state of
-     * the machine in the View window.
+     * Executes only a single instruction specified
      */
-    Instruction getCurrentInstruction();
+    void executeSingleInstruction(String instr);
 
     /**
      * Controller needs access to the ALU for the internal State of the machine. In

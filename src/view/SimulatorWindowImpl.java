@@ -19,9 +19,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 	public static int PANEL_WIDTH = 400;
 	public static int PANEL_HEIGHT = 200;
 
-	/** Current instruction index used for single step operation */
-	private int currentInstructionIndex = 0;
-
 	/* Main component. */
 	private JPanel mainPanel = new JPanel();
 	private MemoryDumpImpl memoryDump;
@@ -90,22 +87,12 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 
 		executeButton.addActionListener(e -> {
 			setChanged();
-			notifyObservers();
+			notifyObservers("Execute");
 		});
 
 		singleStepButton.addActionListener(e -> {
-			String[] instructions = (objectCodeArea.getText().length() != 0)? objectCodeArea.getText().split("\\s+"):
-					sourceCodeArea.getText().split("\\r?\\n");
-
-			if (instructions.length == 0) {
-				JOptionPane.showMessageDialog(mainPanel, "Please input Code");
-				return;
-			}
-			if (currentInstructionIndex < instructions.length) {
-				String currentInstruction = instructions[currentInstructionIndex++];
-				setChanged();
-				notifyObservers(currentInstruction);
-			}
+			setChanged();
+			notifyObservers("Single Step");
 		});
 
 		terminalArea.addKeyListener(new KeyAdapter() {
@@ -130,6 +117,7 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 	@Override
 	public void reset() {
 		objectCodeArea.setText("");
+		sourceCodeArea.setText("");
 		terminalArea.setText("");
 	}
 
@@ -174,41 +162,6 @@ public class SimulatorWindowImpl extends Observable implements SimulatorWindow {
 				entry("Accumulator", accumalatorField), entry("Index Register", indexRegisterField),
 				entry("Program Counter", programCounterField), entry("Instruction Specifier", instructionSpecifierField),
 				entry("Operand Specifier", operandSpecifierField));
-	}
-
-	@Override
-	public void setCPUComponents(Map<String, JTextField> cpuComponents) {
-		for (Map.Entry<String, JTextField> entry : cpuComponents.entrySet()) {
-			switch (entry.getKey()) {
-				case "N":
-					nField = entry.getValue();
-					break;
-				case "Z":
-					zField = entry.getValue();
-					break;
-				case "V":
-					vField = entry.getValue();
-					break;
-				case "C":
-					cField = entry.getValue();
-					break;
-				case "Accumulator":
-					accumalatorField = entry.getValue();
-					break;
-				case "Index Register":
-					indexRegisterField = entry.getValue();
-					break;
-				case "Program Counter":
-					programCounterField = entry.getValue();
-					break;
-				case "Instruction Specifier":
-					instructionSpecifierField = entry.getValue();
-					break;
-				case "Operand Specifier":
-					operandSpecifierField = entry.getValue();
-					break;
-			}
-		}
 	}
 
 	private JPanel buildButtonPanel() {

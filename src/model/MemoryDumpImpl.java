@@ -13,23 +13,7 @@ public class MemoryDumpImpl implements MemoryDump {
     private static final int SIZE = 65536;
 
     public MemoryDumpImpl() {
-        this.hexDump = new String[SIZE];
-        this.charDump = new String[SIZE];
-        for (int i = 0; i < SIZE - 1; i += 8) {
-            // objCode
-            for (int offset = 0; offset <= 7; offset++) {
-                // FILL OBJECT CODE HERE
-                //this.dump[i + offset] = "00";
-                this.hexDump[i + offset] = "00";
-            }
-
-            // decode
-            for (int offset = 0; offset <= 7; offset++) {
-                // FILL IN DECODE HERE
-                //this.dump[i + 8 + offset] = "00";
-                this.charDump[i + offset] = ".";
-            }
-        }
+        wipeMemory();
     }
 
     @Override
@@ -89,7 +73,7 @@ public class MemoryDumpImpl implements MemoryDump {
 
     @Override
     public String fetch(int address) {
-        return binInstructions.get(address);
+        return (binInstructions.size() == 0)? "000000000000000000000000": binInstructions.get(address);
     }
 
     @Override
@@ -109,6 +93,28 @@ public class MemoryDumpImpl implements MemoryDump {
         //dump[hexA * 2 - hexA % 8] = hexVal;
         hexDump[hexA] = hexVal;
         charDump[hexA] = String.valueOf((char) (int) Integer.valueOf(hexVal, 16));
+    }
+
+    @Override
+    public void wipeMemory() {
+        binInstructions.clear();
+        this.hexDump = new String[SIZE];
+        this.charDump = new String[SIZE];
+        for (int i = 0; i < SIZE - 1; i += 8) {
+            // objCode
+            for (int offset = 0; offset <= 7; offset++) {
+                // FILL OBJECT CODE HERE
+                //this.dump[i + offset] = "00";
+                this.hexDump[i + offset] = "00";
+            }
+
+            // decode
+            for (int offset = 0; offset <= 7; offset++) {
+                // FILL IN DECODE HERE
+                //this.dump[i + 8 + offset] = "00";
+                this.charDump[i + offset] = ".";
+            }
+        }
     }
 
     @Override
